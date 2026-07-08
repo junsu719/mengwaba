@@ -41,8 +41,8 @@
 ## 建構階段與目前進度
 
 - [x] **Phase 0**:repo、CLAUDE.md、目錄骨架、.env 樣板、Telegram 通知模組
-- [ ] **Phase 1**:fetch.py 只做高雄市 + normalize + validate 全流程跑通
-- [ ] **Phase 2**:Astro 站台 + 高雄市全部頁面生成,本地 preview 驗收
+- [x] **Phase 1**:fetch.py 只做高雄市 + normalize + validate 全流程跑通(2026-07-09 Jun 驗收通過,人工核對真實清運時間無誤)
+- [~] **Phase 2**:Astro 站台 + 高雄市全部頁面生成(已完成,本地 build 產出 18,842 頁、preview 可正常瀏覽)。**卡點**:Lighthouse 驗收需要 Chrome/Chromium,本機(Mac mini)目前只有 Safari。待 Jun 下次 session 前裝好 Chrome,再採「安裝 headless Chromium 跑自動化 Lighthouse」方式繼續驗收,驗收通過才進 Phase 3
 - [ ] **Phase 3**:手動部署 Cloudflare Pages 一次
 - [ ] **Phase 4**:擴充至六都 → 驗收 → 全台 22 縣市
 - [ ] **Phase 5**:daily.sh + launchd plist、log rotation、斷網重試
@@ -57,6 +57,7 @@
 3. 抓取一律節流(每請求間隔 ≥ 2 秒),User-Agent 標明專案名稱與聯絡方式
 4. 每頁必有:獨特 title/description、JSON-LD、資料來源標註
 5. 任何腳本失敗必發 Telegram 通知
+6. 座標落在台灣範圍外(§7 L2 判定,21.5-25.5N、119.5-122.5E 之外)的清運點,資料層維持原值不竄改,但頁面層不得輸出該點的 geo 座標相關 JSON-LD(如 GeoCoordinates),只顯示地址文字,避免錯誤地理標記傷害 SEO(2026-07-09 Jun 拍板,見 DECISIONS.md)
 
 ## MVP 範圍(Phase 0-3)
 
@@ -73,7 +74,8 @@
 
 ## 已知問題
 
-(隨開發更新)
+- 高雄市正規化資料中有 109 筆(0.62%)座標落在台灣範圍外(L2 檢出但未達 5% 中止門檻,如實保留原值)。頁面層規則見鐵律 6。
+- `~/.npm/_cacache` 內有 root 擁有的殘留檔案(非本專案造成,推測是之前某次 sudo npm 操作留下的),導致一般權限的 `npm install`/`npx` 會報 EACCES。Phase 2 開發時繞過方式:用 `npm install --cache <暫存路徑>` 指定暫時快取目錄。若要一勞永逸,可執行 `sudo chown -R $(whoami) ~/.npm`(需 Jun 手動執行或明確同意後才動,屬全域環境變更)。
 
 ## 本專案專屬規則
 
