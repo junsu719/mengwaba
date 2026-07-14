@@ -21,16 +21,18 @@ const { title, description, jsonLd = [] } = Astro.props;
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">垃圾車清運時間查詢</a>
+      <a class="brand" href="/">悶蛙吧 MengWaBa</a>
     </header>
     <main>
       <slot />
     </main>
     <footer class="site-footer">
-      <p>
-        資料來源:高雄市政府環境保護局(<a href="https://data.kcg.gov.tw/" rel="noopener">高雄市政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
-      </p>
-      <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+      <slot name="footer">
+        <p>
+          資料來源:高雄市政府環境保護局(<a href="https://data.kcg.gov.tw/" rel="noopener">高雄市政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
+        </p>
+        <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+      </slot>
     </footer>
     <style>
       :root {

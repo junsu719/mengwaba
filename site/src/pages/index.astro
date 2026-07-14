@@ -1,35 +1,75 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { loadKaohsiungPoints, groupByDistrict, CITY_SLUG, CITY_NAME } from '../lib/data';
 import { breadcrumbJsonLd } from '../lib/seo';
 
-const points = loadKaohsiungPoints();
-const districts = groupByDistrict(points);
+const jsonLd = [breadcrumbJsonLd([{ name: '首頁', url: Astro.url.href }])];
 
-const jsonLd = [
-  breadcrumbJsonLd([{ name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' }]),
+const tools = [
+  {
+    name: '垃圾車清運時間查詢',
+    description: '輸入地名查詢全台垃圾車清運時間與地點,依縣市、行政區、清運點分頁整理。',
+    href: '/trash/',
+    status: 'live' as const,
+  },
+  {
+    name: '勞動權益計算機',
+    description: '特休、加班費、資遣費等勞動法規試算工具。',
+    href: null,
+    status: 'planned' as const,
+  },
 ];
 ---
 
 <BaseLayout
-  title="全台垃圾車清運時間查詢｜依縣市、行政區、清運點快速查詢"
-  description="輸入地名查詢全台垃圾車清運時間與地點,依縣市、行政區、清運點分頁整理,資料來源為各縣市政府開放資料平台。"
+  title="悶蛙吧 MengWaBa｜台灣生活工具站"
+  description="悶蛙吧整理台灣人日常會用到的查詢與試算工具,目前提供全台垃圾車清運時間查詢,更多生活工具陸續上線。"
   jsonLd={jsonLd}
 >
-  <h1>全台垃圾車清運時間查詢</h1>
-  <p>
-    找不到住家附近垃圾車幾點來嗎?本站整理全台各縣市政府公開的垃圾車清運路線與時間資料,依「縣市 → 行政區 →
-    清運點」分頁呈現,協助你快速確認今天倒垃圾的時間與地點。
-  </p>
+  <h1>悶蛙吧 MengWaBa</h1>
+  <p>整理台灣人日常會用到的查詢與試算工具,免費使用,持續擴充中。</p>
 
-  <h2>目前開放查詢的縣市</h2>
+  <h2>目前提供的工具</h2>
   <ul class="card-grid">
-    <li>
-      <a class="card" href={`/${CITY_SLUG}/`}>
-        <strong>{CITY_NAME}</strong>
-        <div>{districts.length} 個行政區・{points.length.toLocaleString('zh-Hant-TW')} 個清運點</div>
-      </a>
-    </li>
+    {
+      tools.map((tool) =>
+        tool.status === 'live' ? (
+          <li>
+            <a class="card" href={tool.href!}>
+              <strong>{tool.name}</strong>
+              <div>{tool.description}</div>
+            </a>
+          </li>
+        ) : (
+          <li>
+            <div class="card card-disabled">
+              <strong>{tool.name}</strong>
+              <div>{tool.description}</div>
+              <div class="badge">籌備中</div>
+            </div>
+          </li>
+        )
+      )
+    }
   </ul>
-  <p>其餘 21 縣市資料陸續建置中,尚未上線,敬請期待。</p>
+
+  <p slot="footer">悶蛙吧整理台灣公開資料與生活常識,製作免費查詢與試算工具;各工具的資料來源與免責聲明請見各工具頁面說明。</p>
 </BaseLayout>
+
+<style>
+  .card-disabled {
+    background: #f7f7f7;
+    border-style: dashed;
+  }
+  .card-disabled strong {
+    color: var(--muted);
+  }
+  .badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+  }
+</style>

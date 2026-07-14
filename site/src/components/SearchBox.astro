@@ -1,0 +1,147 @@
+---
+interface Props {
+  indexUrl: string;
+  placeholder?: string;
+}
+
+const { indexUrl, placeholder = '輸入路名、里名或清運點名稱搜尋…' } = Astro.props;
+---
+
+<div class="site-search" hidden data-index-url={indexUrl}>
+  <input
+    type="search"
+    class="site-search-input"
+    placeholder={placeholder}
+    aria-label="搜尋清運點"
+    autocomplete="off"
+  />
+  <ul class="site-search-results"></ul>
+</div>
+
+<script>
+  const RESULT_LIMIT = 20;
+  const SCAN_LIMIT = 300;
+  const DEBOUNCE_MS = 150;
+
+  document.querySelectorAll('.site-search').forEach((container) => {
+    const input = container.querySelector('.site-search-input');
+    const results = container.querySelector('.site-search-results');
+    const indexUrl = container.getAttribute('data-index-url');
+    if (!(input instanceof HTMLInputElement) || !(results instanceof HTMLUListElement) || !indexUrl) return;
+
+    let indexPromise = null;
+    function loadIndex() {
+      if (!indexPromise) {
+        indexPromise = fetch(indexUrl).then((r) => r.json());
+      }
+      return indexPromise;
+    }
+
+    function render(matches) {
+      results.innerHTML = '';
+      for (const m of matches) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = m.href;
+        const strong = document.createElement('strong');
+        strong.textContent = m.name;
+        const sub = document.createElement('span');
+        sub.className = 'site-search-sub';
+        sub.textContent = m.sub;
+        a.append(strong, document.createTextNode(' '), sub);
+        li.appendChild(a);
+        results.appendChild(li);
+      }
+      results.hidden = matches.length === 0;
+    }
+
+    let debounceTimer;
+    let requestSeq = 0;
+
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const q = input.value.trim();
+      if (!q) {
+        render([]);
+        return;
+      }
+      const seq = ++requestSeq;
+      debounceTimer = setTimeout(async () => {
+        const data = await loadIndex();
+        if (seq !== requestSeq) return; // 使用者已繼續輸入,捨棄過期結果
+
+        const needle = q.toLowerCase();
+        const matches = [];
+        for (const [cityIdx, districtIdx, name, village, pointSlug] of data.points) {
+          const city = data.cities[cityIdx];
+          const district = data.districts[districtIdx];
+          const haystack = `${name}${village ?? ''}${district.n}`.toLowerCase();
+          const score = haystack.indexOf(needle);
+          if (score === -1) continue;
+          matches.push({
+            name,
+            sub: village ? `${district.n}・${village}` : district.n,
+            href: `/trash/${city.s}/${district.s}/${pointSlug}/`,
+            score,
+          });
+          if (matches.length >= SCAN_LIMIT) break;
+        }
+        matches.sort((a, b) => a.score - b.score);
+        render(matches.slice(0, RESULT_LIMIT));
+      }, DEBOUNCE_MS);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target)) render([]);
+    });
+
+    container.hidden = false;
+  });
+</script>
+
+<style>
+  .site-search {
+    position: relative;
+    margin: 1rem 0 1.5rem;
+  }
+  .site-search-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .site-search-results {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  .site-search-results[hidden] {
+    display: none;
+  }
+  .site-search-results li a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    text-decoration: none;
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-search-results li:last-child a {
+    border-bottom: none;
+  }
+  .site-search-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>

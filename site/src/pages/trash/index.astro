@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchBox from '../../components/SearchBox.astro';
+import { loadKaohsiungPoints, groupByDistrict, CITY_SLUG, CITY_NAME } from '../../lib/data';
+import { breadcrumbJsonLd } from '../../lib/seo';
+
+const points = loadKaohsiungPoints();
+const districts = groupByDistrict(points);
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '垃圾車清運時間查詢', url: Astro.url.href },
+  ]),
+];
+---
+
+<BaseLayout
+  title="全台垃圾車清運時間查詢｜依縣市、行政區、清運點快速查詢"
+  description="輸入地名查詢全台垃圾車清運時間與地點,依縣市、行政區、清運點分頁整理,資料來源為各縣市政府開放資料平台。"
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / 垃圾車清運時間查詢</nav>
+  <h1>全台垃圾車清運時間查詢</h1>
+  <p>
+    找不到住家附近垃圾車幾點來嗎?本站整理全台各縣市政府公開的垃圾車清運路線與時間資料,依「縣市 → 行政區 →
+    清運點」分頁呈現,協助你快速確認今天倒垃圾的時間與地點。
+  </p>
+
+  <SearchBox indexUrl="/trash/search-index.json" />
+
+  <h2>目前開放查詢的縣市</h2>
+  <ul class="card-grid">
+    <li>
+      <a class="card" href={`/trash/${CITY_SLUG}/`}>
+        <strong>{CITY_NAME}</strong>
+        <div>{districts.length} 個行政區・{points.length.toLocaleString('zh-Hant-TW')} 個清運點</div>
+      </a>
+    </li>
+  </ul>
+  <p>其餘 21 縣市資料陸續建置中,尚未上線,敬請期待。</p>
+</BaseLayout>

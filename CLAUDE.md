@@ -4,6 +4,13 @@
 本專案只在 **Mac mini M4**、路徑 `~/projects/trash-pseo` 開發與執行(pipeline、launchd 排程皆在此機器)。
 每次 session 開始先確認 `pwd` 與機器是否相符,不符則停止並提醒 Jun。
 
+## 站群品牌(2026-07-13 解凍拍板)
+
+本專案原為獨立網站,現已解凍併入新的站群品牌「**悶蛙吧 MengWaBa**」(正式網域 `mengwaba.com`,已註冊持有)。策略改為「單一 domain + 子目錄」的工具站群:垃圾車主題(本專案)負責開疆(市場空缺大、好收錄),之後陸續加入勞動權益計算機等高 RPM 主題,共享同一 domain 的 SEO 信任。
+
+- **URL 結構**:垃圾車查詢從網站根目錄改掛到 `/trash/` 子目錄(`/trash/{city}/{district}/{point}`);網站根目錄 `/` 改為品牌著陸頁,列出目前提供的工具並預留未來工具位置。
+- **既有的放棄條件、成功指標、鐵律不受影響**,僅網域與 URL 結構改變;詳見 DECISIONS.md 2026-07-13 條目。
+
 ## 已確認目標(Phase 0,2026-07-08 拍板,依 trash-pseo-spec.md §11.5)
 
 - **解決誰的問題**:全台民眾搜尋「〔地名〕垃圾車時間」時,官方查詢介面體驗差(環境部全國查詢網為老式下拉選單、部分縣市僅以 PDF 公告),此站用 pSEO(縣市 × 行政區 × 清運點)頁面承接長尾搜尋流量。
@@ -42,8 +49,13 @@
 
 - [x] **Phase 0**:repo、CLAUDE.md、目錄骨架、.env 樣板、Telegram 通知模組
 - [x] **Phase 1**:fetch.py 只做高雄市 + normalize + validate 全流程跑通(2026-07-09 Jun 驗收通過,人工核對真實清運時間無誤)
-- [~] **Phase 2**:Astro 站台 + 高雄市全部頁面生成(已完成,本地 build 產出 18,842 頁、preview 可正常瀏覽)。**卡點**:Lighthouse 驗收需要 Chrome/Chromium,本機(Mac mini)目前只有 Safari。待 Jun 下次 session 前裝好 Chrome,再採「安裝 headless Chromium 跑自動化 Lighthouse」方式繼續驗收,驗收通過才進 Phase 3
-- [ ] **Phase 3**:手動部署 Cloudflare Pages 一次
+- [x] **Phase 2**:Astro 站台 + 高雄市全部頁面生成(18,842 頁),Lighthouse 驗收 4 種代表頁(首頁/縣市頁/行政區頁/清運點頁)Performance/Accessibility/Best Practices/SEO 皆 100 分(2026-07-10 Jun 驗收通過)
+- [~] **Phase 3a**(技術驗證,已完成):部署至 Cloudflare Pages `trash-pseo.pages.dev`,線上 4 種代表頁 Lighthouse 重測與本地一致皆 100 分,內部連結/sitemap/robots.txt 動態端點皆正確指向線上絕對網址。**尚未**:綁自訂網域、提交 GSC(依 2026-07-10 拍板延後至 Phase 3b),待 Jun 驗收線上版本
+- [x] **站群改造**(2026-07-13,Jun 驗收通過):併入「悶蛙吧」品牌,站台改為 `/trash/` 子目錄架構 + 品牌首頁,`SITE_URL` 改為 `https://mengwaba.com`,sitemap/robots.txt/內部連結/JSON-LD 皆已更新並本地 build 驗證正確
+- [x] **即時搜尋功能**(2026-07-13,Jun 手機驗收通過):`/trash/` 與 `/trash/{city}/` 頁面新增純前端搜尋框,build 時產生精簡搜尋索引(字典編碼,960KB/city,不含冗餘 address 欄位),前端 lazy-load(首次輸入才 fetch,不影響首屏)
+- [x] **部署**(2026-07-13):`wrangler pages deploy` 上線,線上 5 種代表頁 Lighthouse 四項皆 100 分、sitemap/robots.txt/搜尋索引皆驗證正確
+- [~] **Phase 3b**:Cloudflare Pages 已送出 `mengwaba.com` 網域綁定請求,但卡在 DNS 端——**待 Jun 手動處理**:登入 Cloudflare Dashboard → mengwaba.com 這個 zone → DNS → 新增 CNAME 記錄(名稱 `@`、目標 `trash-pseo.pages.dev`、Proxied),原因是目前 wrangler 的 OAuth token 只有 zone 讀取權限,無法用程式自動建立 DNS 記錄。CNAME 建好後 Cloudflare 會自動驗證簽發憑證,才算正式開始養站計時
+- [ ] GSC 提交:待 Jun 確認網域正式綁定上線後再進行(Jun 指示)
 - [ ] **Phase 4**:擴充至六都 → 驗收 → 全台 22 縣市
 - [ ] **Phase 5**:daily.sh + launchd plist、log rotation、斷網重試
 - [ ] **Phase 6**:提交 GSC + sitemap、部署 Cloudflare Web Analytics
