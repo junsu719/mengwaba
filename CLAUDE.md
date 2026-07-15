@@ -1,8 +1,14 @@
 # trash-pseo — 專案規範
 
-## 開發環境(鎖定)
-本專案只在 **Mac mini M4**、路徑 `~/projects/trash-pseo` 開發與執行(pipeline、launchd 排程皆在此機器)。
-每次 session 開始先確認 `pwd` 與機器是否相符,不符則停止並提醒 Jun。
+## 開發環境(雙機)
+
+可在 **Mac mini M4**(`~/projects/trash-pseo`)或 **PC WSL2**(`~/projects/mengwaba`)開發,程式碼以 GitHub(`junsu719/mengwaba`)同步。每次 session 開始先 `git pull` 確保為最新版,結束前 `git push`。
+
+## 執行環境(唯一 = Mac mini M4)
+
+pipeline 每日排程(launchd)、`wrangler pages deploy` 部署只在 Mac mini 執行。PC 不得設定排程或執行部署,避免雙機重複部署互相覆蓋。
+
+每次 session 開始先確認 `pwd` 與當前機器,依機器角色行事。
 
 ## 站群品牌(2026-07-13 解凍拍板)
 
