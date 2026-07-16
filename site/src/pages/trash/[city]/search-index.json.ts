@@ -1,13 +1,14 @@
 import type { APIRoute } from 'astro';
-import { loadKaohsiungPoints, CITY_SLUG, CITY_NAME } from '../../../lib/data';
+import { CITIES, loadCityPoints, type CityInfo } from '../../../lib/data';
 import { buildSearchIndex } from '../../../lib/search';
 
 export function getStaticPaths() {
-  return [{ params: { city: CITY_SLUG } }];
+  return CITIES.map((city) => ({ params: { city: city.slug }, props: { city } }));
 }
 
-export const GET: APIRoute = () => {
-  const index = buildSearchIndex([{ slug: CITY_SLUG, name: CITY_NAME, points: loadKaohsiungPoints() }]);
+export const GET: APIRoute = ({ props }) => {
+  const { city } = props as { city: CityInfo };
+  const index = buildSearchIndex([{ slug: city.slug, name: city.name, points: loadCityPoints(city.file) }]);
   return new Response(JSON.stringify(index), {
     headers: { 'Content-Type': 'application/json' },
   });

@@ -1,11 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SearchBox from '../../components/SearchBox.astro';
-import { loadKaohsiungPoints, groupByDistrict, CITY_SLUG, CITY_NAME } from '../../lib/data';
+import { CITIES, TOTAL_TAIWAN_COUNTY_COUNT, loadCityPoints, groupByDistrict } from '../../lib/data';
 import { breadcrumbJsonLd } from '../../lib/seo';
 
-const points = loadKaohsiungPoints();
-const districts = groupByDistrict(points);
+const cityStats = CITIES.map((city) => {
+  const points = loadCityPoints(city.file);
+  const districts = groupByDistrict(points);
+  return { city, districtCount: districts.length, pointCount: points.length };
+});
+const remainingCount = TOTAL_TAIWAN_COUNTY_COUNT - CITIES.length;
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -31,12 +35,27 @@ const jsonLd = [
 
   <h2>目前開放查詢的縣市</h2>
   <ul class="card-grid">
-    <li>
-      <a class="card" href={`/trash/${CITY_SLUG}/`}>
-        <strong>{CITY_NAME}</strong>
-        <div>{districts.length} 個行政區・{points.length.toLocaleString('zh-Hant-TW')} 個清運點</div>
-      </a>
-    </li>
+    {
+      cityStats.map(({ city, districtCount, pointCount }) => (
+        <li>
+          <a class="card" href={`/trash/${city.slug}/`}>
+            <strong>{city.name}</strong>
+            <div>{districtCount} 個行政區・{pointCount.toLocaleString('zh-Hant-TW')} 個清運點</div>
+          </a>
+        </li>
+      ))
+    }
   </ul>
-  <p>其餘 21 縣市資料陸續建置中,尚未上線,敬請期待。</p>
+  <p>其餘 {remainingCount} 縣市資料陸續建置中,尚未上線,敬請期待。</p>
+
+  <Fragment slot="footer">
+    {
+      cityStats.map(({ city }) => (
+        <p>
+          {city.name}資料來源:{city.sourceName}(<a href={city.sourceUrl} rel="noopener">資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
+        </p>
+      ))
+    }
+    <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+  </Fragment>
 </BaseLayout>

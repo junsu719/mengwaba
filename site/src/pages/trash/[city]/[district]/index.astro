@@ -1,19 +1,21 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { loadKaohsiungPoints, groupByDistrict, parsePointId, CITY_SLUG, CITY_NAME } from '../../../../lib/data';
+import { CITIES, loadCityPoints, groupByDistrict, parsePointId, type CityInfo, type DistrictGroup } from '../../../../lib/data';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
-import { districtNoteSentence, weekdayListText } from '../../../../lib/content';
+import { districtNoteSentence, scheduleTimeText, weekdayListText } from '../../../../lib/content';
 
 export function getStaticPaths() {
-  const points = loadKaohsiungPoints();
-  const districts = groupByDistrict(points);
-  return districts.map((g) => ({
-    params: { city: CITY_SLUG, district: g.districtSlug },
-    props: { group: g },
-  }));
+  return CITIES.flatMap((city) => {
+    const points = loadCityPoints(city.file);
+    const districts = groupByDistrict(points);
+    return districts.map((g) => ({
+      params: { city: city.slug, district: g.districtSlug },
+      props: { group: g, city },
+    }));
+  });
 }
 
-const { group } = Astro.props;
+const { group, city } = Astro.props as { group: DistrictGroup; city: CityInfo };
 
 const sortedByTime = [...group.points].sort((a, b) => {
   const at = a.schedule[0]?.arrive ?? '99:99';
@@ -25,18 +27,18 @@ const jsonLd = [
   breadcrumbJsonLd([
     { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
     { name: '垃圾車清運時間查詢', url: new URL('/trash/', Astro.site ?? Astro.url).href },
-    { name: CITY_NAME, url: new URL(`/trash/${CITY_SLUG}/`, Astro.site ?? Astro.url).href },
+    { name: city.name, url: new URL(`/trash/${city.slug}/`, Astro.site ?? Astro.url).href },
     { name: group.district, url: Astro.url.href },
   ]),
 ];
 ---
 
 <BaseLayout
-  title={`${group.district}垃圾車時間查詢｜${CITY_NAME}${group.district}清運點總表`}
-  description={`${CITY_NAME}${group.district}垃圾車清運時間總表,共 ${group.points.length} 個清運點,依到站時間排序,點選查看各點詳細時刻與地址。`}
+  title={`${group.district}垃圾車時間查詢｜${city.name}${group.district}清運點總表`}
+  description={`${city.name}${group.district}垃圾車清運時間總表,共 ${group.points.length} 個清運點,依到站時間排序,點選查看各點詳細時刻與地址。`}
   jsonLd={jsonLd}
 >
-  <nav><a href="/">首頁</a> / <a href={`/trash/${CITY_SLUG}/`}>{CITY_NAME}</a> / {group.district}</nav>
+  <nav><a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> / <a href={`/trash/${city.slug}/`}>{city.name}</a> / {group.district}</nav>
   <h1>{group.district}垃圾車清運時間查詢</h1>
   <p>{districtNoteSentence(group)}</p>
 
@@ -47,7 +49,7 @@ const jsonLd = [
         const { pointSlug } = parsePointId(p.point_id);
         return (
           <li>
-            <a href={`/trash/${CITY_SLUG}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+            <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
             {p.village ? ` ・${p.village}` : ''}
           </li>
         );
@@ -59,7 +61,7 @@ const jsonLd = [
   <table>
     <thead>
       <tr>
-        <th>到站時間</th>
+        <th>收運時間</th>
         <th>清運點</th>
         <th>里別</th>
         <th>收運日</th>
@@ -72,9 +74,9 @@ const jsonLd = [
           const entry = p.schedule[0];
           return (
             <tr>
-              <td>{entry ? `${entry.arrive}〜${entry.depart}` : '—'}</td>
+              <td>{entry ? scheduleTimeText(entry, p.collection_type) : '—'}</td>
               <td>
-                <a href={`/trash/${CITY_SLUG}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+                <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
               </td>
               <td>{p.village ?? '—'}</td>
               <td>{entry ? weekdayListText(entry.weekday) : '—'}</td>
@@ -84,4 +86,9 @@ const jsonLd = [
       }
     </tbody>
   </table>
+
+  <p slot="footer">
+    資料來源:{city.sourceName}(<a href={city.sourceUrl} rel="noopener">{city.name}政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
 </BaseLayout>

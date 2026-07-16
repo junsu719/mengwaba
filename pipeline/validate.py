@@ -1,4 +1,4 @@
-"""三層資料驗證(見 ../trash-pseo-spec.md §7)。驗證失敗即中止,絕不部署。"""
+"""三層資料驗證(見 ../trash-pseo-spec.md §7)。驗證失敗即中止,絕不部署。高雄市、臺中市。"""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def check_l2_reasonableness(records: list[dict[str, Any]]) -> dict[str, Any]:
     coord_violations = 0
 
     for r in records:
-        for entry in r.get("schedule", []):
+        for entry in r.get("schedule", []) + r.get("recycling_schedule", []):
             arrive, depart = entry.get("arrive"), entry.get("depart")
             for t in (arrive, depart):
                 if not _is_valid_time(t):
@@ -114,16 +114,14 @@ def check_l3_diff(city_key: str, current_count: int, meta: dict[str, Any]) -> di
     }
 
 
-def main() -> None:
-    city_key = "kaohsiung"
-    city_name = "高雄市"
+def validate_city(city_key: str, meta: dict[str, Any]) -> dict[str, Any]:
     normalized_path = NORMALIZED_DIR / f"{city_key}.json"
     if not normalized_path.exists():
         print(f"[validate] 找不到正規化資料 {normalized_path},請先執行 normalize.py", file=sys.stderr)
         sys.exit(1)
 
     records = json.loads(normalized_path.read_text(encoding="utf-8"))
-    meta = json.loads(META_PATH.read_text(encoding="utf-8")) if META_PATH.exists() else {}
+    city_name = records[0]["city"] if records else city_key
 
     l1 = check_l1_structure(records)
     l2 = check_l2_reasonableness(records)
@@ -151,8 +149,22 @@ def main() -> None:
         "count": len(records),
         "updated_at": report["validated_at"],
     }
+    print(f"[validate] {city_name}:全部通過")
+    return report
+
+
+def main() -> None:
+    city_keys = sys.argv[1:]
+    if not city_keys:
+        print("[validate] 用法: python pipeline/validate.py <city_key> [city_key ...]", file=sys.stderr)
+        sys.exit(1)
+
+    meta = json.loads(META_PATH.read_text(encoding="utf-8")) if META_PATH.exists() else {}
+    for city_key in city_keys:
+        validate_city(city_key, meta)
+
     META_PATH.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[validate] {city_name}:全部通過,已更新 {META_PATH}")
+    print(f"[validate] 已更新 {META_PATH}")
 
 
 if __name__ == "__main__":

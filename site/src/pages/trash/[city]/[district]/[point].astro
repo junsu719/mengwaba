@@ -1,49 +1,52 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import {
-  loadKaohsiungPoints,
+  CITIES,
+  loadCityPoints,
   groupByDistrict,
   parsePointId,
   nearestPoints,
   todayScheduleEntry,
   todayWeekdayTaipei,
   WEEKDAY_NAMES,
-  CITY_SLUG,
-  CITY_NAME,
+  type CityInfo,
   type CollectionPoint,
   type DistrictGroup,
 } from '../../../../lib/data';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
-import { todaySummarySentence, introSentence, buildFaq } from '../../../../lib/content';
+import { todaySummarySentence, introSentence, buildFaq, isPassThrough, scheduleTimeText } from '../../../../lib/content';
 
 export function getStaticPaths() {
-  const points = loadKaohsiungPoints();
-  const districts = groupByDistrict(points);
-  return districts.flatMap((g: DistrictGroup) =>
-    g.points.map((p: CollectionPoint) => {
-      const { pointSlug } = parsePointId(p.point_id);
-      return {
-        params: { city: CITY_SLUG, district: g.districtSlug, point: pointSlug },
-        props: { point: p, group: g },
-      };
-    })
-  );
+  return CITIES.flatMap((city) => {
+    const points = loadCityPoints(city.file);
+    const districts = groupByDistrict(points);
+    return districts.flatMap((g: DistrictGroup) =>
+      g.points.map((p: CollectionPoint) => {
+        const { pointSlug } = parsePointId(p.point_id);
+        return {
+          params: { city: city.slug, district: g.districtSlug, point: pointSlug },
+          props: { point: p, group: g, city },
+        };
+      })
+    );
+  });
 }
 
-const { point, group } = Astro.props as { point: CollectionPoint; group: DistrictGroup };
+const { point, group, city } = Astro.props as { point: CollectionPoint; group: DistrictGroup; city: CityInfo };
 
 const nearby = nearestPoints(point, group.points, 5);
 const faq = buildFaq(point, group.district);
 const weekday = todayWeekdayTaipei();
 const todayEntry = todayScheduleEntry(point, weekday);
 const pageUrl = Astro.url.href;
+const hasRecycling = !!point.recycling_schedule && point.recycling_schedule.length > 0;
 
 const jsonLd = [
   breadcrumbJsonLd([
     { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
     { name: '垃圾車清運時間查詢', url: new URL('/trash/', Astro.site ?? Astro.url).href },
-    { name: CITY_NAME, url: new URL(`/trash/${CITY_SLUG}/`, Astro.site ?? Astro.url).href },
-    { name: group.district, url: new URL(`/trash/${CITY_SLUG}/${group.districtSlug}/`, Astro.site ?? Astro.url).href },
+    { name: city.name, url: new URL(`/trash/${city.slug}/`, Astro.site ?? Astro.url).href },
+    { name: group.district, url: new URL(`/trash/${city.slug}/${group.districtSlug}/`, Astro.site ?? Astro.url).href },
     { name: point.point_name ?? point.point_id, url: pageUrl },
   ]),
   faqPageJsonLd(faq),
@@ -52,12 +55,12 @@ const jsonLd = [
 ---
 
 <BaseLayout
-  title={`${point.point_name}垃圾車時間｜${CITY_NAME}${group.district}清運時刻查詢`}
+  title={`${point.point_name}垃圾車時間｜${city.name}${group.district}清運時刻查詢`}
   description={introSentence(point)}
   jsonLd={jsonLd}
 >
   <nav>
-    <a href="/">首頁</a> / <a href={`/trash/${CITY_SLUG}/`}>{CITY_NAME}</a> / <a href={`/trash/${CITY_SLUG}/${group.districtSlug}/`}>{group.district}</a> / {point.point_name}
+    <a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> / <a href={`/trash/${city.slug}/`}>{city.name}</a> / <a href={`/trash/${city.slug}/${group.districtSlug}/`}>{group.district}</a> / {point.point_name}
   </nav>
 
   <h1>{point.point_name}垃圾車時間</h1>
@@ -77,16 +80,60 @@ const jsonLd = [
     </thead>
     <tbody>
       {
-        point.schedule.map((s) => (
-          <tr>
-            <td>{s.weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、')}</td>
-            <td>{s.arrive}</td>
-            <td>{s.depart}</td>
-          </tr>
-        ))
+        point.schedule.map((s) => {
+          const passThrough = isPassThrough(s, point.collection_type);
+          return (
+            <tr>
+              <td>{s.weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、')}</td>
+              {passThrough ? (
+                <td colspan="2">約 {s.arrive} 經過</td>
+              ) : (
+                <>
+                  <td>{s.arrive}</td>
+                  <td>{s.depart}</td>
+                </>
+              )}
+            </tr>
+          );
+        })
       }
     </tbody>
   </table>
+
+  {
+    hasRecycling && (
+      <>
+        <h2>資源回收時刻</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>回收日</th>
+              <th>到站</th>
+              <th>離站</th>
+            </tr>
+          </thead>
+          <tbody>
+            {point.recycling_schedule!.map((s) => {
+              const passThrough = isPassThrough(s, point.collection_type);
+              return (
+                <tr>
+                  <td>{s.weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、')}</td>
+                  {passThrough ? (
+                    <td colspan="2">約 {s.arrive} 經過</td>
+                  ) : (
+                    <>
+                      <td>{s.arrive}</td>
+                      <td>{s.depart}</td>
+                    </>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </>
+    )
+  }
 
   <h2>清運方式</h2>
   <p>{point.collection_type}。{point.notes ? point.notes : ''}</p>
@@ -101,8 +148,8 @@ const jsonLd = [
         const entry = n.schedule[0];
         return (
           <li>
-            <a href={`/trash/${CITY_SLUG}/${group.districtSlug}/${pointSlug}/`}>{n.point_name}</a>
-            {entry ? `・${entry.arrive}〜${entry.depart}` : ''}
+            <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{n.point_name}</a>
+            {entry ? `・${scheduleTimeText(entry, n.collection_type)}` : ''}
           </li>
         );
       })
@@ -112,7 +159,7 @@ const jsonLd = [
   <h2>{group.district}注意事項</h2>
   <p>
     請將垃圾裝入合格垃圾袋,於垃圾車抵達前在定點等候,避免提早棄置造成環境問題;資源回收請分類後交給清潔隊員。若時刻有異動,請以
-    高雄市政府環境保護局公告為準。
+    {city.name}政府環境保護局公告為準。
   </p>
 
   <h2>常見問題</h2>
@@ -124,4 +171,9 @@ const jsonLd = [
       </details>
     ))
   }
+
+  <p slot="footer">
+    資料來源:{city.sourceName}(<a href={city.sourceUrl} rel="noopener">{city.name}政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
 </BaseLayout>

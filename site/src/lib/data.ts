@@ -22,6 +22,8 @@ export interface CollectionPoint {
   lat: number | null;
   lng: number | null;
   schedule: ScheduleEntry[];
+  /** 資源回收時刻,與 schedule 同形狀;非所有縣市資料皆有此欄位(如高雄無),頁面層需判斷是否存在再顯示區塊。 */
+  recycling_schedule?: ScheduleEntry[];
   collection_type: string;
   notes: string | null;
   source: string;
@@ -42,8 +44,41 @@ export function hasValidGeo(p: CollectionPoint): p is CollectionPoint & { lat: n
   );
 }
 
-export const CITY_SLUG = 'kaohsiung';
-export const CITY_NAME = '高雄市';
+export interface CityInfo {
+  slug: string;
+  name: string;
+  /** data/normalized/ 底下對應的檔名(不含副檔名) */
+  file: string;
+  sourceName: string;
+  sourceUrl: string;
+}
+
+/** 已上線縣市,依上線順序排列;新增縣市頁面生成完成後在此註冊即可,頁面層皆已依此清單動態產生路由。 */
+export const CITIES: CityInfo[] = [
+  {
+    slug: 'kaohsiung',
+    name: '高雄市',
+    file: 'kaohsiung',
+    sourceName: '高雄市政府環境保護局',
+    sourceUrl: 'https://data.kcg.gov.tw/',
+  },
+  {
+    slug: 'taichung',
+    name: '臺中市',
+    file: 'taichung',
+    sourceName: '臺中市政府',
+    sourceUrl: 'https://data.gov.tw/dataset/84004',
+  },
+];
+
+/** 全台縣市總數(直轄市+縣市),用於「其餘 N 縣市尚未上線」文案計算,見 CLAUDE.md Phase 4 範圍。 */
+export const TOTAL_TAIWAN_COUNTY_COUNT = 22;
+
+export function getCity(slug: string): CityInfo {
+  const city = CITIES.find((c) => c.slug === slug);
+  if (!city) throw new Error(`未知縣市 slug: ${slug}`);
+  return city;
+}
 
 const _cache = new Map<string, CollectionPoint[]>();
 
@@ -58,11 +93,7 @@ export function loadCityPoints(citySlugFile: string): CollectionPoint[] {
   return publishable;
 }
 
-export function loadKaohsiungPoints(): CollectionPoint[] {
-  return loadCityPoints('kaohsiung');
-}
-
-/** point_id 格式為 KHH-{行政區SLUG}-{序號},由 pipeline/normalize.py 產生。直接解析避免兩邊維護重複對照表。 */
+/** point_id 格式為 {縣市代碼}-{行政區SLUG}-{序號},由 pipeline/normalize.py 產生。直接解析避免兩邊維護重複對照表。 */
 export function parsePointId(pointId: string): { districtSlug: string; pointSlug: string } {
   const m = pointId.match(/^[A-Z]+-([A-Z]+)-(\d+)$/);
   if (!m) throw new Error(`無法解析 point_id: ${pointId}`);

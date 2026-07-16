@@ -4,9 +4,10 @@
 
 可在 **Mac mini M4**(`~/projects/trash-pseo`)或 **PC WSL2**(`~/projects/mengwaba`)開發,程式碼以 GitHub(`junsu719/mengwaba`)同步。每次 session 開始先 `git pull` 確保為最新版,結束前 `git push`。
 
-## 執行環境(唯一 = Mac mini M4)
+## 執行環境(部署與排程分開對待,2026-07-16 調整)
 
-pipeline 每日排程(launchd)、`wrangler pages deploy` 部署只在 Mac mini 執行。PC 不得設定排程或執行部署,避免雙機重複部署互相覆蓋。
+- **手動部署**(`wrangler pages deploy`):PC WSL2、Mac mini M4 皆可執行。部署前務必先 `git pull` 確保為最新版,避免用舊碼覆蓋新碼。Cloudflare Pages 部署結果與來源機器無關,不需限制單一機器。
+- **自動排程**(pipeline 每日 launchd):**唯一限 Mac mini M4**。PC 不得設定任何自動排程,避免雙機自動化同時跑 pipeline,造成資料互相覆蓋或 git 衝突。
 
 每次 session 開始先確認 `pwd` 與當前機器,依機器角色行事。
 
@@ -62,7 +63,7 @@ pipeline 每日排程(launchd)、`wrangler pages deploy` 部署只在 Mac mini �
 - [x] **部署**(2026-07-13):`wrangler pages deploy` 上線,線上 5 種代表頁 Lighthouse 四項皆 100 分、sitemap/robots.txt/搜尋索引皆驗證正確
 - [~] **Phase 3b**:Cloudflare Pages 已送出 `mengwaba.com` 網域綁定請求,但卡在 DNS 端——**待 Jun 手動處理**:登入 Cloudflare Dashboard → mengwaba.com 這個 zone → DNS → 新增 CNAME 記錄(名稱 `@`、目標 `trash-pseo.pages.dev`、Proxied),原因是目前 wrangler 的 OAuth token 只有 zone 讀取權限,無法用程式自動建立 DNS 記錄。CNAME 建好後 Cloudflare 會自動驗證簽發憑證,才算正式開始養站計時
 - [ ] GSC 提交:待 Jun 確認網域正式綁定上線後再進行(Jun 指示)
-- [ ] **Phase 4**:擴充至六都 → 驗收 → 全台 22 縣市
+- [~] **Phase 4**(擴充至六都 → 全台 22 縣市):**臺中市已完成**——資料層(fetch/normalize/validate 重構為多縣市可傳參版本)、Astro 頁面生成(19,973 頁,沿街收運/資源回收時刻/麵包屑皆處理)、`CITIES` 註冊表重構(`site/src/lib/data.ts`,新增縣市只需註冊一筆)三者皆完成並本地驗證,待部署上線(2026-07-16)。**下一步**:臺南市等其餘五都,依序擴充後再全台 22 縣市
 - [ ] **Phase 5**:daily.sh + launchd plist、log rotation、斷網重試
 - [ ] **Phase 6**:提交 GSC + sitemap、部署 Cloudflare Web Analytics
 

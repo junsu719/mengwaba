@@ -1,4 +1,4 @@
-import type { CollectionPoint, DistrictGroup } from './data';
+import type { CollectionPoint, DistrictGroup, ScheduleEntry } from './data';
 import { WEEKDAY_NAMES, todayScheduleEntry, todayWeekdayTaipei } from './data';
 
 /** 依 point_id 產生穩定雜湊,用來在多組文案中選擇變體,避免全站同一句模板換變數。 */
@@ -18,6 +18,15 @@ export function weekdayListText(weekday: number[]): string {
   return weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、');
 }
 
+/** 沿街收運且到站/離站時間相同,代表車輛只是經過、不停等,措辭需與定點清運區分(見 CLAUDE.md 台中頁面規則)。 */
+export function isPassThrough(entry: ScheduleEntry, collectionType: string): boolean {
+  return collectionType === '沿街收運' && entry.arrive === entry.depart;
+}
+
+export function scheduleTimeText(entry: ScheduleEntry, collectionType: string): string {
+  return isPassThrough(entry, collectionType) ? `約 ${entry.arrive} 經過` : `${entry.arrive}〜${entry.depart}`;
+}
+
 export function todaySummarySentence(point: CollectionPoint): string {
   const weekday = todayWeekdayTaipei();
   const entry = todayScheduleEntry(point, weekday);
@@ -25,11 +34,18 @@ export function todaySummarySentence(point: CollectionPoint): string {
   const place = point.point_name ?? '這個清運點';
 
   if (entry) {
-    const variants = [
-      `今天(週${WEEKDAY_NAMES[weekday]})垃圾車會來${place},預計 ${entry.arrive}〜${entry.depart} 停靠,請提前在時間內將垃圾拿到定點。`,
-      `today-yes: 今天是週${WEEKDAY_NAMES[weekday]},${place}有清運班次,清運車抵達時間約 ${entry.arrive} 至 ${entry.depart},別錯過。`,
-      `${place}今天(週${WEEKDAY_NAMES[weekday]})正常收運,時間落在 ${entry.arrive}〜${entry.depart} 之間,建議提早 5 分鐘到定點等候。`,
-    ];
+    const passThrough = isPassThrough(entry, point.collection_type);
+    const variants = passThrough
+      ? [
+          `今天(週${WEEKDAY_NAMES[weekday]})垃圾車約 ${entry.arrive} 經過${place},此處為沿街收運、車輛不會停等,請提前在路邊等候。`,
+          `today-yes: 今天是週${WEEKDAY_NAMES[weekday]},${place}為沿街收運路段,垃圾車約 ${entry.arrive} 經過,請提早把垃圾拿到路邊。`,
+          `${place}今天(週${WEEKDAY_NAMES[weekday]})正常收運,垃圾車約 ${entry.arrive} 經過此路段(沿街收運、不停留),建議提早 5 分鐘到路邊等候。`,
+        ]
+      : [
+          `今天(週${WEEKDAY_NAMES[weekday]})垃圾車會來${place},預計 ${entry.arrive}〜${entry.depart} 停靠,請提前在時間內將垃圾拿到定點。`,
+          `today-yes: 今天是週${WEEKDAY_NAMES[weekday]},${place}有清運班次,清運車抵達時間約 ${entry.arrive} 至 ${entry.depart},別錯過。`,
+          `${place}今天(週${WEEKDAY_NAMES[weekday]})正常收運,時間落在 ${entry.arrive}〜${entry.depart} 之間,建議提早 5 分鐘到定點等候。`,
+        ];
     return pick(variants, seed).replace('today-yes: ', '');
   }
 
@@ -48,11 +64,22 @@ export function introSentence(point: CollectionPoint): string {
   const scheduledDays = [...new Set(point.schedule.flatMap((s) => s.weekday))].sort((a, b) => a - b);
   const daysText = weekdayListText(scheduledDays);
   const times = point.schedule[0];
-  const variants = [
-    `${point.address ?? point.point_name} 是${point.district}的定點垃圾清運點,固定於${daysText} ${times?.arrive}〜${times?.depart} 收運。`,
-    `位於${point.village ?? point.district}的「${point.point_name}」清運點,垃圾車在${daysText}會於 ${times?.arrive} 到 ${times?.depart} 之間停靠。`,
-    `這是${point.district}${point.village ?? ''}的其中一個定點清運站,收運時間固定在${daysText},每次停靠約 ${times?.arrive}〜${times?.depart}。`,
-  ];
+  if (!times) {
+    return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
+  }
+  const passThrough = isPassThrough(times, point.collection_type);
+  const timeText = scheduleTimeText(times, point.collection_type);
+  const variants = passThrough
+    ? [
+        `${point.address ?? point.point_name} 是${point.district}的沿街收運路段,垃圾車固定於${daysText} ${timeText},行進中不停等,請提前在路邊準備好垃圾。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車在${daysText}會${timeText},此處為沿街收運、車輛不會停留。`,
+        `這是${point.district}${point.village ?? ''}的其中一個沿街收運路段,收運日固定在${daysText},垃圾車${timeText},請提早在路邊等候。`,
+      ]
+    : [
+        `${point.address ?? point.point_name} 是${point.district}的定點垃圾清運點,固定於${daysText} ${timeText} 收運。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」清運點,垃圾車在${daysText}會於 ${timeText} 之間停靠。`,
+        `這是${point.district}${point.village ?? ''}的其中一個定點清運站,收運時間固定在${daysText},每次停靠約 ${timeText}。`,
+      ];
   return pick(variants, seed);
 }
 
@@ -75,8 +102,8 @@ export function buildFaq(point: CollectionPoint, districtName: string): FaqItem[
   ];
 
   const bulkyAnswers = [
-    `大型垃圾(家具、家電等)需另外向高雄市環保局預約清運,不可直接放置在本清運點等候,以免影響巷道通行與被開罰。`,
-    `大型廢棄物不在定點清運範圍內,需先上高雄市環保局網站或電洽預約,由清潔隊安排另外時段到府收運。`,
+    `大型垃圾(家具、家電等)需另外向${point.city}環保局預約清運,不可直接放置在本清運點等候,以免影響巷道通行與被開罰。`,
+    `大型廢棄物不在定點清運範圍內,需先上${point.city}環保局網站或電洽預約,由清潔隊安排另外時段到府收運。`,
   ];
 
   const kitchenAnswers = [
