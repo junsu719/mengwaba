@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SearchBox from '../../components/SearchBox.astro';
-import { CITIES, TOTAL_TAIWAN_COUNTY_COUNT, loadCityPoints, groupByDistrict } from '../../lib/data';
+import { CITIES, TOTAL_TAIWAN_COUNTY_COUNT, groupByDistrict } from '../../lib/data';
+import { loadCityPoints } from '../../lib/data-static';
 import { breadcrumbJsonLd } from '../../lib/seo';
 
 const cityStats = CITIES.map((city) => {

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { CITIES, loadCityPoints, type CityInfo } from '../../../lib/data';
+import { CITIES, type CityInfo } from '../../../lib/data';
+import { loadCityPoints } from '../../../lib/data-static';
 import { buildSearchIndex } from '../../../lib/search';
 
 export function getStaticPaths() {

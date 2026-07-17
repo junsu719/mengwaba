@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SearchBox from '../../../components/SearchBox.astro';
-import { CITIES, loadCityPoints, groupByDistrict, type CityInfo } from '../../../lib/data';
+import { CITIES, groupByDistrict, type CityInfo } from '../../../lib/data';
+import { loadCityPoints } from '../../../lib/data-static';
 import { breadcrumbJsonLd } from '../../../lib/seo';
 
 export function getStaticPaths() {

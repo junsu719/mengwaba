@@ -1,21 +1,34 @@
 ---
+export const prerender = false;
+
+import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { CITIES, loadCityPoints, groupByDistrict, parsePointId, type CityInfo, type DistrictGroup } from '../../../../lib/data';
+import { CITIES, parsePointId, getCity } from '../../../../lib/data';
+import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
 import { districtNoteSentence, scheduleTimeText, weekdayListText } from '../../../../lib/content';
 
-export function getStaticPaths() {
-  return CITIES.flatMap((city) => {
-    const points = loadCityPoints(city.file);
-    const districts = groupByDistrict(points);
-    return districts.map((g) => ({
-      params: { city: city.slug, district: g.districtSlug },
-      props: { group: g, city },
-    }));
-  });
+// Phase 4.5 Step 4:行政區頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3),
+// 縣市索引頁(/trash/{city}/)仍靜態預生成,此頁的 city/district 組合不再於 build 時窮舉,
+// 改在 request 時驗證。
+
+const { city: citySlug, district: districtSlug } = Astro.params;
+
+if (!CITIES.some((c) => c.slug === citySlug)) {
+  return new Response('Not Found', { status: 404 });
+}
+const city = getCity(citySlug!);
+
+const db = (env as unknown as { POINTS_DB?: unknown }).POINTS_DB;
+if (!db) {
+  return new Response('D1 binding 未設定(POINTS_DB)', { status: 500 });
 }
 
-const { group, city } = Astro.props as { group: DistrictGroup; city: CityInfo };
+const points = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
+const group = toDistrictGroup(points, districtSlug!);
+if (!group) {
+  return new Response('Not Found', { status: 404 });
+}
 
 const sortedByTime = [...group.points].sort((a, b) => {
   const at = a.schedule[0]?.arrive ?? '99:99';

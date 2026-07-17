@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { CITIES, loadCityPoints } from '../../lib/data';
+import { CITIES } from '../../lib/data';
+import { loadCityPoints } from '../../lib/data-static';
 import { buildSearchIndex } from '../../lib/search';
 
 export const GET: APIRoute = () => {

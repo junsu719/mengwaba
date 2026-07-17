@@ -1,38 +1,47 @@
 ---
+export const prerender = false;
+
+import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import {
   CITIES,
-  loadCityPoints,
-  groupByDistrict,
   parsePointId,
   nearestPoints,
   todayScheduleEntry,
   todayWeekdayTaipei,
   WEEKDAY_NAMES,
-  type CityInfo,
-  type CollectionPoint,
-  type DistrictGroup,
+  getCity,
 } from '../../../../lib/data';
+import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
 import { todaySummarySentence, introSentence, buildFaq, isPassThrough, scheduleTimeText } from '../../../../lib/content';
 
-export function getStaticPaths() {
-  return CITIES.flatMap((city) => {
-    const points = loadCityPoints(city.file);
-    const districts = groupByDistrict(points);
-    return districts.flatMap((g: DistrictGroup) =>
-      g.points.map((p: CollectionPoint) => {
-        const { pointSlug } = parsePointId(p.point_id);
-        return {
-          params: { city: city.slug, district: g.districtSlug, point: pointSlug },
-          props: { point: p, group: g, city },
-        };
-      })
-    );
-  });
+// Phase 4.5 Step 4:清運點頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3)。
+// 與行政區頁共用同一支「查整個行政區」的 D1 查詢——本頁的「鄰近清運點」需要同區其他點,
+// 天生沒有「只查單一點」的路徑,見 d1/schema.sql 註解。
+
+const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
+
+if (!CITIES.some((c) => c.slug === citySlug)) {
+  return new Response('Not Found', { status: 404 });
+}
+const city = getCity(citySlug!);
+
+const db = (env as unknown as { POINTS_DB?: unknown }).POINTS_DB;
+if (!db) {
+  return new Response('D1 binding 未設定(POINTS_DB)', { status: 500 });
 }
 
-const { point, group, city } = Astro.props as { point: CollectionPoint; group: DistrictGroup; city: CityInfo };
+const districtPoints = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
+const group = toDistrictGroup(districtPoints, districtSlug!);
+if (!group) {
+  return new Response('Not Found', { status: 404 });
+}
+
+const point = group.points.find((p) => parsePointId(p.point_id).pointSlug === pointSlug);
+if (!point) {
+  return new Response('Not Found', { status: 404 });
+}
 
 const nearby = nearestPoints(point, group.points, 5);
 const faq = buildFaq(point, group.district);

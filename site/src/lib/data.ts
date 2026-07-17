@@ -1,10 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
-// data/normalized/ 是 pipeline 的輸出,site/ 與 pipeline/ 為同一 repo 下的兄弟目錄。
-// 用 process.cwd() 而非 import.meta.url 解析,因為 build 後檔案會被 bundler 搬到 dist/ 內部,
-// 原始檔案的相對路徑在 bundle 後不成立;astro build/dev 固定從 site/ 目錄執行,cwd 穩定可靠。
-const DATA_ROOT = path.resolve(process.cwd(), '../data/normalized');
+// 讀取 data/normalized/*.json 的實作在 ./data-static.ts(僅供仍為靜態預生成的頁面/端點使用,
+// 見該檔案開頭註解:Phase 4.5 Step 4 改用 build-time bundle 讀取,原本這裡的 fs.readFileSync
+// 版本在 @astrojs/cloudflare adapter 的 prerender 沙箱環境中無法存取任何 host 檔案系統路徑,
+// 含絕對路徑,已實測確認並非僅是 process.cwd() 問題)。此檔案(data.ts)保持純邏輯、不依賴檔案系統,
+// 讓 on-demand D1 頁面(行政區頁/清運點頁)引入時不會連帶把整個縣市 JSON 打包進部署用的 Worker。
 
 export interface ScheduleEntry {
   weekday: number[];
@@ -78,19 +76,6 @@ export function getCity(slug: string): CityInfo {
   const city = CITIES.find((c) => c.slug === slug);
   if (!city) throw new Error(`未知縣市 slug: ${slug}`);
   return city;
-}
-
-const _cache = new Map<string, CollectionPoint[]>();
-
-/** 讀取指定縣市的正規化資料,僅保留 L1 必填欄位(district/point_name/schedule)齊全、可發佈成頁面的清運點。 */
-export function loadCityPoints(citySlugFile: string): CollectionPoint[] {
-  if (_cache.has(citySlugFile)) return _cache.get(citySlugFile)!;
-  const filePath = path.join(DATA_ROOT, `${citySlugFile}.json`);
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  const all: CollectionPoint[] = JSON.parse(raw);
-  const publishable = all.filter((p) => p.district && p.point_name && p.schedule.length > 0);
-  _cache.set(citySlugFile, publishable);
-  return publishable;
 }
 
 /** point_id 格式為 {縣市代碼}-{行政區SLUG}-{序號},由 pipeline/normalize.py 產生。直接解析避免兩邊維護重複對照表。 */
