@@ -1,0 +1,132 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: object[];
+}
+
+const { title, description, jsonLd = [] } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={Astro.url.href} />
+    <meta name="theme-color" content="#1b7a43" />
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">悶蛙吧 MengWaBa</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <slot name="footer">
+        <p>資料來源:各縣市政府資料開放平台,依「政府資料開放授權條款第1版」提供,各頁面詳細來源請見頁面內標註。</p>
+        <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+      </slot>
+    </footer>
+    <style>
+      :root {
+        color-scheme: light;
+        --fg: #1a1a1a;
+        --bg: #ffffff;
+        --accent: #1b7a43;
+        --muted: #5b5b5b;
+        --border: #e2e2e2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC', sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.7;
+      }
+      .site-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--accent);
+        text-decoration: none;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 1rem 1rem 3rem;
+      }
+      .site-footer {
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 1rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      a {
+        color: var(--accent);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      ul.plain {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      ul.plain li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.75rem;
+        padding: 0;
+        list-style: none;
+      }
+      .card {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem;
+        text-decoration: none;
+        color: var(--fg);
+      }
+      .today-answer {
+        background: #f0f7f2;
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 1.05rem;
+      }
+      details {
+        border-bottom: 1px solid var(--border);
+        padding: 0.5rem 0;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+    </style>
+  </body>
+</html>

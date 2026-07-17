@@ -1,0 +1,26 @@
+---
+export const prerender = false;
+
+// Option A(打包):清運點頁 on-demand render,資料透過 static import 隨 Worker bundle 打包。
+// URL 與正式站完全相同:/trash/{city}/{district}/{point}/ —— 這是紅線驗證頁。
+import PointPage from '../../../../components/PointPage.astro';
+import { getGroupsCachedBundled } from '../../../../lib/data-bundled';
+import { parsePointId } from '../../../../lib/logic';
+import { getCity } from '../../../../lib/types';
+
+const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
+
+if (citySlug !== 'kaohsiung') {
+  return new Response('Not Found (PoC 只支援 kaohsiung)', { status: 404 });
+}
+
+const city = getCity(citySlug!);
+const groups = getGroupsCachedBundled();
+const group = groups.find((g) => g.districtSlug === districtSlug);
+if (!group) return new Response('District not found', { status: 404 });
+
+const point = group.points.find((p) => parsePointId(p.point_id).pointSlug === pointSlug);
+if (!point) return new Response('Point not found', { status: 404 });
+---
+
+<PointPage point={point} group={group} city={city} dataMode="bundled" />

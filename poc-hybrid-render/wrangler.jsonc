@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "phase4-5-poc-hybrid-render",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // 本 PoC 僅在本機用 `--local` 模式驗證,從未對真實 Cloudflare 帳號建立/操作過
+  // 任何 KV namespace 或 D1 database。以下 id 皆為佔位字串,只有本機
+  // wrangler local 模式讀取,絕不會發出任何對 Cloudflare API 的請求。
+  // 若要接上真實資源,需 Jun 另外同意後才建立正式 namespace/database id。
+  "kv_namespaces": [
+    {
+      "binding": "POINTS_KV",
+      "id": "local-poc-placeholder-kv-id"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "POINTS_DB",
+      "database_name": "phase4-5-poc-local-only",
+      "database_id": "local-poc-placeholder-d1-id"
+    }
+  ]
+}

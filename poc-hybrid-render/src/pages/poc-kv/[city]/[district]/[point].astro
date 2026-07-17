@@ -1,0 +1,42 @@
+---
+export const prerender = false;
+
+// Option B(KV):同一頁面模板,資料改由 Cloudflare KV 於 request 時查詢。
+// 路徑刻意與正式 /trash/ 分開(/poc-kv/...),因為這條路徑僅供 Phase 1 benchmark 用,
+// 不是正式對外 URL,不影響「URL 結構不變」的紅線。
+import { env } from 'cloudflare:workers';
+import PointPage from '../../../../components/PointPage.astro';
+import { loadDistrictFromKV } from '../../../../lib/data-kv';
+import { groupByDistrict, parsePointId } from '../../../../lib/logic';
+import { getCity } from '../../../../lib/types';
+import type { CollectionPoint } from '../../../../lib/types';
+
+const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
+
+if (citySlug !== 'kaohsiung') {
+  return new Response('Not Found (PoC 只支援 kaohsiung)', { status: 404 });
+}
+
+const kv = (env as any).POINTS_KV;
+if (!kv) {
+  return new Response('POINTS_KV binding 未設定(需 wrangler/platformProxy 提供本機模擬 KV)', { status: 500 });
+}
+
+const city = getCity(citySlug!);
+
+const t0 = Date.now();
+const districtPoints: CollectionPoint[] = await loadDistrictFromKV(kv, citySlug!, districtSlug!);
+const tDistrict = Date.now() - t0;
+
+if (districtPoints.length === 0) return new Response('District not found', { status: 404 });
+
+const point = districtPoints.find((p) => parsePointId(p.point_id).pointSlug === pointSlug);
+if (!point) return new Response('Point not found', { status: 404 });
+
+const group = groupByDistrict(districtPoints)[0];
+group.points = districtPoints;
+
+console.log(`[poc-kv] district KV read took ${tDistrict}ms, points=${districtPoints.length}`);
+---
+
+<PointPage point={point} group={group} city={city} dataMode={`kv (district read ${tDistrict}ms, ${districtPoints.length} pts)`} />

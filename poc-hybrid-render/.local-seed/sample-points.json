@@ -1,0 +1,27 @@
+[
+  {
+    "point_id": "KHH-NANZI-00001",
+    "district_slug": "nanzi",
+    "point_slug": "00001"
+  },
+  {
+    "point_id": "KHH-NANZI-00002",
+    "district_slug": "nanzi",
+    "point_slug": "00002"
+  },
+  {
+    "point_id": "KHH-NANZI-00003",
+    "district_slug": "nanzi",
+    "point_slug": "00003"
+  },
+  {
+    "point_id": "KHH-FENGSHAN-09493",
+    "district_slug": "fengshan",
+    "point_slug": "09493"
+  },
+  {
+    "point_id": "KHH-FENGSHAN-09494",
+    "district_slug": "fengshan",
+    "point_slug": "09494"
+  }
+]

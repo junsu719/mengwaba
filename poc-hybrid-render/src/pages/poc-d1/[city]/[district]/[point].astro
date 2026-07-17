@@ -1,0 +1,39 @@
+---
+export const prerender = false;
+
+// Option C(D1):同一頁面模板,資料改由 Cloudflare D1 於 request 時 SQL 查詢。
+import { env } from 'cloudflare:workers';
+import PointPage from '../../../../components/PointPage.astro';
+import { loadDistrictFromD1 } from '../../../../lib/data-d1';
+import { groupByDistrict, parsePointId } from '../../../../lib/logic';
+import { getCity } from '../../../../lib/types';
+
+const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
+
+if (citySlug !== 'kaohsiung') {
+  return new Response('Not Found (PoC 只支援 kaohsiung)', { status: 404 });
+}
+
+const db = (env as any).POINTS_DB;
+if (!db) {
+  return new Response('POINTS_DB binding 未設定(需 wrangler/platformProxy 提供本機模擬 D1)', { status: 500 });
+}
+
+const city = getCity(citySlug!);
+
+const t0 = Date.now();
+const districtPoints = await loadDistrictFromD1(db, citySlug!, districtSlug!);
+const tDistrict = Date.now() - t0;
+
+if (districtPoints.length === 0) return new Response('District not found', { status: 404 });
+
+const point = districtPoints.find((p) => parsePointId(p.point_id).pointSlug === pointSlug);
+if (!point) return new Response('Point not found', { status: 404 });
+
+const group = groupByDistrict(districtPoints)[0];
+group.points = districtPoints;
+
+console.log(`[poc-d1] district D1 query took ${tDistrict}ms, points=${districtPoints.length}`);
+---
+
+<PointPage point={point} group={group} city={city} dataMode={`d1 (district query ${tDistrict}ms, ${districtPoints.length} pts)`} />
