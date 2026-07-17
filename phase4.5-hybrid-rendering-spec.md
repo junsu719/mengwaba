@@ -20,38 +20,41 @@
 3. **Lighthouse 維持**:改造後代表頁面四項仍需接近 100(on-demand 渲染的 TTFB 會略增,但可接受;不得因架構改動引入 render-blocking 資源)。
 4. **dist 檔案數大幅下降**:目標將部署檔案數從數萬降到數十(僅少量靜態資源 + Functions),徹底脫離檔案數天花板。
 
-## 3. 技術方向(需 Phase 1 驗證後定案)
+## 3. 技術方向與資料存取(2026-07-17 拍板,Phase 1 PoC 驗證後定案)
 
-主要候選:**Astro 的 on-demand rendering(SSR 模式)+ Cloudflare Pages Functions/Workers adapter**。
+技術:**Astro 的 on-demand rendering(SSR 模式)+ Cloudflare Pages Functions/Workers adapter**,搭配 **hybrid 模式**。
 
-- 使用 `@astrojs/cloudflare` adapter,將原本 `output: 'static'` 改為 `output: 'server'` 或 `output: 'hybrid'`。
-- **hybrid 模式**(建議先評估):低量、變動少的頁面(首頁、品牌頁、縣市索引頁)維持靜態預生成;高量的清運點頁面(數萬頁那批)改為 on-demand server render。這樣兼顧「首頁快」與「清運點頁不佔檔案數」。
-- 資料存取:清運點資料如何在 render 時被讀取需評估——
-  - 選項 A:資料 JSON 隨 Functions 打包(資料量不大時可行,注意 Workers 有大小限制)。
-  - 選項 B:資料放 Cloudflare KV 或 D1,render 時查詢(資料量大、或要支援每日更新時較合適)。
-  - 選項 C:資料放 R2,render 時讀取。
-  - **Phase 1 需 benchmark 三者的冷啟動延遲、實作複雜度、與每日 pipeline 更新資料的難易度,產出比較後由 Jun 定案。**
+- 使用 `@astrojs/cloudflare` adapter,將原本 `output: 'static'` 改為 `output: 'hybrid'`。
+- **hybrid 渲染邊界**:
+  - 靜態預生成:品牌首頁 `/`、工具首頁 `/trash/`、縣市索引頁 `/trash/{city}/`。
+  - on-demand D1 查詢:行政區頁 `/trash/{city}/{district}/`、清運點頁 `/trash/{city}/{district}/{point}/`。
+  - 理由:低量、變動少的入口頁維持靜態,換取最快首屏與最簡單的 SEO 資產穩定性;高量的行政區/清運點頁(數萬頁那批)改 on-demand,徹底脫離 Cloudflare Pages 檔案數天花板。
+- **資料存取定案為 Cloudflare D1**(Phase 1 PoC 已完成 D1/KV/打包三方案比較與比較報告,見對應 commit):
+  - KV 免費層每日僅 1,000 次寫入,單一縣市的一次批次更新即超過此上限,會逼迫升級付費方案。
+  - D1 免費層每日 10 萬列讀寫額度、批次匯入速度約為 KV 的 10 倍,適合本專案「季度/半年批次更新」的資料型態(見第 4 節)。
+  - 打包進 Functions(原選項 A)排除:會把資料更新與部署耦合在一起(改資料就要重新 build+deploy,無法解耦),且以目前每縣市資料量估算,4-5 個縣市就會逼近 Cloudflare Workers 打包大小上限。
+  - R2(原選項 C)未進一步採用:D1 已能同時滿足「render 時查詢」與「批次匯入更新」兩項需求,不需要再引入額外的物件儲存層。
 
-## 4. 對每日 pipeline 的影響(重要)
+## 4. 對資料更新流程的影響(2026-07-17 更新:季度手動,非每日自動)
 
-現況每日流程:fetch → normalize → validate → **astro build(全量靜態)** → deploy。
+垃圾車清運路線變動頻率極低(依 Phase 1-4 實際查證經驗,路線調整以季度、甚至半年為單位),因此資料更新機制**不採用每日自動排程**,改為:
 
-改造後,`astro build` 不再生成數萬 HTML,但資料更新機制要跟著改:
-
-- 若資料走 KV/D1/R2:每日 pipeline 的最後一步從「build 全站」改為「將更新後的 normalized JSON 推送到 KV/D1/R2」,頁面於下次被請求時即反映新資料。
-- 需確認:資料更新後,Cloudflare 邊緣快取如何失效(避免使用者看到舊資料),以及快取策略如何兼顧「SEO 要穩定 URL」與「資料每日更新」。
-- validate 失敗絕不推送資料(鐵律不變),保留前一版資料。
+- 流程:fetch → normalize → validate → **手動執行推送腳本,將 normalized JSON 寫入 D1** → 頁面於下次被請求時即反映新資料(不需重新 build/deploy 整站)。
+- 執行頻率:季度手動觸發(最多一季一次,甚至半年一次),PC WSL2、Mac mini 任一台機器手動跑一次即可,**不需要 Mac mini 24/7 開機**,推送完成即可關機。Mac mini 的 24/7 特性保留給未來「機器即產品」型專案,與本專案脫鉤。
+- 若悶蛙吧未來出現需要中/高頻更新的題材,優先評估 **Cloudflare Cron Triggers**(抓取跑在 Workers、寫入 D1,不需本機開機),而非比照本專案設 Mac mini launchd 排程;但 pSEO 甜蜜點本質是低頻長尾資料,預期極少遇到此情境。
+- 需確認:資料更新後,Cloudflare 邊緣快取如何失效(避免使用者看到舊資料),以及快取策略如何兼顧「SEO 要穩定 URL」與「資料低頻更新」——因更新頻率低,可採較保守的快取策略(如較長 TTL + 手動 purge),不需為每日更新優化延遲。
+- **validate 失敗絕不推送 D1**(鐵律不變),保留前一版資料。且正因更新頻率低,每次推送前更要靠 L1/L2/L3 驗證擋髒資料,不因低頻而放鬆把關。
 
 ## 5. 建構階段
 
-- **Phase 1(技術驗證,不改主站)**:
+- **Phase 1(技術驗證,不改主站,已完成,2026-07-17 定案見 DECISIONS.md)**:
   - 建一個最小 PoC:用 `@astrojs/cloudflare` adapter,把「單一縣市的清運點頁」改成 on-demand render,實測:
     - 頁面 render 出的 HTML 是否含完整 SEO 內容(用 curl 檢查,非瀏覽器)
     - 冷啟動 / 熱請求的 TTFB
     - 資料存取三選項(打包 / KV / D1)的比較
-  - 產出比較報告,Jun 定案資料存取方式與 hybrid 邊界後才進 Phase 2。
+  - 產出比較報告,Jun 定案資料存取方式與 hybrid 邊界:**D1 + 第 3 節所述 hybrid 邊界**,才進 Phase 2。
 - **Phase 2(改造頁面層)**:依定案方案,將清運點頁改為 on-demand;首頁/縣市索引等維持靜態(hybrid)。本地驗證 SEO 內容、URL、Lighthouse。
-- **Phase 3(改造資料層與 pipeline)**:資料改推送到 KV/D1/R2;每日 pipeline 最後一步改為資料推送而非全量 build;處理快取失效。
+- **Phase 3(改造資料層與 pipeline)**:資料改推送到 D1;pipeline 末端改為**手動執行的資料推送腳本**(季度執行,非每日自動)——不再需要 launchd 排程、看門狗、斷網重試(原為 Mac mini 24/7 自動化設計,隨改為季度手動而不再需要,詳見 DECISIONS.md 2026-07-17);處理快取失效。
 - **Phase 4(部署驗證)**:部署到 Cloudflare,確認 dist 檔案數已降到數十、台中頁面終於能上線、線上 SEO 內容正確(curl 驗證)、Lighthouse 達標。
 - **Phase 5(擴充驗證)**:此時再加第三個縣市(台南),驗證新縣市上線不再受檔案數限制、流程順暢。這是驗收整個改造成功的最終試金石。
 
@@ -62,7 +65,7 @@
 - [ ] 部署檔案數 < 100(脫離天花板)
 - [ ] 台中頁面成功上線
 - [ ] 代表頁 Lighthouse 四項接近 100
-- [ ] 每日 pipeline 能更新資料且線上頁面正確反映、validate 失敗不推送
+- [ ] 季度手動更新流程能將資料正確推送至 D1、線上頁面正確反映、validate 失敗不推送
 
 ## 7. 風險與對策
 
@@ -71,7 +74,7 @@
 | on-demand render 導致 SEO 內容消失 | Phase 1 就用 curl(非瀏覽器)驗證 HTML 含完整內容,這是紅線,不過不繼續 |
 | 冷啟動延遲影響使用者/爬蟲 | hybrid 模式讓高流量入口頁靜態化;清運點頁雖 on-demand 但單頁輕量,render 快 |
 | Workers 免費額度(10 萬請求/日)不足 | 養站期流量極低,遠不及額度;超過時已是高流量的幸福煩惱,屆時評估付費 |
-| 資料每日更新與邊緣快取衝突 | Phase 3 專門處理快取失效策略;可用 cache tag 或短 TTL |
+| 資料更新與邊緣快取衝突(季度低頻,風險低於原先每日設計) | Phase 3 專門處理快取失效策略;因低頻更新可採較保守策略,如較長 TTL + 手動 purge |
 | 改造中弄壞高雄既有線上版 | 全程在分支或 PoC 進行,主線上版本改造完整驗證前不動 |
 
 ## 8. 完成後的長期收益

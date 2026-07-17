@@ -4,12 +4,21 @@
 
 可在 **Mac mini M4**(`~/projects/trash-pseo`)或 **PC WSL2**(`~/projects/mengwaba`)開發,程式碼以 GitHub(`junsu719/mengwaba`)同步。每次 session 開始先 `git pull` 確保為最新版,結束前 `git push`。
 
-## 執行環境(部署與排程分開對待,2026-07-16 調整)
+## 執行環境(2026-07-17 更新:排程需求隨 Phase 4.5 D1 架構定案取消)
 
 - **手動部署**(`wrangler pages deploy`):PC WSL2、Mac mini M4 皆可執行。部署前務必先 `git pull` 確保為最新版,避免用舊碼覆蓋新碼。Cloudflare Pages 部署結果與來源機器無關,不需限制單一機器。
-- **自動排程**(pipeline 每日 launchd):**唯一限 Mac mini M4**。PC 不得設定任何自動排程,避免雙機自動化同時跑 pipeline,造成資料互相覆蓋或 git 衝突。
+- **資料更新**(fetch → normalize → validate → 推送 D1):改為**季度手動執行**(最多一季一次,甚至半年一次),PC WSL2、Mac mini M4 皆可執行,執行前同樣先 `git pull`。原本「排程僅限 Mac mini M4」的限制隨每日自動排程一併取消——手動、低頻、有人在場的操作不存在雙機自動化互相覆蓋的風險。
+- **不再需要 Mac mini 24/7 開機**:D1 架構讓網站獨立跑在 Cloudflare 邊緣渲染,機器僅在季度推資料時短暫使用,推完即可關機。Mac mini 的 24/7 特性保留給未來「機器即產品」型專案(如本地 AI 推理),與本專案脫鉤。
 
-每次 session 開始先確認 `pwd` 與當前機器,依機器角色行事。
+每次 session 開始先確認 `pwd` 與當前機器。
+
+## 資料更新與機器角色(Phase 4.5,2026-07-17 拍板)
+
+垃圾車清運路線變動頻率極低,資料更新機制從最初設想的「Mac mini 24 小時每日自動排程」改為**季度手動執行**;資料存取改採 **Cloudflare D1**(取代原本打包進 Functions 的做法)。完整技術方案見 `phase4.5-hybrid-rendering-spec.md` 第 3、4 節,完整拍板理由見 DECISIONS.md 2026-07-17 條目。
+
+- 若悶蛙吧未來出現需要中/高頻更新的題材,優先評估 Cloudflare Cron Triggers(抓取跑在 Workers、寫入 D1、不需本機開機),而非比照本專案設 launchd 排程;但 pSEO 題材本質是低頻長尾資料,預期極少遇到此情境。
+- L1/L2/L3 驗證鐵律不變(驗證失敗絕不推送 D1);更新頻率越低越要靠驗證擋髒資料,不因低頻而放鬆把關。
+- 原為 24/7 自動化設計的項目(launchd 每日排程、看門狗、斷網重試)已不再需要,改為 Phase 4.5 Phase 3 的手動更新腳本取代。
 
 ## 站群品牌(2026-07-13 解凍拍板)
 
@@ -35,7 +44,7 @@
 ### 放棄條件(兩階段)
 
 1. **第 8-12 週檢查點(不放棄,觸發診斷)**:若 GSC 已索引頁面 < 提交 sitemap 頁數的 50%,或近 4 週總曝光次數 < 5,000 次/月 → 判定為技術面或內容面問題,依序檢查:GSC 涵蓋範圍報告是否有錯誤、pSEO 頁面是否被判定過度相似(需加強內容差異化)、sitemap 是否正確送達與更新。
-2. **第 6 個月硬性放棄點**:月自然流量 < 500 sessions,且近 2 個月呈持平或下滑(無成長趨勢),或 AdSense 申請被拒且反覆調整後仍無法通過 → 停止每日 launchd 排程、轉為靜態封存(頁面保留在線但不再更新資料、不再投入開發時間),記錄於本專案 DECISIONS.md 作結案。
+2. **第 6 個月硬性放棄點**:月自然流量 < 500 sessions,且近 2 個月呈持平或下滑(無成長趨勢),或 AdSense 申請被拒且反覆調整後仍無法通過 → 停止季度資料更新排程、轉為靜態封存(頁面保留在線但不再更新資料、不再投入開發時間),記錄於本專案 DECISIONS.md 作結案。
 
 > 任何實作決策與本目標衝突時,以目標為準。放棄條件是硬性的,到期必須依上表執行判斷,不得因「還想再試試」而無限延後。
 
@@ -44,10 +53,11 @@
 | 層 | 技術 | 說明 |
 |---|---|---|
 | 資料層 | Python 3.12(Homebrew,`.venv`)+ httpx + pandas | 抓取與正規化清運點資料 |
-| 頁面層 | Astro(靜態輸出) | getStaticPaths 批量生成頁面 |
+| 頁面層 | Astro(hybrid:靜態預生成 + on-demand SSR) | Phase 4.5 改造中,詳見 `phase4.5-hybrid-rendering-spec.md` |
+| 資料存取 | Cloudflare D1 | on-demand 頁面查詢用,取代原本每日全量 build 的做法(2026-07-17 拍板,見 DECISIONS.md) |
 | 部署 | Cloudflare Pages(wrangler CLI) | 免費、全球 CDN |
-| 排程 | macOS launchd | 每日 06:00 執行完整 pipeline |
-| 通知 | Telegram Bot(`scripts/notify.py`) | 成功/失敗皆通知 |
+| 資料更新頻率 | 季度手動執行(非每日自動) | 清運路線變動頻率極低,不再需要 launchd 排程,詳見 DECISIONS.md 2026-07-17 |
+| 通知 | Telegram Bot(`scripts/notify.py`,選配) | 手動更新流程可選擇性使用,非每日排程下的必要安全網 |
 | 分析 | Cloudflare Web Analytics + Google Search Console | 免費 |
 
 完整技術規格、資料來源、Schema、頁面規格見 `trash-pseo-spec.md`(建構期間視為唯一真實來源,不重複貼於此)。
@@ -64,7 +74,7 @@
 - [~] **Phase 3b**:Cloudflare Pages 已送出 `mengwaba.com` 網域綁定請求,但卡在 DNS 端——**待 Jun 手動處理**:登入 Cloudflare Dashboard → mengwaba.com 這個 zone → DNS → 新增 CNAME 記錄(名稱 `@`、目標 `trash-pseo.pages.dev`、Proxied),原因是目前 wrangler 的 OAuth token 只有 zone 讀取權限,無法用程式自動建立 DNS 記錄。CNAME 建好後 Cloudflare 會自動驗證簽發憑證,才算正式開始養站計時
 - [ ] GSC 提交:待 Jun 確認網域正式綁定上線後再進行(Jun 指示)
 - [~] **Phase 4**(擴充至六都 → 全台 22 縣市):**臺中市已完成**——資料層(fetch/normalize/validate 重構為多縣市可傳參版本)、Astro 頁面生成(19,973 頁,沿街收運/資源回收時刻/麵包屑皆處理)、`CITIES` 註冊表重構(`site/src/lib/data.ts`,新增縣市只需註冊一筆)三者皆完成並本地驗證,待部署上線(2026-07-16)。**下一步**:臺南市等其餘五都,依序擴充後再全台 22 縣市
-- [ ] **Phase 5**:daily.sh + launchd plist、log rotation、斷網重試
+- [ ] **Phase 5**:季度手動更新腳本 + D1 推送(不再需要 launchd plist、看門狗、斷網重試,2026-07-17 拍板取消 24/7 自動化前提,詳見 DECISIONS.md)
 - [ ] **Phase 6**:提交 GSC + sitemap、部署 Cloudflare Web Analytics
 
 每個 Phase 完成後停下等待 Jun 驗收,不跳著做。
@@ -75,7 +85,7 @@
 2. 絕不填假資料、絕不用 LLM 憑空生成清運時間
 3. 抓取一律節流(每請求間隔 ≥ 2 秒),User-Agent 標明專案名稱與聯絡方式
 4. 每頁必有:獨特 title/description、JSON-LD、資料來源標註
-5. 任何腳本失敗必發 Telegram 通知
+5. 腳本失敗建議發 Telegram 通知(2026-07-17 起降級為選配,非強制鐵律——原為每日無人值守排程設計的安全網,改為季度手動執行後,執行者當下即可看到結果,不再是必要條件)
 6. 座標落在台灣範圍外(§7 L2 判定,21.5-25.5N、119.5-122.5E 之外)的清運點,資料層維持原值不竄改,但頁面層不得輸出該點的 geo 座標相關 JSON-LD(如 GeoCoordinates),只顯示地址文字,避免錯誤地理標記傷害 SEO(2026-07-09 Jun 拍板,見 DECISIONS.md)
 
 ## MVP 範圍(Phase 0-3)
@@ -87,7 +97,7 @@
 
 - 座標補全(geocode.py)為 Phase 2 可選項,非必要
 - 六都/全台擴充在 Phase 4 才處理
-- launchd 自動排程、斷網重試在 Phase 5 才處理
+- 季度手動更新腳本 + D1 推送在 Phase 4.5 Phase 3 才處理(2026-07-17 拍板取消原本 Phase 5 的 launchd 自動排程、斷網重試,不再適用 24/7 自動化前提)
 - GSC/sitemap 提交、Web Analytics 在 Phase 6 才處理
 - 在地生活服務聯盟導購(第二階段變現)完全不在本次範圍
 
