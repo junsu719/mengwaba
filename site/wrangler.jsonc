@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "trash-pseo",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // D1 binding 名稱沿用 Phase 4.5 Phase 1 PoC 已驗證過的 POINTS_DB(見 poc-hybrid-render/wrangler.jsonc、
+  // poc-hybrid-render/src/lib/data-d1.ts),Phase 2 on-demand 頁面沿用同一名稱以維持程式碼一致。
+  // database_id 為 2026-07-17 Jun 手動執行 `wrangler d1 create mengwaba-trash-points` 建立的正式資料庫,
+  // 本檔案僅宣告 binding,Step 3 匯入僅用 --local 模式驗證,尚未對此遠端資料庫寫入任何資料。
+  "d1_databases": [
+    {
+      "binding": "POINTS_DB",
+      "database_name": "mengwaba-trash-points",
+      "database_id": "616d96c9-2926-4fc2-a47e-12d138b257a3"
+    }
+  ]
+}
