@@ -87,6 +87,8 @@
 4. 每頁必有:獨特 title/description、JSON-LD、資料來源標註
 5. 腳本失敗建議發 Telegram 通知(2026-07-17 起降級為選配,非強制鐵律——原為每日無人值守排程設計的安全網,改為季度手動執行後,執行者當下即可看到結果,不再是必要條件)
 6. 座標落在台灣範圍外(§7 L2 判定,21.5-25.5N、119.5-122.5E 之外)的清運點,資料層維持原值不竄改,但頁面層不得輸出該點的 geo 座標相關 JSON-LD(如 GeoCoordinates),只顯示地址文字,避免錯誤地理標記傷害 SEO(2026-07-09 Jun 拍板,見 DECISIONS.md)
+7. **任何影響 production(`mengwaba.com`)的部署動作,一律先向 Jun 說明並取得同意才執行**,不得在對話中途自行判斷「反正是既定計畫」就直接動手(2026-07-20 拍板,見 DECISIONS.md 2026-07-20 事故記錄)
+8. **架構有變動(換 adapter、換部署方式、換資料存取層等)首次影響 production 前,必須先部署到非正式環境(`*.pages.dev` preview / `*.workers.dev` 等)完成 curl 紅線驗證(HTML 內容、JSON-LD、狀態碼皆正確),確認無誤才切換正式網域**,不得把「新架構第一次上線」和「正式網域」同一步做掉(2026-07-20 拍板,起因見 DECISIONS.md 2026-07-20:D1 動態版第一次上線直接推 production,事後才發現 `@astrojs/cloudflare` v14 是 Workers-only adapter 與 Pages 保留的 `ASSETS` binding 硬衝突,導致正式網域一度回傳錯誤內容)
 
 ## MVP 範圍(Phase 0-3)
 

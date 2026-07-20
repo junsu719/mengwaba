@@ -22,7 +22,7 @@
 
 ## 3. 技術方向與資料存取(2026-07-17 拍板,Phase 1 PoC 驗證後定案)
 
-技術:**Astro 的 on-demand rendering(SSR 模式)+ Cloudflare Pages Functions/Workers adapter**,搭配 **hybrid 模式**。
+技術:**Astro 的 on-demand rendering(SSR 模式)+ `@astrojs/cloudflare` adapter**,搭配 **hybrid 模式**。**部署目標確認為 Cloudflare Workers,非 Cloudflare Pages**(2026-07-20 事故後確認,見第 5 節 Phase 4 與 DECISIONS.md 2026-07-20:adapter v14.1.3 為純 Workers 導向,build 產出格式與 Pages 保留的 `ASSETS` binding 硬衝突,無法部署至 Pages)。
 
 - 使用 `@astrojs/cloudflare` adapter,將原本 `output: 'static'` 改為 `output: 'hybrid'`。
 - **hybrid 渲染邊界**:
@@ -55,7 +55,13 @@
   - 產出比較報告,Jun 定案資料存取方式與 hybrid 邊界:**D1 + 第 3 節所述 hybrid 邊界**,才進 Phase 2。
 - **Phase 2(改造頁面層)**:依定案方案,將清運點頁改為 on-demand;首頁/縣市索引等維持靜態(hybrid)。本地驗證 SEO 內容、URL、Lighthouse。
 - **Phase 3(改造資料層與 pipeline)**:資料改推送到 D1;pipeline 末端改為**手動執行的資料推送腳本**(季度執行,非每日自動)——不再需要 launchd 排程、看門狗、斷網重試(原為 Mac mini 24/7 自動化設計,隨改為季度手動而不再需要,詳見 DECISIONS.md 2026-07-17);處理快取失效。
-- **Phase 4(部署驗證)**:部署到 Cloudflare,確認 dist 檔案數已降到數十、台中頁面終於能上線、線上 SEO 內容正確(curl 驗證)、Lighthouse 達標。
+- **Phase 4(部署驗證,2026-07-20 更新:改走 Workers 路徑,詳見 DECISIONS.md 2026-07-20 事故記錄)**:
+  - **部署路徑改為 Cloudflare Workers,而非 Cloudflare Pages**:`@astrojs/cloudflare` v14.1.3 已是純 Workers 導向 adapter(build 產出 `dist/server/entry.mjs` + `assets: {binding: "ASSETS", ...}` 屬 Cloudflare 新版「Workers with static assets」統一格式),`wrangler pages deploy` 無法部署此格式——實測確認 Pages 產品本身保留 `ASSETS` 這個 binding 名稱給自己的靜態檔案服務用,與 adapter 自訂的 `ASSETS` binding 直接衝突,為產品層級硬限制,非設定遺漏。既有 Pages 專案 `trash-pseo` 與其 `mengwaba.com` Custom Domain 綁定需要遷移到 Worker(`wrangler deploy` + Worker 的 Custom Domain 功能),此為需 Jun 明確同意的網域路由變更,不得自主執行。
+  - **兩段式上線流程(鐵律 7、8,2026-07-20 拍板)**:
+    1. 先部署到非正式環境(`*.workers.dev` 或等效 preview 網址),對其執行本節既定的 curl 紅線驗證(HTML 含完整時刻表/地址/FAQ/JSON-LD、狀態碼皆 200、靜態頁與 on-demand 頁皆正確),確認全數通過。
+    2. 通過後才將 Custom Domain(`mengwaba.com`)指向這個已驗證過的 Worker 版本,正式切換 production。
+    3. 兩步之間任一步有異常,停在該步驟回報 Jun,不得跳過驗證直接切正式網域(即為 2026-07-20 事故的直接教訓:D1 動態版第一次上線省略了這一步,直接部署到 `mengwaba.com`,導致正式網域一度回傳錯誤內容)。
+  - 確認 dist 檔案數已降到數十、台中頁面終於能上線、線上 SEO 內容正確(curl 驗證)、Lighthouse 達標。
 - **Phase 5(擴充驗證)**:此時再加第三個縣市(台南),驗證新縣市上線不再受檔案數限制、流程順暢。這是驗收整個改造成功的最終試金石。
 
 ## 6. 驗收紅線(任一不過即改造失敗)
