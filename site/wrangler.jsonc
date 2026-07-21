@@ -4,6 +4,16 @@
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // 2026-07-20 事故教訓:Cloudflare Pages 對未命中靜態檔案的請求預設會 SPA fallback 回
+  // index.html(當時導致所有行政區/清運點頁一律回傳品牌首頁 HTML、HTTP 200)。Workers 的
+  // static assets 沒有這個「自動判斷」,必須自己明講 not_found_handling,否則預設值也可能
+  // 走到同樣的 fallback 行為。這裡明確設為 "none":未命中靜態檔案的請求一律落到 Worker
+  // 本體(Astro SSR),由 Astro 自己的路由判斷回傳正確內容或真正的 404,不做任何 HTML 代換。
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "none"
+  },
+
   // D1 binding 名稱沿用 Phase 4.5 Phase 1 PoC 已驗證過的 POINTS_DB(見 poc-hybrid-render/wrangler.jsonc、
   // poc-hybrid-render/src/lib/data-d1.ts),Phase 2 on-demand 頁面沿用同一名稱以維持程式碼一致。
   // database_id 為 2026-07-17 Jun 手動執行 `wrangler d1 create mengwaba-trash-points` 建立的正式資料庫,
