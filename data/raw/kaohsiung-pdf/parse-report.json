@@ -1,0 +1,330 @@
+{
+  "generated_at": "2026-07-22T10:01:05.770640+08:00",
+  "total_districts": 36,
+  "total_valid_rows": 19436,
+  "total_dropped_rows": 248,
+  "no_schedule_districts_confirmed_absent": [
+    "那瑪夏區",
+    "茂林區"
+  ],
+  "districts": [
+    {
+      "district": "三民區",
+      "total_rows": 1655,
+      "valid_rows": 1643,
+      "dropped_rows": 12,
+      "dropped_reasons": {
+        "cell_pattern_fail": 12
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "仁武區",
+      "total_rows": 1373,
+      "valid_rows": 1363,
+      "dropped_rows": 10,
+      "dropped_reasons": {
+        "cell_pattern_fail": 10
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "內門區",
+      "total_rows": 180,
+      "valid_rows": 179,
+      "dropped_rows": 1,
+      "dropped_reasons": {
+        "cell_pattern_fail": 1
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "六龜區",
+      "total_rows": 345,
+      "valid_rows": 345,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "前金區",
+      "total_rows": 181,
+      "valid_rows": 181,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "前鎮區",
+      "total_rows": 1023,
+      "valid_rows": 1016,
+      "dropped_rows": 7,
+      "dropped_reasons": {
+        "cell_pattern_fail": 7
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "大寮區",
+      "total_rows": 1424,
+      "valid_rows": 1412,
+      "dropped_rows": 12,
+      "dropped_reasons": {
+        "cell_pattern_fail": 12
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "大樹區",
+      "total_rows": 189,
+      "valid_rows": 189,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "大社區",
+      "total_rows": 129,
+      "valid_rows": 129,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "小港區",
+      "total_rows": 854,
+      "valid_rows": 792,
+      "dropped_rows": 62,
+      "dropped_reasons": {
+        "cell_pattern_fail": 62
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "岡山區",
+      "total_rows": 592,
+      "valid_rows": 591,
+      "dropped_rows": 1,
+      "dropped_reasons": {
+        "cell_pattern_fail": 1
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "左營區",
+      "total_rows": 713,
+      "valid_rows": 709,
+      "dropped_rows": 4,
+      "dropped_reasons": {
+        "cell_pattern_fail": 4
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "彌陀區",
+      "total_rows": 193,
+      "valid_rows": 193,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "新興區",
+      "total_rows": 326,
+      "valid_rows": 326,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "旗山區",
+      "total_rows": 393,
+      "valid_rows": 392,
+      "dropped_rows": 1,
+      "dropped_reasons": {
+        "cell_pattern_fail": 1
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "旗津區",
+      "total_rows": 169,
+      "valid_rows": 169,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "杉林區",
+      "total_rows": 147,
+      "valid_rows": 147,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "林園區",
+      "total_rows": 443,
+      "valid_rows": 443,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "桃源區",
+      "total_rows": 108,
+      "valid_rows": 108,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "114年02月21日"
+    },
+    {
+      "district": "梓官區",
+      "total_rows": 124,
+      "valid_rows": 124,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "楠梓區",
+      "total_rows": 1312,
+      "valid_rows": 1253,
+      "dropped_rows": 59,
+      "dropped_reasons": {
+        "cell_pattern_fail": 59
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "橋頭區",
+      "total_rows": 343,
+      "valid_rows": 343,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "永安區",
+      "total_rows": 74,
+      "valid_rows": 74,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "湖內區",
+      "total_rows": 109,
+      "valid_rows": 109,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "燕巢區",
+      "total_rows": 125,
+      "valid_rows": 125,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "田寮區",
+      "total_rows": 86,
+      "valid_rows": 86,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "甲仙區",
+      "total_rows": 272,
+      "valid_rows": 272,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "美濃區",
+      "total_rows": 1215,
+      "valid_rows": 1172,
+      "dropped_rows": 43,
+      "dropped_reasons": {
+        "cell_pattern_fail": 43
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "苓雅區",
+      "total_rows": 766,
+      "valid_rows": 762,
+      "dropped_rows": 4,
+      "dropped_reasons": {
+        "cell_pattern_fail": 4
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "茄萣區",
+      "total_rows": 77,
+      "valid_rows": 77,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "路竹區",
+      "total_rows": 191,
+      "valid_rows": 191,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "阿蓮區",
+      "total_rows": 317,
+      "valid_rows": 314,
+      "dropped_rows": 3,
+      "dropped_reasons": {
+        "cell_pattern_fail": 3
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "鳥松區",
+      "total_rows": 592,
+      "valid_rows": 591,
+      "dropped_rows": 1,
+      "dropped_reasons": {
+        "cell_pattern_fail": 1
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "鳳山區",
+      "total_rows": 2979,
+      "valid_rows": 2951,
+      "dropped_rows": 28,
+      "dropped_reasons": {
+        "cell_pattern_fail": 28
+      },
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "鹽埕區",
+      "total_rows": 159,
+      "valid_rows": 159,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    },
+    {
+      "district": "鼓山區",
+      "total_rows": 506,
+      "valid_rows": 506,
+      "dropped_rows": 0,
+      "dropped_reasons": {},
+      "download_date": "115年07月21日"
+    }
+  ]
+}

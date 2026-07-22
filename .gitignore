@@ -8,6 +8,10 @@ site/.astro/
 site/.wrangler/
 d1/import/
 logs/*.log
-data/raw/
+data/raw/*
+# 高雄市清運班表官方 PDF 例外:每季由 Jun 手動下載,data/raw/ 底下唯一需要 git 追蹤的
+# 原始資料(其餘縣市原始抓取檔仍照舊排除)。2026-07-21 曾因未進版控而流失需重跑,
+# 原始檔另備份於 D:\垃圾車班表\高雄市\,此處為版控留存正本。
+!data/raw/kaohsiung-pdf/
 .DS_Store
 .claude/settings.local.json
