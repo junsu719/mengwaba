@@ -4,6 +4,11 @@
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // 2026-07-22:不明講會被 `wrangler deploy` 預設關閉(見同日事故:掛 mengwaba.com Custom
+  // Domain 失敗後,workers.dev 預覽網址也被連帶停用,一度沒有安全的非正式環境可測)。
+  // 明確開啟,確保 workers.dev 預覽網址與正式網域的掛載/移除動作互不影響。
+  "workers_dev": true,
+
   // 2026-07-20 事故教訓:Cloudflare Pages 對未命中靜態檔案的請求預設會 SPA fallback 回
   // index.html(當時導致所有行政區/清運點頁一律回傳品牌首頁 HTML、HTTP 200)。Workers 的
   // static assets 沒有這個「自動判斷」,必須自己明講 not_found_handling,否則預設值也可能
