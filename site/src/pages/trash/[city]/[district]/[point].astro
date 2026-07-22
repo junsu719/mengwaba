@@ -3,18 +3,11 @@ export const prerender = false;
 
 import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import {
-  CITIES,
-  parsePointId,
-  nearestPoints,
-  todayScheduleEntry,
-  todayWeekdayTaipei,
-  WEEKDAY_NAMES,
-  getCity,
-} from '../../../../lib/data';
+import { CITIES, parsePointId, nearestPoints, todayScheduleEntry, todayWeekdayTaipei, getCity } from '../../../../lib/data';
 import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
-import { todaySummarySentence, introSentence, buildFaq, isPassThrough, scheduleTimeText } from '../../../../lib/content';
+import { todaySummarySentence, introSentence, buildFaq, scheduleTimeText } from '../../../../lib/content';
+import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
 // Phase 4.5 Step 4:清運點頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3)。
 // 與行政區頁共用同一支「查整個行政區」的 D1 查詢——本頁的「鄰近清運點」需要同區其他點,
@@ -38,7 +31,9 @@ if (!group) {
   return new Response('Not Found', { status: 404 });
 }
 
-const point = group.points.find((p) => parsePointId(p.point_id).pointSlug === pointSlug);
+// point_id 解析失敗的點視同不比對(parsePointId 回傳 null 時 optional chaining 短路為 undefined,
+// 不等於任何合法 pointSlug),自然落入下方既有的 404 分支,不會額外崩潰。
+const point = group.points.find((p) => parsePointId(p.point_id)?.pointSlug === pointSlug);
 if (!point) {
   return new Response('Not Found', { status: 404 });
 }
@@ -79,32 +74,25 @@ const jsonLd = [
   <p>{introSentence(point)}</p>
 
   <h2>本週時刻表</h2>
-  <table>
+  <table class="schedule-table">
+    <colgroup>
+      <col class="col-weekday" />
+      <col class="col-time" />
+    </colgroup>
     <thead>
       <tr>
         <th>收運日</th>
-        <th>到站</th>
-        <th>離站</th>
+        <th>時間</th>
       </tr>
     </thead>
     <tbody>
       {
-        point.schedule.map((s) => {
-          const passThrough = isPassThrough(s, point.collection_type);
-          return (
-            <tr>
-              <td>{s.weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、')}</td>
-              {passThrough ? (
-                <td colspan="2">約 {s.arrive} 經過</td>
-              ) : (
-                <>
-                  <td>{s.arrive}</td>
-                  <td>{s.depart}</td>
-                </>
-              )}
-            </tr>
-          );
-        })
+        point.schedule.map((s) => (
+          <tr>
+            <td><WeekdayBadge weekday={s.weekday} /></td>
+            <td>{scheduleTimeText(s, point.collection_type)}</td>
+          </tr>
+        ))
       }
     </tbody>
   </table>
@@ -113,36 +101,41 @@ const jsonLd = [
     hasRecycling && (
       <>
         <h2>資源回收時刻</h2>
-        <table>
+        <table class="schedule-table">
+          <colgroup>
+            <col class="col-weekday" />
+            <col class="col-time" />
+          </colgroup>
           <thead>
             <tr>
               <th>回收日</th>
-              <th>到站</th>
-              <th>離站</th>
+              <th>時間</th>
             </tr>
           </thead>
           <tbody>
-            {point.recycling_schedule!.map((s) => {
-              const passThrough = isPassThrough(s, point.collection_type);
-              return (
-                <tr>
-                  <td>{s.weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、')}</td>
-                  {passThrough ? (
-                    <td colspan="2">約 {s.arrive} 經過</td>
-                  ) : (
-                    <>
-                      <td>{s.arrive}</td>
-                      <td>{s.depart}</td>
-                    </>
-                  )}
-                </tr>
-              );
-            })}
+            {point.recycling_schedule!.map((s) => (
+              <tr>
+                <td><WeekdayBadge weekday={s.weekday} /></td>
+                <td>{scheduleTimeText(s, point.collection_type)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </>
     )
   }
+
+  <style>
+    .schedule-table {
+      table-layout: fixed;
+    }
+    .col-weekday {
+      width: 8rem;
+    }
+    .schedule-table td {
+      white-space: nowrap;
+    }
+  </style>
 
   <h2>清運方式</h2>
   <p>{point.collection_type}。{point.notes ? point.notes : ''}</p>
@@ -153,11 +146,18 @@ const jsonLd = [
   <ul class="plain">
     {
       nearby.map((n) => {
-        const { pointSlug } = parsePointId(n.point_id);
+        const pointSlug = parsePointId(n.point_id)?.pointSlug;
         const entry = n.schedule[0];
         return (
           <li>
-            <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{n.point_name}</a>
+            {
+              // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
+              pointSlug ? (
+                <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{n.point_name}</a>
+              ) : (
+                <span>{n.point_name}</span>
+              )
+            }
             {entry ? `・${scheduleTimeText(entry, n.collection_type)}` : ''}
           </li>
         );

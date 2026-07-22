@@ -39,7 +39,9 @@ export function buildSearchIndex(cities: CityInput[]): SearchIndex {
 
   cities.forEach((city, cityIndex) => {
     for (const p of city.points) {
-      const { districtSlug, pointSlug } = parsePointId(p.point_id);
+      const parsed = parsePointId(p.point_id);
+      if (!parsed) continue; // point_id 格式異常時無法歸類行政區、也組不出連結,該筆從搜尋索引略過
+      const { districtSlug, pointSlug } = parsed;
       const key = `${city.slug}:${districtSlug}`;
       let districtIndex = districtIndexMap.get(key);
       if (districtIndex === undefined) {

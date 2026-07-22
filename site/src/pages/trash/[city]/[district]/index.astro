@@ -6,7 +6,8 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { CITIES, parsePointId, getCity } from '../../../../lib/data';
 import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
-import { districtNoteSentence, scheduleTimeText, weekdayListText } from '../../../../lib/content';
+import { districtNoteSentence, scheduleTimeText } from '../../../../lib/content';
+import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
 // Phase 4.5 Step 4:行政區頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3),
 // 縣市索引頁(/trash/{city}/)仍靜態預生成,此頁的 city/district 組合不再於 build 時窮舉,
@@ -59,10 +60,15 @@ const jsonLd = [
   <ul class="plain">
     {
       group.points.map((p) => {
-        const { pointSlug } = parsePointId(p.point_id);
+        // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
+        const pointSlug = parsePointId(p.point_id)?.pointSlug;
         return (
           <li>
-            <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+            {pointSlug ? (
+              <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+            ) : (
+              <span>{p.point_name}</span>
+            )}
             {p.village ? ` ・${p.village}` : ''}
           </li>
         );
@@ -83,22 +89,34 @@ const jsonLd = [
     <tbody>
       {
         sortedByTime.map((p) => {
-          const { pointSlug } = parsePointId(p.point_id);
+          // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整列資訊、也不讓整頁崩潰
+          const pointSlug = parsePointId(p.point_id)?.pointSlug;
           const entry = p.schedule[0];
           return (
             <tr>
               <td>{entry ? scheduleTimeText(entry, p.collection_type) : '—'}</td>
               <td>
-                <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+                {pointSlug ? (
+                  <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
+                ) : (
+                  <span>{p.point_name}</span>
+                )}
               </td>
               <td>{p.village ?? '—'}</td>
-              <td>{entry ? weekdayListText(entry.weekday) : '—'}</td>
+              <td>{entry ? <WeekdayBadge weekday={entry.weekday} /> : '—'}</td>
             </tr>
           );
         })
       }
     </tbody>
   </table>
+
+  <style>
+    table td:first-child,
+    table td:last-child {
+      white-space: nowrap;
+    }
+  </style>
 
   <p slot="footer">
     資料來源:{city.sourceName}(<a href={city.sourceUrl} rel="noopener">{city.name}政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。

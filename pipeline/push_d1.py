@@ -18,7 +18,6 @@ INSERT 陣列,套用時不影響其他縣市既有列(見 d1/schema.sql 開頭�
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -26,8 +25,6 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 NORMALIZED_DIR = ROOT / "data" / "normalized"
 IMPORT_DIR = ROOT / "d1" / "import"
-
-POINT_ID_RE = re.compile(r"^[A-Z]+-([A-Z]+)-(\d+)$")
 
 BATCH_SIZE = 50
 
@@ -39,10 +36,16 @@ COLUMNS = (
 
 
 def parse_district_slug(point_id: str) -> str:
-    m = POINT_ID_RE.match(point_id)
-    if not m:
+    """依 "-" 結構切分取第二段(行政區),不對序號字元集做假設——與
+    site/src/lib/data.ts 的 parsePointId() 同一套邏輯,兩邊需保持一致(見 DECISIONS.md 2026-07-22:
+    原本 \\d+ 正規表示式是為舊序號寫的,雜湊 point_id 出現字母就會解析失敗)。
+    這裡維持 raise 而非回傳 None:匯入 D1 前若有解析不出的 point_id,代表上游產生資料的邏輯本身
+    有問題,依鐵律「不靜默丟棄」應該讓 push_d1 直接失敗、由執行者查明,而不是靜默略過某些列。
+    """
+    parts = point_id.split("-")
+    if len(parts) < 3 or not parts[1] or any(not p for p in parts[2:]):
         raise ValueError(f"無法解析 point_id: {point_id!r}")
-    return m.group(1).lower()
+    return parts[1].lower()
 
 
 def classify(record: dict[str, Any]) -> str | None:

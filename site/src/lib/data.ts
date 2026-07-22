@@ -78,11 +78,21 @@ export function getCity(slug: string): CityInfo {
   return city;
 }
 
-/** point_id 格式為 {縣市代碼}-{行政區SLUG}-{序號},由 pipeline/normalize.py 產生。直接解析避免兩邊維護重複對照表。 */
-export function parsePointId(pointId: string): { districtSlug: string; pointSlug: string } {
-  const m = pointId.match(/^[A-Z]+-([A-Z]+)-(\d+)$/);
-  if (!m) throw new Error(`無法解析 point_id: ${pointId}`);
-  return { districtSlug: m[1].toLowerCase(), pointSlug: m[2] };
+/**
+ * point_id 格式為 {縣市代碼}-{行政區SLUG}-{序號},由 pipeline/normalize.py / pipeline/point_id.py 產生。
+ * 依 "-" 做結構切分(第一段縣市代碼、第二段行政區、其餘 join 回去當序號),不對序號內容的字元集
+ * 做任何假設——序號本身在下游只當不透明字串使用(分組鍵、URL 片段、字串相等比對),見 DECISIONS.md
+ * 2026-07-22:序號從全數字改內容雜湊後,原本寫死 \d+ 的 regex 無法解析新格式,才改為結構切分。
+ *
+ * 解析不出合法結構時回傳 null,不 throw——內容展示站的單筆資料格式異常不該讓整頁 500,
+ * 呼叫端須自行 fallback(略過該筆、或該筆連結退化為純文字),詳見各呼叫點註解。
+ */
+export function parsePointId(pointId: string): { districtSlug: string; pointSlug: string } | null {
+  const parts = pointId.split('-');
+  if (parts.length < 3) return null;
+  const [, districtSlug, ...rest] = parts;
+  if (!districtSlug || rest.some((s) => !s)) return null;
+  return { districtSlug: districtSlug.toLowerCase(), pointSlug: rest.join('-') };
 }
 
 export interface DistrictGroup {
@@ -94,7 +104,9 @@ export interface DistrictGroup {
 export function groupByDistrict(points: CollectionPoint[]): DistrictGroup[] {
   const map = new Map<string, DistrictGroup>();
   for (const p of points) {
-    const { districtSlug } = parsePointId(p.point_id);
+    const parsed = parsePointId(p.point_id);
+    if (!parsed) continue; // point_id 格式異常時該筆無法歸類到任何行政區,略過不影響其餘點
+    const { districtSlug } = parsed;
     let group = map.get(districtSlug);
     if (!group) {
       group = { district: p.district!, districtSlug, points: [] };
