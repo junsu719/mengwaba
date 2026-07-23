@@ -1,0 +1,38 @@
+---
+// 固定寬度的星期指示器:不論實際收運日有幾天,永遠佔滿 7 格,避免同一欄因天數不同
+// (1 天 vs 5 天)而寬度跳動,導致隔壁的時間欄位對不齊(見 2026-07-21 手機版排版回報)。
+interface Props {
+  weekday: number[];
+}
+
+const { weekday } = Astro.props;
+const LABELS = ['一', '二', '三', '四', '五', '六', '日'];
+const active = new Set(weekday);
+const ariaLabel = weekday.map((d) => `週${LABELS[d - 1]}`).join('、');
+---
+
+<span class="weekday-badge" aria-label={ariaLabel}>
+  {LABELS.map((label, i) => (
+    <span class={active.has(i + 1) ? 'wd-on' : 'wd-off'} aria-hidden="true">
+      {label}
+    </span>
+  ))}
+</span>
+
+<style>
+  .weekday-badge {
+    display: inline-grid;
+    grid-template-columns: repeat(7, 1.15em);
+    font-size: 0.8rem;
+  }
+  .weekday-badge span {
+    text-align: center;
+  }
+  .wd-on {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .wd-off {
+    color: var(--border);
+  }
+</style>
