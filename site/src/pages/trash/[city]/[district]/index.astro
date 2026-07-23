@@ -102,7 +102,7 @@ const jsonLd = [
                   <span>{p.point_name}</span>
                 )}
               </td>
-              <td>{p.village ?? '—'}</td>
+              <td>{p.village || '—'}</td>
               <td>{entry ? <WeekdayBadge weekday={entry.weekday} /> : '—'}</td>
             </tr>
           );

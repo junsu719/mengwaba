@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS points (
   lng                 REAL,
   schedule            TEXT NOT NULL,     -- JSON 字串(ScheduleEntry[] 序列化),讀出後 JSON.parse 還原
   recycling_schedule  TEXT,              -- JSON 字串,同上格式;NULL 表示該點無資源回收時刻資料(如目前全部高雄資料)
-  collection_type     TEXT NOT NULL,     -- 「定點清運」或「沿街收運」
+  collection_type     TEXT,              -- 「定點清運」或「沿街收運」;可為 NULL,部分縣市資料源(如桃園)無法區分兩者,不得斷言其中一種,見 DECISIONS.md D3
   notes               TEXT,
   source              TEXT NOT NULL,     -- 資料來源 URL(逐筆,來自 pipeline fetch 階段)
   fetched_at          TEXT NOT NULL      -- ISO 8601,pipeline fetch 時間戳

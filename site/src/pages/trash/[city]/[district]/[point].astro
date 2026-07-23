@@ -137,8 +137,14 @@ const jsonLd = [
     }
   </style>
 
-  <h2>清運方式</h2>
-  <p>{point.collection_type}。{point.notes ? point.notes : ''}</p>
+  {
+    point.collection_type && (
+      <>
+        <h2>清運方式</h2>
+        <p>{point.collection_type}。{point.notes ? point.notes : ''}</p>
+      </>
+    )
+  }
 
   {point.address && <p>地址參考:{point.address}</p>}
 

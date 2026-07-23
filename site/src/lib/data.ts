@@ -7,7 +7,8 @@
 export interface ScheduleEntry {
   weekday: number[];
   arrive: string;
-  depart: string;
+  /** 可為 null:部分縣市資料源(如桃園)只有到站時間、無離站時間,不得用 arrive + N 分鐘等方式推算填補,見 DECISIONS.md。 */
+  depart: string | null;
 }
 
 export interface CollectionPoint {
@@ -22,7 +23,8 @@ export interface CollectionPoint {
   schedule: ScheduleEntry[];
   /** 資源回收時刻,與 schedule 同形狀;非所有縣市資料皆有此欄位(如高雄無),頁面層需判斷是否存在再顯示區塊。 */
   recycling_schedule?: ScheduleEntry[];
-  collection_type: string;
+  /** 可為 null:部分縣市資料源(如桃園)無法區分定點/沿街,不得斷言其中一種,見 DECISIONS.md D3。頁面層需判斷是否存在再顯示相關文案。 */
+  collection_type: string | null;
   notes: string | null;
   source: string;
   fetched_at: string;
