@@ -1,6 +1,12 @@
-"""各來源垃圾車清運點資料抓取器。高雄市(Phase 1)、臺中市(Phase 4)。
+"""各來源垃圾車清運點資料抓取器。臺中市(Phase 4)。
 
 資料來源決策與 robots.txt 現況見 ../DECISIONS.md(2026-07-09、2026-07-16)。
+
+高雄市原本的 KaohsiungOpenDataFetcher(CSV)已刪除:2026-07-21 發現該資料源整份很可能是
+資源回收車路線、與一般垃圾車時刻混淆(詳見 DECISIONS.md),已改用官方 PDF 班表
+(kepbgps.kcg.gov.tw/download_schedule.aspx,由 Jun 每季手動下載至
+data/raw/kaohsiung-pdf/,見 pipeline/parse_kaohsiung_pdf.py),不再透過本腳本抓取,
+故意不留舊 fetcher 類別,避免有人誤執行 `fetch.py kaohsiung` 又抓回已知錯誤的資料源。
 """
 
 from __future__ import annotations
@@ -20,29 +26,6 @@ from scripts.notify import notify_failure  # noqa: E402
 USER_AGENT = "trash-pseo/0.1 (+contact: junsu578@gmail.com)"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 RAW_DIR = ROOT / "data" / "raw"
-
-
-class KaohsiungOpenDataFetcher:
-    """高雄市政府資料開放平台:垃圾清運路線及時間(全市單一 CSV 資源)。
-
-    低頻善意抓取:每次執行僅發出一次 HTTP 請求,不做任何頁面爬蟲或批次探索。
-    """
-
-    CITY_KEY = "kaohsiung"
-    CITY = "高雄市"
-    DATASET_URL = "https://data.kcg.gov.tw/DataSet/Detail/074c805a-00e1-4fc5-b5f8-b2f4d6b64aa4"
-    RESOURCE_URL = "https://data.kcg.gov.tw/File/DirectDownload/a6ba725a-488c-4d40-b5a2-c2fe65d3e134"
-
-    def fetch(self) -> list[dict]:
-        with httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=30) as client:
-            resp = client.get(self.RESOURCE_URL)
-            resp.raise_for_status()
-        text = resp.content.decode("utf-8-sig")
-        import csv
-        import io
-
-        reader = csv.DictReader(io.StringIO(text))
-        return list(reader)
 
 
 class TaichungOpenDataFetcher:
@@ -68,7 +51,6 @@ class TaichungOpenDataFetcher:
 
 
 FETCHERS = {
-    KaohsiungOpenDataFetcher.CITY_KEY: KaohsiungOpenDataFetcher,
     TaichungOpenDataFetcher.CITY_KEY: TaichungOpenDataFetcher,
 }
 

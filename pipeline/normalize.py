@@ -1,4 +1,9 @@
-"""將各來源原始資料正規化為統一 schema(見 ../trash-pseo-spec.md §6)。高雄市、臺中市。"""
+"""將各來源原始資料正規化為統一 schema(見 ../trash-pseo-spec.md §6)。臺中市。
+
+高雄市改走獨立的 pipeline/parse_kaohsiung_pdf.py(PDF 來源,見 DECISIONS.md 2026-07-21:
+原本這裡的 CSV-based normalize_record_kaohsiung 已刪除,因為舊 CSV 資料源整份很可能是
+資源回收車路線、與一般垃圾車時刻混淆,不應繼續使用或留著誤導後人。
+"""
 
 from __future__ import annotations
 
@@ -12,49 +17,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
 NORMALIZED_DIR = ROOT / "data" / "normalized"
 
-WEEKDAY_MAP = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7}
-
-# 高雄市資料來源的「行政區」欄位混雜清運分區(如三民東/西、北/南鳳山),
-# 對應到標準行政區名稱與 URL slug(拼音)。決策記於 DECISIONS.md。
-DISTRICT_MAP = {
-    "鹽埕區": ("鹽埕區", "yancheng"),
-    "鼓山區": ("鼓山區", "gushan"),
-    "左營區": ("左營區", "zuoying"),
-    "楠梓區": ("楠梓區", "nanzi"),
-    "三民東區": ("三民區", "sanmin"),
-    "三民西區": ("三民區", "sanmin"),
-    "新興區": ("新興區", "xinxing"),
-    "前金區": ("前金區", "qianjin"),
-    "苓雅區": ("苓雅區", "lingya"),
-    "前鎮區": ("前鎮區", "qianzhen"),
-    "旗津區": ("旗津區", "cijin"),
-    "小港區": ("小港區", "xiaogang"),
-    "北鳳山區": ("鳳山區", "fengshan"),
-    "南鳳山區": ("鳳山區", "fengshan"),
-    "林園區": ("林園區", "linyuan"),
-    "大寮區": ("大寮區", "daliao"),
-    "大樹區": ("大樹區", "dashu"),
-    "大社區": ("大社區", "dashe"),
-    "仁武區": ("仁武區", "renwu"),
-    "鳥松區": ("鳥松區", "niaosong"),
-    "岡山區": ("岡山區", "gangshan"),
-    "橋頭區": ("橋頭區", "qiaotou"),
-    "燕巢區": ("燕巢區", "yanchao"),
-    "田寮區": ("田寮區", "tianliao"),
-    "阿蓮區": ("阿蓮區", "alian"),
-    "路竹區": ("路竹區", "luzhu"),
-    "湖內區": ("湖內區", "hunei"),
-    "茄萣區": ("茄萣區", "qieding"),
-    "永安區": ("永安區", "yongan"),
-    "彌陀區": ("彌陀區", "mituo"),
-    "梓官區": ("梓官區", "ziguan"),
-    "旗山區": ("旗山區", "qishan"),
-    "美濃區": ("美濃區", "meinong"),
-    "六龜區": ("六龜區", "liugui"),
-    "甲仙區": ("甲仙區", "jiaxian"),
-    "杉林區": ("杉林區", "shanlin"),
-    "內門區": ("內門區", "neimen"),
-}
+sys.path.insert(0, str(ROOT))
+from pipeline.point_id import assign_point_ids  # noqa: E402
 
 # 臺中市資料源(data.gov.tw/dataset/84004)的「行政區」欄位為 29 區官方全名,
 # 與標準行政區一一對應,不像高雄需要合併清運分區。
@@ -116,88 +80,6 @@ def _normalize_time_token(token: str) -> str | None:
     return f"{int(m.group(1)):02d}:{m.group(2)}"
 
 
-def parse_schedule_time(raw: str) -> tuple[str | None, str | None]:
-    """解析『停留時間』欄位,回傳 (arrive, depart)。格式不合法回傳 (None, None)。"""
-    if not raw:
-        return None, None
-    raw = raw.strip().replace("～", "~").replace("：", ":")
-    parts = re.split(r"[~-]", raw)
-    if len(parts) == 1:
-        t = _normalize_time_token(parts[0])
-        return (t, t) if t else (None, None)
-    if len(parts) == 2:
-        arrive = _normalize_time_token(parts[0])
-        depart = _normalize_time_token(parts[1])
-        if arrive and depart:
-            return arrive, depart
-    return None, None
-
-
-def parse_weekday(raw: str) -> list[int]:
-    if not raw:
-        return []
-    days = []
-    for ch in raw.split("、"):
-        ch = ch.strip()
-        if ch in WEEKDAY_MAP:
-            days.append(WEEKDAY_MAP[ch])
-    return sorted(set(days))
-
-
-def parse_float(raw: str) -> float | None:
-    try:
-        return float(raw)
-    except (TypeError, ValueError):
-        return None
-
-
-def normalize_record_kaohsiung(raw: dict[str, Any], seq: int, city: str, source: str, fetched_at: str) -> dict[str, Any]:
-    district_raw = (raw.get("行政區") or "").strip()
-    district, slug = DISTRICT_MAP.get(district_raw, (None, "unknown"))
-
-    point_name = (raw.get("停留地點") or "").strip() or None
-    village = (raw.get("村里") or "").strip() or None
-
-    address = f"{city}{district}{point_name}" if district and point_name else None
-
-    arrive, depart = parse_schedule_time(raw.get("停留時間", ""))
-    weekday = parse_weekday(raw.get("回收日", ""))
-
-    schedule = []
-    notes_parts = []
-    if weekday and arrive and depart:
-        schedule.append({"weekday": weekday, "arrive": arrive, "depart": depart})
-    else:
-        if raw.get("回收日") and not weekday:
-            notes_parts.append(f"原始回收日格式異常:{raw.get('回收日')!r}")
-        if raw.get("停留時間") and not (arrive and depart):
-            notes_parts.append(f"原始停留時間格式異常:{raw.get('停留時間')!r}")
-
-    responsible_area = (raw.get("責任區") or "").strip()
-    trip = (raw.get("車次") or "").strip()
-    if responsible_area or trip:
-        notes_parts.insert(0, f"責任區{responsible_area}・第{trip}車次".strip("・"))
-
-    lat = parse_float(raw.get("緯度"))
-    lng = parse_float(raw.get("經度"))
-
-    return {
-        "point_id": f"KHH-{slug.upper()}-{seq:05d}",
-        "city": city,
-        "district": district,
-        "village": village,
-        "point_name": point_name,
-        "address": address,
-        "lat": lat,
-        "lng": lng,
-        "schedule": schedule,
-        "collection_type": "定點清運",
-        "notes": "、".join(notes_parts) or None,
-        "source": source,
-        "fetched_at": fetched_at,
-    }
-
-
 def parse_taichung_daily_schedule(raw: dict[str, Any], prefix: str) -> tuple[list[dict[str, Any]], list[str]]:
     """解析臺中 g_d1..g_d7 / r_d1..r_d7 逐日欄位,回傳 (schedule, 格式異常備註)。
 
@@ -225,7 +107,11 @@ def parse_taichung_daily_schedule(raw: dict[str, Any], prefix: str) -> tuple[lis
     return schedule, notes_parts
 
 
-def normalize_record_taichung(raw: dict[str, Any], seq: int, city: str, source: str, fetched_at: str) -> dict[str, Any] | None:
+def normalize_record_taichung(raw: dict[str, Any], city: str, source: str, fetched_at: str) -> dict[str, Any] | None:
+    """回傳的 record 尚未含 point_id(改由 normalize_city() 收集全部列後,用
+    pipeline/point_id.py 批次分配內容雜湊 ID,取代原本的全域序號,見該模組開頭說明)。
+    "_district_slug"/"_plate"/"_first_arrive" 為批次分配用的暫存欄位,寫檔前會被移除。
+    """
     if raw.get("task_type") in TAICHUNG_EXCLUDED_TASK_TYPES:
         return None
 
@@ -249,12 +135,14 @@ def normalize_record_taichung(raw: dict[str, Any], seq: int, city: str, source: 
         collection_type = task_type_raw or None
         notes_parts.append(f"原始清運方式無法對應:{task_type_raw!r}")
 
-    car_licence = (raw.get("car_licence") or "").strip()
+    car_licence = (raw.get("car_licence") or "").strip() or None
     if car_licence:
         notes_parts.insert(0, f"車牌{car_licence}")
 
     return {
-        "point_id": f"TXG-{slug.upper()}-{seq:05d}",
+        "_district_slug": slug,
+        "_plate": car_licence,
+        "_first_arrive": schedule[0]["arrive"] if schedule else None,
         "city": city,
         "district": district,
         "village": village,
@@ -272,8 +160,12 @@ def normalize_record_taichung(raw: dict[str, Any], seq: int, city: str, source: 
 
 
 NORMALIZERS = {
-    "kaohsiung": normalize_record_kaohsiung,
     "taichung": normalize_record_taichung,
+}
+
+# 各 city_key 對應的 point_id 前綴(pipeline/point_id.py 用)。
+ID_PREFIXES = {
+    "taichung": "TXG",
 }
 
 
@@ -293,13 +185,29 @@ def normalize_city(city_key: str) -> int:
     fetched_at = payload["fetched_at"]
 
     normalized = []
-    seq = 0
     for row in payload["records"]:
-        record = normalizer(row, seq + 1, city, source, fetched_at)
+        record = normalizer(row, city, source, fetched_at)
         if record is None:
             continue
-        seq += 1
         normalized.append(record)
+
+    identity_rows = [
+        {
+            "district_slug": r["_district_slug"],
+            "village": r["village"],
+            "point_name": r["point_name"],
+            "plate": r["_plate"],
+            "first_arrive": r["_first_arrive"],
+        }
+        for r in normalized
+    ]
+    point_ids = assign_point_ids(city_key, ID_PREFIXES[city_key], identity_rows)  # type: ignore[arg-type]
+    for i, (record, point_id) in enumerate(zip(normalized, point_ids)):
+        del record["_district_slug"]
+        del record["_plate"]
+        del record["_first_arrive"]
+        # 欄位順序:point_id 放最前面,對齊既有 schema 慣例
+        normalized[i] = {"point_id": point_id, **record}
 
     NORMALIZED_DIR.mkdir(parents=True, exist_ok=True)
     out_path = NORMALIZED_DIR / f"{city_key}.json"
