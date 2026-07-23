@@ -13,5 +13,8 @@ data/raw/*
 # 原始資料(其餘縣市原始抓取檔仍照舊排除)。2026-07-21 曾因未進版控而流失需重跑,
 # 原始檔另備份於 D:\垃圾車班表\高雄市\,此處為版控留存正本。
 !data/raw/kaohsiung-pdf/
+# 桃園原始抓取例外:同上理由,2026-07-23 E2 全量抓取(route.tyoem.gov.tw)產出僅存於
+# /tmp scratchpad,隨時可能被清除,版控留存正本,避免要重跑 630 次請求。
+!data/raw/taoyuan/
 .DS_Store
 .claude/settings.local.json
