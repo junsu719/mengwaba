@@ -244,6 +244,25 @@ def _parse_taoyuan_time_field(text: str, fallback_arrive_time: str | None) -> tu
     return entries, drop_reasons
 
 
+def _parse_taoyuan_combined_time_fields(
+    primary_text: str, memo_text: str, fallback_arrive_time: str | None
+) -> tuple[list[dict[str, Any]], list[str], int]:
+    """G2(2026-07-24 拍板)實測發現:官方網站 park.js 的清運點列表/地圖資訊視窗渲染邏輯
+    (見 DECISIONS.md G2,已核對原始碼:`row.show_arrive_time...+"<br>"+row.show_memo_time`,
+    資源回收同理用 show_recycle_arrive_time/show_recycle_memo_time)一律把 show_arrive_time
+    與 show_memo_time 兩者疊在一起顯示,代表這是同一個點的「兩段」班次(通常是不同星期
+    group、不同時間),不是可以只挑一個看的次要欄位。全市掃描實測:706 筆一般垃圾、699 筆
+    資源回收的 show_memo_time/show_recycle_memo_time 非空且內容與主欄位不同(零筆重複),
+    只解析主欄位會系統性漏掉這些點的第二段星期。
+    這裡把兩段各自解析後合併成同一份 entries 清單;memo_time 沒有對應的裸 arrive_time
+    可交叉檢查(bare arrive_time 是配對 primary_text 用的欄位),所以 fallback 只套用在
+    primary_text 那一段,memo_text 解析失敗就直接依 E3-2 規則捨棄、不猜測複用。
+    """
+    primary_entries, primary_drops = _parse_taoyuan_time_field(primary_text, fallback_arrive_time)
+    memo_entries, memo_drops = _parse_taoyuan_time_field(memo_text, None)
+    return primary_entries + memo_entries, primary_drops + memo_drops, len(memo_entries)
+
+
 def _taoyuan_arrive_time_mismatch(entries: list[dict[str, Any]], bare_arrive_time: str | None) -> bool:
     """僅供 E3-6 報告用的資訊性統計,不影響資料本身:bare arrive_time 與最終採用的
     show_*/show_recycle_* 解析時間是否不一致(多筆時間本屬預期,如實記錄供人工參考)。"""
@@ -257,8 +276,14 @@ def _decode_taoyuan_recycle_weekday(run_type: str | None) -> list[int]:
     """依官方 route.tyoem.gov.tw/style2015/js/park.js 的
     showRealtimeRecycleCarStatus()/displayRoutingMemo() 兩處邏輯逆向確認(非猜測,已取得
     該站實際 JS 原始碼核對,見 DECISIONS.md E3):run_type 為 7 字元字串,索引依 JS
-    `Date.getDay()` 慣例(0=日...6=六),該位置值為 '2' 代表當天有資源回收車。
+    `Date.getDay()` 慣例(0=日...6=六),該位置值為 '2' 代表**這條路線**當天有資源回收車。
     回傳值轉換成本站 1=一...7=日 的 ISO weekday 慣例(與 data.ts todayWeekdayTaipei 一致)。
+
+    G1(2026-07-24 拍板):**不得**把這個函式的結果下放套用到單一清運點的 recycling_schedule
+    上——這是路線層級的官方事實,不保證路線底下每個點實際被服務的日子跟路線整體一致
+    (E3 當時曾這樣用過,已拿掉,見同日 DECISIONS.md 記錄)。目前保留這支函式與逆向邏輯,
+    是因為它仍然是「這條路線的資源回收日」的正確官方定義,未來若做路線層級(而非逐點)
+    的內容時可以直接用,不必重新逆向一次;normalize_taoyuan() 本身已不再呼叫這支函式。
     """
     if not run_type or len(run_type) != 7:
         return []
@@ -317,9 +342,10 @@ def normalize_taoyuan() -> int:
         "recycle_only_points": 0,
         "schedule_line_drops": 0,
         "recycling_line_drops": 0,
+        "schedule_memo_time_entries_added": 0,
+        "recycling_memo_time_entries_added": 0,
         "weekday_absent_schedule_entries": 0,
         "weekday_listed_schedule_entries": 0,
-        "recycling_weekday_from_run_type": 0,
         "recycling_weekday_absent": 0,
         "recycling_weekday_listed_direct": 0,
         "has_recycling_schedule": 0,
@@ -360,9 +386,10 @@ def normalize_taoyuan() -> int:
         recycling_schedule: list[dict[str, Any]] | None = None
 
         if lagi_row:
-            entries, drops = _parse_taoyuan_time_field(
-                lagi_row.get("show_arrive_time", ""), lagi_row.get("arrive_time")
+            entries, drops, memo_added = _parse_taoyuan_combined_time_fields(
+                lagi_row.get("show_arrive_time", ""), lagi_row.get("show_memo_time", ""), lagi_row.get("arrive_time")
             )
+            stats["schedule_memo_time_entries_added"] += memo_added
             stats["schedule_line_drops"] += len(drops)
             notes_parts.extend(f"一般垃圾{d}" for d in drops)
             if _taoyuan_arrive_time_mismatch(entries, lagi_row.get("arrive_time")):
@@ -378,33 +405,35 @@ def normalize_taoyuan() -> int:
             schedule = entries
 
         if recycle_row:
-            entries, drops = _parse_taoyuan_time_field(
-                recycle_row.get("show_recycle_arrive_time", ""), recycle_row.get("arrive_time")
+            entries, drops, memo_added = _parse_taoyuan_combined_time_fields(
+                recycle_row.get("show_recycle_arrive_time", ""),
+                recycle_row.get("show_recycle_memo_time", ""),
+                recycle_row.get("arrive_time"),
             )
+            stats["recycling_memo_time_entries_added"] += memo_added
             stats["recycling_line_drops"] += len(drops)
             notes_parts.extend(f"資源回收{d}" for d in drops)
             if _taoyuan_arrive_time_mismatch(entries, recycle_row.get("arrive_time")):
                 stats["arrive_time_mismatch_count"] += 1
-            run_type = route_info.get("run_type") if route_info else None
             for e in entries:
                 e["depart"] = None
                 if e["weekday"]:
-                    # show_recycle_arrive_time 本身已明講星期,直接採用,不需要 run_type。
+                    # show_recycle_arrive_time 本身已明講星期,直接採用。
                     e["weekday_source"] = "listed"
                     stats["recycling_weekday_listed_direct"] += 1
                 else:
-                    # F1 開頭確立的官方邏輯(park.js 原始碼已核對,見 DECISIONS.md E3):
-                    # 資源回收星期一律用 run_type 值=2 的位置解出,不留在「未知」狀態——
-                    # 除非 run_type 本身也解不出任何一天(如 lagi2-002_C_5/C_6 純資源回收
-                    # 路線,run_type 這套規則對它們不適用),才誠實標記為 absent。
-                    decoded = _decode_taoyuan_recycle_weekday(run_type)
-                    if decoded:
-                        e["weekday"] = decoded
-                        e["weekday_source"] = "listed"
-                        stats["recycling_weekday_from_run_type"] += 1
-                    else:
-                        e["weekday_source"] = "absent"
-                        stats["recycling_weekday_absent"] += 1
+                    # G1(2026-07-24 拍板,推翻 E3 當時的做法):資源回收星期只能來自這個點自己的
+                    # show_recycle_arrive_time,不得用 _decode_taoyuan_recycle_weekday()(run_type
+                    # 值=2 的位置)下放到點層級補值。run_type 是「這條路線」的官方回收日定義,
+                    # 路線底下每個點實際被服務的日子不保證跟路線整體一致(尤其社區/市場專線、
+                    # 或路線內部再分次序造訪的情況),用路線層級的事實去斷言某一個特定點的星期,
+                    # 是一種跨層級的猜測,即使來源是官方 JS 邏輯也一樣不該做——鐵律 2 的精神是
+                    # 「不猜測填補」,不是「只要有個官方依據就能套用」。這個點自己沒有明講星期時,
+                    # 一律視為未知([]),套用與收運日相同的 F1 免責文案,不得比收運日本身更肯定。
+                    # _decode_taoyuan_recycle_weekday() 保留在程式碼與 DECISIONS.md 中,是「這條
+                    # 路線」的官方回收日定義,未來若做路線層級(而非點層級)的內容才適用。
+                    e["weekday_source"] = "absent"
+                    stats["recycling_weekday_absent"] += 1
             if entries:
                 recycling_schedule = entries
                 stats["has_recycling_schedule"] += 1

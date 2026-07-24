@@ -6,8 +6,15 @@
 -- 對已存在的表是 no-op,不會套用新的欄位定義,因此需要這支獨立的 migration。
 --
 -- SQLite(D1 底層)不支援 ALTER TABLE ... ALTER COLUMN 改欄位約束,標準做法是
--- 「建新表 → 搬資料 → 刪舊表 → 改名」。整段包在單一 transaction 內,SQLite 的
--- DDL 語句本身是可交易的(這點跟多數其他資料庫不同),要嘛全部成功、要嘛整批回滾。
+-- 「建新表 → 搬資料 → 刪舊表 → 改名」。
+--
+-- 2026-07-24 實際對 --remote 執行後發現:**不能**用 BEGIN TRANSACTION/COMMIT 包裝
+-- 這批語句——第一次執行得到 `{"D1_RESET_DO":true}`(內部 Durable Object 重置,
+-- 已核對執行後 DB 確實乾淨回滾、未留下 points_new 或改變 schema/筆數),retry 後
+-- 得到明確錯誤訊息:「請改用 state.storage.transaction()/transactionSync() API,
+-- 不支援 SQL 的 BEGIN TRANSACTION 或 SAVEPOINT 語句」。D1 的 remote 匯入機制本身
+-- 就是把整個檔案當一個批次處理,不需要(也不能)額外包一層 SQL transaction,故拿掉
+-- BEGIN TRANSACTION/COMMIT,只留裸的 DDL/DML 語句序列。
 --
 -- 執行前置條件(尚未執行,待 Jun 核准):
 -- ①先在非正式環境(本機 --local 或另建一個測試用 D1 database)完整跑過一次,
@@ -22,8 +29,6 @@
 --
 -- 執行指令(核准後才執行,不在本次對話內跑):
 --   npx wrangler d1 execute mengwaba-trash-points --remote --file=d1/migrations/001-collection-type-nullable.sql
-
-BEGIN TRANSACTION;
 
 CREATE TABLE points_new (
   point_id           TEXT PRIMARY KEY,
@@ -54,8 +59,6 @@ DROP TABLE points;
 ALTER TABLE points_new RENAME TO points;
 
 CREATE INDEX IF NOT EXISTS idx_points_district ON points(city_slug, district_slug);
-
-COMMIT;
 
 -- 驗證(migration 執行完後手動跑,確認搬移無誤):
 --   SELECT city_slug, COUNT(*) FROM points GROUP BY city_slug;

@@ -80,6 +80,13 @@ export const CITIES: CityInfo[] = [
     sourceName: '臺中市政府',
     sourceUrl: 'https://data.gov.tw/dataset/84004',
   },
+  {
+    slug: 'taoyuan',
+    name: '桃園市',
+    file: 'taoyuan',
+    sourceName: '桃園市政府環境保護局環境管理處',
+    sourceUrl: 'https://route.tyoem.gov.tw/',
+  },
 ];
 
 /** 全台縣市總數(直轄市+縣市),用於「其餘 N 縣市尚未上線」文案計算,見 CLAUDE.md Phase 4 範圍。 */

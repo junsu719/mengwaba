@@ -1736,6 +1736,20 @@
         "plate": "lagi2-002_1_20:8318",
         "point_id": "TYN-BADE-F7C53EB2AD",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "20:20",
+        "plate": "lagi2-002_1_14:8318",
+        "point_id": "TYN-BADE-E2D2E17E09",
+        "route_scope": "lagi2-002_1_14"
+      }
+    ],
+    "大仁里|大仁里服務處(南僑巷47號": [
+      {
+        "first_arrive": "17:15",
+        "plate": "lagi2-002_1_14:12765",
+        "point_id": "TYN-BADE-0D827ADB59",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大仁里|大安派出所(和平路頂僑巷25號)": [
@@ -1744,6 +1758,12 @@
         "plate": "lagi2-002_1_20:12767",
         "point_id": "TYN-BADE-B709A5ED9F",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "17:30",
+        "plate": "lagi2-002_1_14:12767",
+        "point_id": "TYN-BADE-60EE6030CE",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大仁里|宏福巷1弄12衖1號": [
@@ -1752,6 +1772,12 @@
         "plate": "lagi2-002_1_20:12766",
         "point_id": "TYN-BADE-6A812F50C0",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "17:20",
+        "plate": "lagi2-002_1_14:12766",
+        "point_id": "TYN-BADE-FEDA94EC3E",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大仁里|廣行宮(仁和街211巷1弄18號)": [
@@ -1760,6 +1786,12 @@
         "plate": "lagi2-002_1_20:12772",
         "point_id": "TYN-BADE-423852EAFC",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "19:30",
+        "plate": "lagi2-002_1_14:12772",
+        "point_id": "TYN-BADE-1D7D507FC2",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大仁里|新加坡社區(仁和街41巷25弄)": [
@@ -1768,6 +1800,12 @@
         "plate": "lagi2-002_1_20:12773",
         "point_id": "TYN-BADE-E12A6CE357",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "20:00",
+        "plate": "lagi2-002_1_14:12773",
+        "point_id": "TYN-BADE-4AF7FCE802",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大仁里|桃鶯路1號": [
@@ -1776,6 +1814,14 @@
         "plate": "lagi2-002_1_4:8035",
         "point_id": "TYN-BADE-F0CBE1E406",
         "route_scope": "lagi2-002_1_4"
+      }
+    ],
+    "大仁里|頂僑巷6弄12號": [
+      {
+        "first_arrive": "17:35",
+        "plate": "lagi2-002_1_14:12768",
+        "point_id": "TYN-BADE-2D84A949D4",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大信里|大興路1045巷36號": [
@@ -1984,6 +2030,12 @@
         "plate": "lagi2-002_1_20:12771",
         "point_id": "TYN-BADE-0A862915F0",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "18:10",
+        "plate": "lagi2-002_1_14:12771",
+        "point_id": "TYN-BADE-61BBCDFA5D",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大安里|興豐路1906巷與羊稠仔": [
@@ -2312,6 +2364,12 @@
         "plate": "lagi2-002_1_20:8304",
         "point_id": "TYN-BADE-7102652627",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "17:00",
+        "plate": "lagi2-002_1_14:8304",
+        "point_id": "TYN-BADE-F58192BCE4",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大明里|桃鶯路11巷": [
@@ -2320,6 +2378,12 @@
         "plate": "lagi2-002_1_20:8302",
         "point_id": "TYN-BADE-BAA9F34E57",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "16:55",
+        "plate": "lagi2-002_1_14:8302",
+        "point_id": "TYN-BADE-9B592694BA",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大明里|華安街1號": [
@@ -2328,6 +2392,20 @@
         "plate": "lagi2-002_1_20:12763",
         "point_id": "TYN-BADE-AF02248074",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "16:45",
+        "plate": "lagi2-002_1_14:12763",
+        "point_id": "TYN-BADE-5EA97E5CD6",
+        "route_scope": "lagi2-002_1_14"
+      }
+    ],
+    "大明里|鶯鳴一巷2號": [
+      {
+        "first_arrive": "16:50",
+        "plate": "lagi2-002_1_14:12764",
+        "point_id": "TYN-BADE-4B5D2666EF",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大明里|龍大莊(興隆街23巷)": [
@@ -2608,6 +2686,12 @@
         "plate": "lagi2-002_1_20:21847",
         "point_id": "TYN-BADE-B89FC78BB3",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "19:05",
+        "plate": "lagi2-002_1_14:21847",
+        "point_id": "TYN-BADE-8B92F2C1D1",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大發里|富榮街36巷": [
@@ -2616,6 +2700,12 @@
         "plate": "lagi2-002_1_20:8314",
         "point_id": "TYN-BADE-6292B0CBC2",
         "route_scope": "lagi2-002_1_20"
+      },
+      {
+        "first_arrive": "18:25",
+        "plate": "lagi2-002_1_14:8314",
+        "point_id": "TYN-BADE-5A7890A110",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大發里|托兒所對面(興豐路2211號)": [
@@ -2624,6 +2714,14 @@
         "plate": "lagi2-002_1_8:12674",
         "point_id": "TYN-BADE-7F83F19663",
         "route_scope": "lagi2-002_1_8"
+      }
+    ],
+    "大發里|福德一路加油站邊社區(福德路401巷3弄1號)": [
+      {
+        "first_arrive": "18:45",
+        "plate": "lagi2-002_1_14:12769",
+        "point_id": "TYN-BADE-68821D6241",
+        "route_scope": "lagi2-002_1_14"
       }
     ],
     "大發里|興豐路2345巷8號": [
@@ -24226,6 +24324,12 @@
         "plate": "lagi2-005_2_21:21727",
         "point_id": "TYN-PINGZHEN-17844984DB",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "18:15",
+        "plate": "lagi2-005_2_1:21727",
+        "point_id": "TYN-PINGZHEN-8834476BED",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|廣平街164巷口": [
@@ -24234,6 +24338,12 @@
         "plate": "lagi2-005_2_21:21726",
         "point_id": "TYN-PINGZHEN-D0E0865E14",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:56",
+        "plate": "lagi2-005_2_1:21726",
+        "point_id": "TYN-PINGZHEN-DC89B4CC18",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|廣東路11巷8號前": [
@@ -24242,6 +24352,12 @@
         "plate": "lagi2-005_2_21:21728",
         "point_id": "TYN-PINGZHEN-2EBB24C420",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "18:20",
+        "plate": "lagi2-005_2_1:21728",
+        "point_id": "TYN-PINGZHEN-BBFC9D657F",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路101號前": [
@@ -24250,6 +24366,12 @@
         "plate": "lagi2-005_2_21:21723",
         "point_id": "TYN-PINGZHEN-5D0B7394E0",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:35",
+        "plate": "lagi2-005_2_1:21723",
+        "point_id": "TYN-PINGZHEN-6182843595",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路179巷15號": [
@@ -24258,6 +24380,12 @@
         "plate": "lagi2-005_2_21:25585",
         "point_id": "TYN-PINGZHEN-848ED24BEA",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:40",
+        "plate": "lagi2-005_2_1:25585",
+        "point_id": "TYN-PINGZHEN-9FA926F585",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路192巷1號（名格社區）": [
@@ -24266,6 +24394,12 @@
         "plate": "lagi2-005_2_21:5703",
         "point_id": "TYN-PINGZHEN-CC01C65212",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:05",
+        "plate": "lagi2-005_2_1:5703",
+        "point_id": "TYN-PINGZHEN-04DF64503E",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路194巷19號": [
@@ -24274,6 +24408,12 @@
         "plate": "lagi2-005_2_21:25586",
         "point_id": "TYN-PINGZHEN-9D19D0F027",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:43",
+        "plate": "lagi2-005_2_1:25586",
+        "point_id": "TYN-PINGZHEN-769EEA789E",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路2號前": [
@@ -24282,6 +24422,12 @@
         "plate": "lagi2-005_2_21:21735",
         "point_id": "TYN-PINGZHEN-5B599AC96D",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:30",
+        "plate": "lagi2-005_2_1:21735",
+        "point_id": "TYN-PINGZHEN-FCA309B760",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|忠孝路66號前": [
@@ -24290,6 +24436,12 @@
         "plate": "lagi2-005_2_21:25358",
         "point_id": "TYN-PINGZHEN-43BB9A1139",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:35",
+        "plate": "lagi2-005_2_1:25358",
+        "point_id": "TYN-PINGZHEN-C9A0B0D912",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|明德北路32號-翡翠宮廷大樓": [
@@ -24298,6 +24450,12 @@
         "plate": "lagi2-005_2_21:5701",
         "point_id": "TYN-PINGZHEN-F36C677672",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "18:03",
+        "plate": "lagi2-005_2_1:5701",
+        "point_id": "TYN-PINGZHEN-1A0C09CE16",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣興里|育達路6號": [
@@ -24306,6 +24464,12 @@
         "plate": "lagi2-005_2_21:21722",
         "point_id": "TYN-PINGZHEN-2A12B83876",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:30",
+        "plate": "lagi2-005_2_1:21722",
+        "point_id": "TYN-PINGZHEN-A778A05509",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|合作街13號前": [
@@ -24314,6 +24478,12 @@
         "plate": "lagi2-005_2_21:21724",
         "point_id": "TYN-PINGZHEN-4A166C4F9E",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:45",
+        "plate": "lagi2-005_2_1:21724",
+        "point_id": "TYN-PINGZHEN-AB22F81D5C",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|合作街80號前": [
@@ -24322,6 +24492,12 @@
         "plate": "lagi2-005_2_21:21731",
         "point_id": "TYN-PINGZHEN-4B80B8626A",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "19:55",
+        "plate": "lagi2-005_2_1:21731",
+        "point_id": "TYN-PINGZHEN-990131E3AA",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|廣平街18巷36號前": [
@@ -24330,6 +24506,12 @@
         "plate": "lagi2-005_2_21:21733",
         "point_id": "TYN-PINGZHEN-A0712D1007",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:20",
+        "plate": "lagi2-005_2_1:21733",
+        "point_id": "TYN-PINGZHEN-B0709E74D0",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|廣平街21號前": [
@@ -24338,6 +24520,12 @@
         "plate": "lagi2-005_2_21:21734",
         "point_id": "TYN-PINGZHEN-BC24546913",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:25",
+        "plate": "lagi2-005_2_1:21734",
+        "point_id": "TYN-PINGZHEN-9F404516B1",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|廣西路30巷口": [
@@ -24346,6 +24534,12 @@
         "plate": "lagi2-005_2_21:21730",
         "point_id": "TYN-PINGZHEN-725E449D17",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "19:45",
+        "plate": "lagi2-005_2_1:21730",
+        "point_id": "TYN-PINGZHEN-7230A51C31",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|廣西路與廣平街口": [
@@ -24354,6 +24548,12 @@
         "plate": "lagi2-005_2_21:21725",
         "point_id": "TYN-PINGZHEN-605611FF17",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "17:50",
+        "plate": "lagi2-005_2_1:21725",
+        "point_id": "TYN-PINGZHEN-29004BDAE6",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|民族路二段1號-第二車開始": [
@@ -24362,6 +24562,12 @@
         "plate": "lagi2-005_2_21:25587",
         "point_id": "TYN-PINGZHEN-504625788B",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "19:35",
+        "plate": "lagi2-005_2_1:25587",
+        "point_id": "TYN-PINGZHEN-147A37C43C",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|環南路223巷2號前": [
@@ -24370,6 +24576,12 @@
         "plate": "lagi2-005_2_21:21732",
         "point_id": "TYN-PINGZHEN-48BAFAE70F",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "20:10",
+        "plate": "lagi2-005_2_1:21732",
+        "point_id": "TYN-PINGZHEN-7D84126CEC",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|環南路35巷33號-第一車結束": [
@@ -24378,6 +24590,12 @@
         "plate": "lagi2-005_2_21:21729",
         "point_id": "TYN-PINGZHEN-85A48A74B6",
         "route_scope": "lagi2-005_2_21"
+      },
+      {
+        "first_arrive": "18:28",
+        "plate": "lagi2-005_2_1:21729",
+        "point_id": "TYN-PINGZHEN-49DD244B0F",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "廣達里|育達路232號(世紀三星社區)": [
@@ -25444,6 +25662,14 @@
         "route_scope": "lagi2-005_2_22"
       }
     ],
+    "湧光里|南豐路1號(第一車結束)": [
+      {
+        "first_arrive": "18:10",
+        "plate": "lagi2-005_2_22:26236",
+        "point_id": "TYN-PINGZHEN-5F30684054",
+        "route_scope": "lagi2-005_2_22"
+      }
+    ],
     "湧光里|工業一路2-8號": [
       {
         "first_arrive": "17:55",
@@ -26490,6 +26716,14 @@
         "plate": "lagi2-005_2_11:21804",
         "point_id": "TYN-PINGZHEN-DC78B08E71",
         "route_scope": "lagi2-005_2_11"
+      }
+    ],
+    "雙連里|中央路255巷": [
+      {
+        "first_arrive": "19:25",
+        "plate": "lagi2-005_2_1:5707",
+        "point_id": "TYN-PINGZHEN-47356C4A02",
+        "route_scope": "lagi2-005_2_1"
       }
     ],
     "雙連里|庫房南路95號(雜貨店)": [
