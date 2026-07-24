@@ -46,18 +46,43 @@ def check_l1_structure(records: list[dict[str, Any]]) -> dict[str, Any]:
 def check_l2_reasonableness(records: list[dict[str, Any]]) -> dict[str, Any]:
     time_violations = 0
     weekday_violations = 0
+    # normalize.py 逐筆標記的資料來源依據(見 DECISIONS.md F1/F2),不是用「值長什麼樣子」猜測:
+    # 'listed'  = 來源本身有明確星期清單(如高雄/台中逐日欄位),解析後理應非空;
+    # 'absent'  = 來源本身只有「班表時間:HH:MM」、天生沒有逐日星期欄位(如桃園 70.6% 記錄),
+    #             解析後預期就是空陣列,不是資料壞掉;
+    # 'unspecified' = 尚未套用此標記的舊 pipeline(現有高雄/台中 normalize_record_* 尚未加這個
+    #             欄位),維持原本「非空且值域合法才算正常」的把關方式,避免對舊資料放寬。
+    weekday_source_counts: dict[str, int] = {"listed": 0, "absent": 0, "unspecified": 0}
     coord_checked = 0
     coord_violations = 0
 
     for r in records:
-        for entry in r.get("schedule", []) + r.get("recycling_schedule", []):
+        # `.get(key, [])` 只在缺 key 時才回退到預設值,recycling_schedule 明確存 null 時
+        # (見 DECISIONS.md D4:查無資源回收資料時如實存 NULL,非缺欄位)會直接回傳 None,
+        # 與 list 相加即 TypeError——高雄/台中至今未實際存過 null 才沒觸發過,桃園會是
+        # 第一個真的用上 null 的縣市,改用 `or []` 讓 None 與缺 key 都正確回退。
+        for entry in (r.get("schedule") or []) + (r.get("recycling_schedule") or []):
             arrive, depart = entry.get("arrive"), entry.get("depart")
-            for t in (arrive, depart):
-                if not _is_valid_time(t):
-                    time_violations += 1
+            # depart 可為 null 是既定資料形狀(見 DECISIONS.md D1、site/src/lib/data.ts
+            # ScheduleEntry.depart 註解:部分縣市如桃園只有到站時間、無離站時間,不得推算填補),
+            # null 不算格式異常;arrive 則任何情況都必須是合法時間,無此彈性。
+            if not _is_valid_time(arrive):
+                time_violations += 1
+            if depart is not None and not _is_valid_time(depart):
+                time_violations += 1
+
             wd = entry.get("weekday", [])
-            if not wd or any(d < 1 or d > 7 for d in wd):
-                weekday_violations += 1
+            wd_source = entry.get("weekday_source", "unspecified")
+            weekday_source_counts[wd_source] = weekday_source_counts.get(wd_source, 0) + 1
+
+            if wd_source == "absent":
+                # 來源標記已說明這筆天生沒有星期資訊,空陣列是預期值;若解析器卻生出非空 weekday,
+                # 代表標記與實際結果矛盾,那才是真正的異常。
+                if wd:
+                    weekday_violations += 1
+            else:
+                if not wd or any(d < 1 or d > 7 for d in wd):
+                    weekday_violations += 1
 
         lat, lng = r.get("lat"), r.get("lng")
         if lat is not None and lng is not None:
@@ -68,10 +93,20 @@ def check_l2_reasonableness(records: list[dict[str, Any]]) -> dict[str, Any]:
                 coord_violations += 1
 
     coord_violation_rate = coord_violations / coord_checked if coord_checked else 0.0
+    # 每季執行都會印出這個比例分佈,供人工比對「上一季 vs 這一季」是否有明顯變動——
+    # 例如某縣市 absent 佔比忽然從 70% 掉到 20%,代表官方資料來源格式本身變了,值得追查,
+    # 而不是等頁面出現奇怪內容才發現(見 DECISIONS.md F1/F2)。
+    total_weekday_entries = sum(weekday_source_counts.values())
+    weekday_source_rates = {
+        k: round(v / total_weekday_entries, 4) if total_weekday_entries else 0.0
+        for k, v in weekday_source_counts.items()
+    }
     return {
         "layer": "L2_reasonableness",
         "time_violations": time_violations,
         "weekday_violations": weekday_violations,
+        "weekday_source_counts": weekday_source_counts,
+        "weekday_source_rates": weekday_source_rates,
         "coord_checked": coord_checked,
         "coord_violations": coord_violations,
         "coord_violation_rate": round(coord_violation_rate, 4),

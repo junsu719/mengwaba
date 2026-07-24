@@ -3,10 +3,17 @@ export const prerender = false;
 
 import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { CITIES, parsePointId, nearestPoints, todayScheduleEntry, todayWeekdayTaipei, getCity } from '../../../../lib/data';
+import { CITIES, parsePointId, nearestPoints, isWeekdayUnknown, getCity } from '../../../../lib/data';
 import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
-import { todaySummarySentence, introSentence, buildFaq, scheduleTimeText } from '../../../../lib/content';
+import {
+  todaySummarySentence,
+  introSentence,
+  buildFaq,
+  scheduleTimeText,
+  weekdayUnknownNotice,
+  officialQuerySystem,
+} from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
 // Phase 4.5 Step 4:清運點頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3)。
@@ -40,10 +47,10 @@ if (!point) {
 
 const nearby = nearestPoints(point, group.points, 5);
 const faq = buildFaq(point, group.district);
-const weekday = todayWeekdayTaipei();
-const todayEntry = todayScheduleEntry(point, weekday);
 const pageUrl = Astro.url.href;
 const hasRecycling = !!point.recycling_schedule && point.recycling_schedule.length > 0;
+const scheduleWeekdayUnknown = point.schedule.some(isWeekdayUnknown);
+const recyclingWeekdayUnknown = hasRecycling && point.recycling_schedule!.some(isWeekdayUnknown);
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -74,6 +81,21 @@ const jsonLd = [
   <p>{introSentence(point)}</p>
 
   <h2>本週時刻表</h2>
+  {
+    scheduleWeekdayUnknown && (
+      <p class="weekday-unknown-notice">
+        {weekdayUnknownNotice(point)}
+        {officialQuerySystem(point) && (
+          <>
+            {' '}
+            <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+              前往查詢
+            </a>
+          </>
+        )}
+      </p>
+    )
+  }
   <table class="schedule-table">
     <colgroup>
       <col class="col-weekday" />
@@ -89,7 +111,7 @@ const jsonLd = [
       {
         point.schedule.map((s) => (
           <tr>
-            <td><WeekdayBadge weekday={s.weekday} /></td>
+            <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
             <td>{scheduleTimeText(s, point.collection_type)}</td>
           </tr>
         ))
@@ -101,6 +123,21 @@ const jsonLd = [
     hasRecycling && (
       <>
         <h2>資源回收時刻</h2>
+        {
+          recyclingWeekdayUnknown && (
+            <p class="weekday-unknown-notice">
+              {weekdayUnknownNotice(point, '回收')}
+              {officialQuerySystem(point) && (
+                <>
+                  {' '}
+                  <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+                    前往查詢
+                  </a>
+                </>
+              )}
+            </p>
+          )
+        }
         <table class="schedule-table">
           <colgroup>
             <col class="col-weekday" />
@@ -115,7 +152,7 @@ const jsonLd = [
           <tbody>
             {point.recycling_schedule!.map((s) => (
               <tr>
-                <td><WeekdayBadge weekday={s.weekday} /></td>
+                <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
                 <td>{scheduleTimeText(s, point.collection_type)}</td>
               </tr>
             ))}

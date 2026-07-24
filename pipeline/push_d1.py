@@ -75,6 +75,24 @@ def sql_json(v: Any) -> str:
     return sql_str(json.dumps(v, ensure_ascii=False))
 
 
+def sanitize_schedule_entries(entries: list[dict[str, Any]] | None) -> list[dict[str, Any]] | None:
+    """D1 寫入前的最後一道保證(見 DECISIONS.md F1/F2 第 9 點:「保證在 pipeline 寫入端做,不指望
+    消費端每處防禦」)。兩件事:①`weekday` 一律確保是陣列——不論上游 normalize.py 給的是 `None`、
+    JSON `null`,還是漏掉這個 key,一律視為 `[]`(見 site/src/lib/data.ts ScheduleEntry.weekday 註解:
+    空陣列代表「星期未知」,這裡不留任何把 null 這種型別以外的值傳給消費端的空間,WeekdayBadge/
+    todayScheduleEntry 等處才不需要各自再防一次 null);②`weekday_source` 只是 validate.py 稽核用的
+    資料來源標記(見 pipeline/validate.py check_l2_reasonableness 註解),只留在 data/normalized/*.json,
+    不需要跟著進 D1、也不是任何頁面消費端需要的欄位,一併拿掉。"""
+    if not entries:
+        return entries
+    sanitized = []
+    for entry in entries:
+        clean = {k: v for k, v in entry.items() if k != "weekday_source"}
+        clean["weekday"] = clean.get("weekday") or []
+        sanitized.append(clean)
+    return sanitized
+
+
 def build_insert_statements(records: list[dict[str, Any]]) -> list[str]:
     statements = []
     batch: list[str] = []
@@ -99,8 +117,8 @@ def build_insert_statements(records: list[dict[str, Any]]) -> list[str]:
             sql_str(r.get("address")),
             sql_num(r.get("lat")),
             sql_num(r.get("lng")),
-            sql_json(r["schedule"]),
-            sql_json(r.get("recycling_schedule")),
+            sql_json(sanitize_schedule_entries(r["schedule"])),
+            sql_json(sanitize_schedule_entries(r.get("recycling_schedule"))),
             sql_str(r["collection_type"]),
             sql_str(r.get("notes")),
             sql_str(r["source"]),

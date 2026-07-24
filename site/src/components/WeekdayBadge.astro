@@ -9,15 +9,21 @@ const { weekday } = Astro.props;
 const LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 const active = new Set(weekday);
 const ariaLabel = weekday.map((d) => `週${LABELS[d - 1]}`).join('、');
+// weekday 為空陣列代表「星期未知」而非「這些天都不收運」(見 data.ts ScheduleEntry.weekday 註解),
+// 不得渲染全暗的星期格──那看起來像是在宣告「這天都不收」。呼叫端負責另外顯示 F1 的誠實說明。
 ---
 
-<span class="weekday-badge" aria-label={ariaLabel}>
-  {LABELS.map((label, i) => (
-    <span class={active.has(i + 1) ? 'wd-on' : 'wd-off'} aria-hidden="true">
-      {label}
+{
+  weekday.length > 0 && (
+    <span class="weekday-badge" aria-label={ariaLabel}>
+      {LABELS.map((label, i) => (
+        <span class={active.has(i + 1) ? 'wd-on' : 'wd-off'} aria-hidden="true">
+          {label}
+        </span>
+      ))}
     </span>
-  ))}
-</span>
+  )
+}
 
 <style>
   .weekday-badge {

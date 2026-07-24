@@ -1,6 +1,36 @@
 import type { CollectionPoint, DistrictGroup, ScheduleEntry } from './data';
 import { WEEKDAY_NAMES, todayScheduleEntry, todayWeekdayTaipei } from './data';
 
+interface OfficialQuerySystem {
+  name: string;
+  url: string;
+}
+
+/**
+ * 部分縣市除了開放資料平台(CityInfo.sourceUrl,標示資料集出處用)外,另有獨立維護的
+ * 即時查詢系統,是 weekday 未知時「請以官方系統為準」文案要連的對象。目前僅桃園有此需求,
+ * 見 DECISIONS.md F1(2026-07-24)、pipeline/fetch_taoyuan_raw.py 開頭註解。
+ */
+const OFFICIAL_QUERY_SYSTEMS: Record<string, OfficialQuerySystem> = {
+  桃園市: { name: '桃園市環境管理處「垃圾清運路線即時查詢系統」', url: 'https://route.tyoem.gov.tw/' },
+};
+
+export function officialQuerySystem(point: CollectionPoint): OfficialQuerySystem | null {
+  return OFFICIAL_QUERY_SYSTEMS[point.city] ?? null;
+}
+
+function querySystemText(point: CollectionPoint): string {
+  return officialQuerySystem(point)?.name ?? '官方查詢系統';
+}
+
+/**
+ * F1 文案(2026-07-24 Jun 定稿版本 B,2026-07-24 二次拍板拿掉「不顯示星期標籤」這種談自家 UI 的話):
+ * 只用在頁面正文(班表表格旁),不得放進 meta description——見 introSentence() 的分工說明。
+ */
+export function weekdayUnknownNotice(point: CollectionPoint, label: string = '收運'): string {
+  return `本站僅取得此清運點的到點時間,未取得${label}星期。完整班表請以${querySystemText(point)}為準。`;
+}
+
 /** 依 point_id 產生穩定雜湊,用來在多組文案中選擇變體,避免全站同一句模板換變數。 */
 function stableHash(input: string): number {
   let h = 0;
@@ -66,7 +96,16 @@ export function todaySummarySentence(point: CollectionPoint): string {
   }
 
   const scheduledDays = [...new Set(point.schedule.flatMap((s) => s.weekday))].sort((a, b) => a - b);
-  const nextDaysText = scheduledDays.length > 0 ? weekdayListText(scheduledDays) : '無固定班次資料';
+  if (scheduledDays.length === 0) {
+    // F1(2026-07-24 拍板):weekday 未知時,todayScheduleEntry 必定找不到今天的班次,
+    // 但這不代表「今天沒收運」——不得沿用下面的「休收」句型,見 DECISIONS.md。
+    const unknownVariants = [
+      `本站未取得${place}的收運星期資料,無法判斷今天是否收運,請以${querySystemText(point)}查詢完整班表(到站時間見下方時刻表)。`,
+      `${place}的收運星期本站尚未取得,今天是否收運請以${querySystemText(point)}為準,本頁僅能提供到站時間。`,
+    ];
+    return pick(unknownVariants, seed + 1);
+  }
+  const nextDaysText = weekdayListText(scheduledDays);
   const variants = [
     `今天(週${WEEKDAY_NAMES[weekday]})${place}沒有排定清運班次,這個點固定收運日為${nextDaysText},請依時刻表安排倒垃圾時間。`,
     `週${WEEKDAY_NAMES[weekday]}垃圾車不會經過${place},此清運點的收運日固定在${nextDaysText}。`,
@@ -78,7 +117,6 @@ export function todaySummarySentence(point: CollectionPoint): string {
 export function introSentence(point: CollectionPoint): string {
   const seed = stableHash(point.point_id);
   const scheduledDays = [...new Set(point.schedule.flatMap((s) => s.weekday))].sort((a, b) => a - b);
-  const daysText = weekdayListText(scheduledDays);
   const times = point.schedule[0];
   if (!times) {
     return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
@@ -87,6 +125,21 @@ export function introSentence(point: CollectionPoint): string {
   const timeText = scheduleTimeText(times, point.collection_type);
   // collection_type 未知(如桃園,來源無此欄位)時不得斷言「定點」,見 DECISIONS.md D3。
   const typeKnown = point.collection_type != null;
+
+  if (scheduledDays.length === 0) {
+    // F1(2026-07-24 拍板,2026-07-24 二次拍板釐清分工):weekday 未知時不得套用固定星期的句型
+    // (daysText 會是空字串,直接沿用下面模板會產生「固定於  10:00〜10:30 收運」這種語意不全的句子)。
+    // 這個函式的輸出同時是 <meta description>(5,000+ 頁規模),不得塞免責聲明/官方連結文字——
+    // 那類說明只放頁面正文(見 weekdayUnknownNotice(),在班表表格旁顯示),這裡維持乾淨的單句敘述。
+    const unknownVariants = [
+      `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},垃圾車到站時間約 ${timeText}。`,
+      `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車到站時間約 ${timeText}。`,
+      `這是${point.district}${point.village ?? ''}的其中一個清運點,垃圾車到站時間約 ${timeText}。`,
+    ];
+    return pick(unknownVariants, seed);
+  }
+
+  const daysText = weekdayListText(scheduledDays);
   const variants = passThrough
     ? [
         `${point.address ?? point.point_name} 是${point.district}的沿街收運路段,垃圾車固定於${daysText} ${timeText},行進中不停等,請提前在路邊準備好垃圾。`,

@@ -5,10 +5,21 @@
 // 讓 on-demand D1 頁面(行政區頁/清運點頁)引入時不會連帶把整個縣市 JSON 打包進部署用的 Worker。
 
 export interface ScheduleEntry {
+  /**
+   * 空陣列 `[]` 代表「未取得收運星期」(部分縣市資料源如桃園只有「班表時間:HH:MM」、無逐日星期欄位),
+   * 不代表「這些天都不收運」——凡出現在 schedule 裡的 entry 必定有在收運,只是星期未知。
+   * 一律用 `[]`、不用 `null`(型別維持 number[] 不變,消費端不需額外防 null);
+   * 判斷用 isWeekdayUnknown(),不要直接檢查 .length === 0,避免語意分散。見 DECISIONS.md F1/F2(2026-07-24)。
+   */
   weekday: number[];
   arrive: string;
   /** 可為 null:部分縣市資料源(如桃園)只有到站時間、無離站時間,不得用 arrive + N 分鐘等方式推算填補,見 DECISIONS.md。 */
   depart: string | null;
+}
+
+/** 見 ScheduleEntry.weekday 註解:空陣列是「星期未知」,不是「不收運」,判斷一律走這個 helper。 */
+export function isWeekdayUnknown(entry: ScheduleEntry): boolean {
+  return entry.weekday.length === 0;
 }
 
 export interface CollectionPoint {

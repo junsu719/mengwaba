@@ -30,7 +30,16 @@ class IdentityRow(TypedDict):
     district_slug: str
     village: str | None
     point_name: str
+    # 主要消歧指紋:高雄/台中放實際車牌。缺乏車牌欄位的縣市(如桃園,來源沒有逐點車牌,
+    # 只有逐路線的 car1)可以放其他能穩定重現同一實體點的複合字串,例如桃園用
+    # f"{routing_id}:{poi_id}"(裸 poi_id 不安全,經查證同一 poi_id 會跨路線重複出現、
+    # 若當全域唯一鍵直接比對會誤判——見 DECISIONS.md E3-4)。欄位名維持 plate 不改,
+    # 避免跟舊有 data/id-map/{kaohsiung,taichung}.json 既有存檔的鍵名不相容。
     plate: str | None
+    # 消歧比對範圍限制,預設 None(不限範圍,高雄/台中維持現狀)。設定時,第二輪「首個
+    # 抵達時間最接近」與第二輪半「依原始順序 position-pair」備援只在相同 route_scope
+    # 內比對,避免跨路線誤配對(桃園設為 routing_id,見 DECISIONS.md E3-4)。
+    route_scope: str | None
     first_arrive: str | None  # "HH:MM",找不到有效班次時可為 None
 
 
@@ -88,6 +97,7 @@ def assign_point_ids(city_key: str, prefix: str, rows: list[IdentityRow]) -> lis
                     {
                         "point_id": pid,
                         "plate": rows[group_idxs[0]].get("plate"),
+                        "route_scope": rows[group_idxs[0]].get("route_scope"),
                         "first_arrive": rows[group_idxs[0]].get("first_arrive"),
                     }
                 ]
@@ -109,18 +119,24 @@ def assign_point_ids(city_key: str, prefix: str, rows: list[IdentityRow]) -> lis
                         used_existing.add(j)
                         result_ids[i] = entries[j]["point_id"]
                         entries[j]["plate"] = plate
+                        entries[j]["route_scope"] = rows[i].get("route_scope")
                         entries[j]["first_arrive"] = rows[i].get("first_arrive")
                         break
 
-            # 第二輪:剩下的用「首個抵達時間」最接近配對既有列
+            # 第二輪:剩下的用「首個抵達時間」最接近配對既有列,若有設定 route_scope
+            # (目前僅桃園)則只在相同 route_scope 內比對,避免跨路線誤配對(見 DECISIONS.md
+            # E3-4);route_scope 皆為 None 時(高雄/台中)None==None 恆成立,行為不變。
             remaining_rows = [i for i in group_idxs if result_ids[i] is None]
             remaining_entries = [j for j in range(len(entries)) if j not in used_existing]
             for i in list(remaining_rows):
                 rm = _time_to_min(rows[i].get("first_arrive"))
                 if rm is None:
                     continue
+                row_scope = rows[i].get("route_scope")
                 best_j, best_diff = None, None
                 for j in remaining_entries:
+                    if entries[j].get("route_scope") != row_scope:
+                        continue
                     em = _time_to_min(entries[j].get("first_arrive"))
                     if em is None:
                         continue
@@ -132,18 +148,25 @@ def assign_point_ids(city_key: str, prefix: str, rows: list[IdentityRow]) -> lis
                     remaining_rows.remove(i)
                     result_ids[i] = entries[best_j]["point_id"]
                     entries[best_j]["plate"] = rows[i].get("plate")
+                    entries[best_j]["route_scope"] = rows[i].get("route_scope")
                     entries[best_j]["first_arrive"] = rows[i].get("first_arrive")
 
             # 第二輪半:車牌、抵達時間皆缺(如台中部分「僅資源回收無一般垃圾」列,
             # 見 2026-07-21 重跑驗證發現),已無任何可比對的信號時,依原始順序position-pair
             # 剩下的列與既有條目——只要來源資料本身順序不變,這樣仍能保持 ID 穩定,
-            # 優於「一律當新點」導致同一批資料重跑就整批洗牌。
-            for i, j in zip(list(remaining_rows), list(remaining_entries)):
+            # 優於「一律當新點」導致同一批資料重跑就整批洗牌。同樣尊重 route_scope
+            # (None==None 時對高雄/台中無影響)。
+            for i in list(remaining_rows):
+                row_scope = rows[i].get("route_scope")
+                match_j = next((j for j in remaining_entries if entries[j].get("route_scope") == row_scope), None)
+                if match_j is None:
+                    continue
                 remaining_rows.remove(i)
-                remaining_entries.remove(j)
-                result_ids[i] = entries[j]["point_id"]
-                entries[j]["plate"] = rows[i].get("plate")
-                entries[j]["first_arrive"] = rows[i].get("first_arrive")
+                remaining_entries.remove(match_j)
+                result_ids[i] = entries[match_j]["point_id"]
+                entries[match_j]["plate"] = rows[i].get("plate")
+                entries[match_j]["route_scope"] = row_scope
+                entries[match_j]["first_arrive"] = rows[i].get("first_arrive")
 
             # 第三輪:真正新出現的列,分配新的消歧序號(接在既有筆數之後,不重用)
             for i in remaining_rows:
@@ -155,6 +178,7 @@ def assign_point_ids(city_key: str, prefix: str, rows: list[IdentityRow]) -> lis
                     {
                         "point_id": pid,
                         "plate": rows[i].get("plate"),
+                        "route_scope": rows[i].get("route_scope"),
                         "first_arrive": rows[i].get("first_arrive"),
                     }
                 )
