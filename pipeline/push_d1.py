@@ -8,9 +8,17 @@
 `wrangler d1 execute mengwaba-trash-points [--local|--remote] --file=d1/import/<city_key>.sql`
 (於 site/ 目錄下執行,因 D1 binding 設定在 site/wrangler.jsonc)套用,兩步驟分開以便套用前可先檢查 SQL 內容。
 
-匯入範圍:只匯入「publishable」子集(district && point_name && schedule 非空),與
-site/src/lib/data.ts 的 loadCityPoints() 靜態 build 過濾邏輯一致,確保 D1 on-demand 查詢
-回傳的頁面集合與現行靜態頁面集合完全相同。被濾除的筆數逐縣市記錄於報告,不靜默丟棄(2026-07-17 拍板)。
+匯入範圍:只匯入「publishable」子集(district && point_name && (schedule 或 recycling_schedule
+至少一個非空)),與 site/src/lib/data-static.ts 的 loadCityPoints() 靜態 build 過濾邏輯一致,
+確保 D1 on-demand 查詢回傳的頁面集合與現行靜態頁面集合完全相同。被濾除的筆數逐縣市記錄於報告,
+不靜默丟棄(2026-07-17 拍板)。
+
+I1(2026-07-27 拍板):原本只要求 schedule 非空,會把「純資源回收點」(schedule=[] 但
+recycling_schedule 有值,如桃園 lagi2-002_C_5/C_6 兩條純回收路線共 98 點)排除在外——但
+normalize.py 當初特地做 car_type 聯集就是為了不讓這批點被路線篩選誤刪,結果在這裡被同一種
+邏輯抵消。這批點有真實服務(回收班表、里別、座標齊全),改為只有 schedule 與 recycling_schedule
+「兩者皆空」才排除;頁面層(site/src/lib/content.ts)已改為對 schedule 為空但 recycling_schedule
+非空的點,顯示「僅提供資源回收收運」的措辭,不再誤植一般垃圾清運文案。
 
 每次匯入以「單一縣市」為更新單位:SQL 內容為 `DELETE FROM points WHERE city_slug = ?` 後接
 INSERT 陣列,套用時不影響其他縣市既有列(見 d1/schema.sql 開頭註解的 DROP TABLE 陷阱說明)。
@@ -54,8 +62,8 @@ def classify(record: dict[str, Any]) -> str | None:
         return "missing_district"
     if not record.get("point_name"):
         return "missing_point_name"
-    if not record.get("schedule"):
-        return "empty_schedule"
+    if not record.get("schedule") and not record.get("recycling_schedule"):
+        return "empty_schedule_and_recycling"
     return None
 
 
@@ -73,6 +81,13 @@ def sql_json(v: Any) -> str:
     if not v:
         return "NULL"
     return sql_str(json.dumps(v, ensure_ascii=False))
+
+
+def sql_json_array(v: Any) -> str:
+    """給 schema 裡宣告 NOT NULL 的 schedule 欄位用:空陣列(純資源回收點,I1)一律序列化成
+    JSON 字串 '[]',不能像 sql_json() 一樣把 falsy 值收斂成 SQL NULL,否則違反 NOT NULL 限制。
+    site/src/lib/data-d1.ts 的 rowToPoint() 對這個欄位一律直接 JSON.parse,不判斷 null。"""
+    return sql_str(json.dumps(v or [], ensure_ascii=False))
 
 
 def sanitize_schedule_entries(entries: list[dict[str, Any]] | None) -> list[dict[str, Any]] | None:
@@ -117,7 +132,7 @@ def build_insert_statements(records: list[dict[str, Any]]) -> list[str]:
             sql_str(r.get("address")),
             sql_num(r.get("lat")),
             sql_num(r.get("lng")),
-            sql_json(sanitize_schedule_entries(r["schedule"])),
+            sql_json_array(sanitize_schedule_entries(r["schedule"])),
             sql_json(sanitize_schedule_entries(r.get("recycling_schedule"))),
             sql_str(r["collection_type"]),
             sql_str(r.get("notes")),

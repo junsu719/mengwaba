@@ -48,32 +48,57 @@ export function weekdayListText(weekday: number[]): string {
   return weekday.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、');
 }
 
-/** 沿街收運且到站/離站時間相同,代表車輛只是經過、不停等,措辭需與定點清運區分(見 CLAUDE.md 台中頁面規則)。 */
-export function isPassThrough(entry: ScheduleEntry, collectionType: string | null): boolean {
-  return collectionType === '沿街收運' && entry.arrive === entry.depart;
+/**
+ * collection_type 是官方標示的事實,是否為沿街收運只看這個欄位——不再額外要求 arrive===depart
+ * (I3,2026-07-27 拍板,推翻先前的 arrive===depart 判準)。之前的判準以為沿街收運等於「到站即離站」
+ * 的單一時刻,但台中 95% 的沿街收運點實際記錄的是 5–15 分鐘窗口(arrive≠depart),導致這些點被誤判
+ * 成定點清運站措辭,見 DECISIONS.md。
+ */
+export function isPassThrough(collectionType: string | null): boolean {
+  return collectionType === '沿街收運';
+}
+
+/** 沿街收運的時間片語:單一時刻用「約 X」,有時間窗口(如台中多筆記錄的 5–15 分鐘區間)用「約 X〜Y」(I3)。 */
+function passThroughTimePhrase(entry: ScheduleEntry): string {
+  return entry.arrive === entry.depart ? `約 ${entry.arrive}` : `約 ${entry.arrive}〜${entry.depart}`;
 }
 
 export function scheduleTimeText(entry: ScheduleEntry, collectionType: string | null): string {
-  if (isPassThrough(entry, collectionType)) return `約 ${entry.arrive} 經過`;
+  if (isPassThrough(collectionType)) return `${passThroughTimePhrase(entry)} 經過`;
   if (entry.depart === null) return `約 ${entry.arrive} 抵達`;
   return `${entry.arrive}〜${entry.depart}`;
 }
 
-export function todaySummarySentence(point: CollectionPoint): string {
-  const weekday = todayWeekdayTaipei();
-  const entry = todayScheduleEntry(point, weekday);
+export function todaySummarySentence(point: CollectionPoint, weekday: number = todayWeekdayTaipei()): string {
   const seed = stableHash(point.point_id);
   const place = point.point_name ?? '這個清運點';
 
+  if (point.schedule.length === 0) {
+    // I1(2026-07-27 拍板):純資源回收點(如 lagi2-002_C_5/C_6 兩條純回收路線,無一般垃圾班次)
+    // 不得說「今天沒有收運」——這點本來就不提供一般垃圾清運服務,不是「今天休收」。
+    const hasRecycling = !!point.recycling_schedule && point.recycling_schedule.length > 0;
+    if (hasRecycling) {
+      const recyclingVariants = [
+        `${place}僅提供資源回收收運,無一般垃圾清運服務,回收到站時間請見下方時刻表。`,
+        `本站僅取得${place}的資源回收班表,此點不提供一般垃圾清運,回收時間請參考下方時刻表。`,
+      ];
+      return pick(recyclingVariants, seed + 2);
+    }
+    // 理論上不會走到這裡(push_d1.py 已排除 schedule 與 recycling_schedule 皆空的點),防禦性保留。
+    return `本站尚未取得${place}的收運時刻資料。`;
+  }
+
+  const entry = todayScheduleEntry(point, weekday);
+
   if (entry) {
-    const passThrough = isPassThrough(entry, point.collection_type);
+    const passThrough = isPassThrough(point.collection_type);
     // collection_type 未知(如桃園,來源無此欄位)時不得斷言「定點」,見 DECISIONS.md D3。
     const typeKnown = point.collection_type != null;
     const variants = passThrough
       ? [
-          `今天(週${WEEKDAY_NAMES[weekday]})垃圾車約 ${entry.arrive} 經過${place},此處為沿街收運、車輛不會停等,請提前在路邊等候。`,
-          `today-yes: 今天是週${WEEKDAY_NAMES[weekday]},${place}為沿街收運路段,垃圾車約 ${entry.arrive} 經過,請提早把垃圾拿到路邊。`,
-          `${place}今天(週${WEEKDAY_NAMES[weekday]})正常收運,垃圾車約 ${entry.arrive} 經過此路段(沿街收運、不停留),建議提早 5 分鐘到路邊等候。`,
+          `今天(週${WEEKDAY_NAMES[weekday]})垃圾車${passThroughTimePhrase(entry)} 經過${place},此處為沿街收運、車輛不會停等,請提前在路邊等候。`,
+          `today-yes: 今天是週${WEEKDAY_NAMES[weekday]},${place}為沿街收運路段,垃圾車${passThroughTimePhrase(entry)} 經過,請提早把垃圾拿到路邊。`,
+          `${place}今天(週${WEEKDAY_NAMES[weekday]})正常收運,垃圾車${passThroughTimePhrase(entry)} 經過此路段(沿街收運、不停留),建議提早 5 分鐘到路邊等候。`,
         ]
       : entry.depart === null
         ? typeKnown
@@ -99,9 +124,13 @@ export function todaySummarySentence(point: CollectionPoint): string {
   if (scheduledDays.length === 0) {
     // F1(2026-07-24 拍板):weekday 未知時,todayScheduleEntry 必定找不到今天的班次,
     // 但這不代表「今天沒收運」——不得沿用下面的「休收」句型,見 DECISIONS.md。
+    //
+    // 這句只負責「今天到底能不能判斷」的一句話總結,不重複 weekdayUnknownNotice()——
+    // 那段(含官方查詢系統連結)已經在頁面正文的班表旁顯示一次,兩段擺在一起會讓使用者
+    // 讀到兩次幾乎相同的「未取得星期,請以官方系統為準」(2026-07-27 修正,見 DECISIONS.md)。
     const unknownVariants = [
-      `本站未取得${place}的收運星期資料,無法判斷今天是否收運,請以${querySystemText(point)}查詢完整班表(到站時間見下方時刻表)。`,
-      `${place}的收運星期本站尚未取得,今天是否收運請以${querySystemText(point)}為準,本頁僅能提供到站時間。`,
+      `本站未取得${place}的收運星期資料,無法確認今天是否收運,到站時間請見下方時刻表。`,
+      `${place}的收運星期本站尚未取得,到站時間請參考下方時刻表,詳細說明如下。`,
     ];
     return pick(unknownVariants, seed + 1);
   }
@@ -119,9 +148,43 @@ export function introSentence(point: CollectionPoint): string {
   const scheduledDays = [...new Set(point.schedule.flatMap((s) => s.weekday))].sort((a, b) => a - b);
   const times = point.schedule[0];
   if (!times) {
-    return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
+    // I1(2026-07-27 拍板):純資源回收點(schedule=[],如 lagi2-002_C_5/C_6 兩條純回收路線,
+    // 共 98 點),不得沿用「目前尚無公開時刻資料」——這批點確實有資源回收服務,只是沒有
+    // 一般垃圾班次,措辭需明講「僅提供資源回收」,不能誤導成完全沒有資料。
+    const recyclingTimes = point.recycling_schedule?.[0];
+    if (!recyclingTimes) {
+      return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
+    }
+    const recyclingDays = [...new Set(point.recycling_schedule!.flatMap((s) => s.weekday))].sort((a, b) => a - b);
+    const recyclingArrival =
+      recyclingTimes.depart === null
+        ? `到站時間約 ${recyclingTimes.arrive}`
+        : `到站時間約在 ${recyclingTimes.arrive}〜${recyclingTimes.depart} 之間`;
+    if (recyclingDays.length === 0) {
+      const recyclingUnknownVariants = [
+        `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供資源回收收運,${recyclingArrival}。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」僅提供資源回收收運,${recyclingArrival}。`,
+      ];
+      return pick(recyclingUnknownVariants, seed);
+    }
+    const recyclingDaysText = weekdayListText(recyclingDays);
+    // 純回收點裡有 10 筆同樣有多個不同時段的 entry,套用與 I2 相同的「不承諾單一時間」規則,
+    // 不能因為是新分支就重蹈 Bug A 的覆轍。
+    const recyclingVaried = new Set(point.recycling_schedule!.map((s) => `${s.arrive}|${s.depart}`)).size > 1;
+    if (recyclingVaried) {
+      const recyclingVariedVariants = [
+        `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供資源回收收運,固定於${recyclingDaysText}收運,不同星期的到站時間略有不同,詳見下方時刻表。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」僅提供資源回收收運,固定於${recyclingDaysText}收運,各星期到站時間不盡相同,詳見下方時刻表。`,
+      ];
+      return pick(recyclingVariedVariants, seed);
+    }
+    const recyclingVariants = [
+      `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供資源回收收運,固定於${recyclingDaysText} ${recyclingArrival}。`,
+      `位於${point.village ?? point.district}的「${point.point_name}」僅提供資源回收收運,固定於${recyclingDaysText} ${recyclingArrival}。`,
+    ];
+    return pick(recyclingVariants, seed);
   }
-  const passThrough = isPassThrough(times, point.collection_type);
+  const passThrough = isPassThrough(point.collection_type);
   const timeText = scheduleTimeText(times, point.collection_type);
   // collection_type 未知(如桃園,來源無此欄位)時不得斷言「定點」,見 DECISIONS.md D3。
   const typeKnown = point.collection_type != null;
@@ -131,19 +194,43 @@ export function introSentence(point: CollectionPoint): string {
     // (daysText 會是空字串,直接沿用下面模板會產生「固定於  10:00〜10:30 收運」這種語意不全的句子)。
     // 這個函式的輸出同時是 <meta description>(5,000+ 頁規模),不得塞免責聲明/官方連結文字——
     // 那類說明只放頁面正文(見 weekdayUnknownNotice(),在班表表格旁顯示),這裡維持乾淨的單句敘述。
+    //
+    // 注意:此處不可直接沿用 scheduleTimeText() 的回傳值套進「到站時間約 ...」這種外層片語——
+    // scheduleTimeText() 對 depart===null / passThrough 的情況本身就已回傳「約 X 抵達/經過」的完整片語,
+    // 外層再包一層「到站時間約」會疊字重複(如「到站時間約 約 17:00 抵達」)。這裡改成依三種情境
+    // (經過/抵達/區間)各自組出通順的單句,不重用 scheduleTimeText() 的輸出(2026-07-27 修正,見 DECISIONS.md)。
+    const arrivalPhrase = passThrough
+      ? `${passThroughTimePhrase(times)} 經過`
+      : times.depart === null
+        ? `到站時間約 ${times.arrive}`
+        : `到站時間約在 ${times.arrive}〜${times.depart} 之間`;
     const unknownVariants = [
-      `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},垃圾車到站時間約 ${timeText}。`,
-      `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車到站時間約 ${timeText}。`,
-      `這是${point.district}${point.village ?? ''}的其中一個清運點,垃圾車到站時間約 ${timeText}。`,
+      `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},垃圾車${arrivalPhrase}。`,
+      `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車${arrivalPhrase}。`,
+      `這是${point.district}${point.village ?? ''}的其中一個清運點,垃圾車${arrivalPhrase}。`,
     ];
     return pick(unknownVariants, seed);
   }
 
   const daysText = weekdayListText(scheduledDays);
+  const timeShapesVaried = new Set(point.schedule.map((s) => `${s.arrive}|${s.depart}`)).size > 1;
+  if (timeShapesVaried) {
+    // I2(2026-07-27 拍板):多個 entry 且時間不同時,不能只引用 schedule[0] 的時間卻聲稱對整個
+    // 聯集星期都適用——那對其餘星期是事實錯誤(範例:TYN-LUZHU-33C4F756E7,週一/四實際到站
+    // 時間是 17:30,若沿用單一時間句型會誤寫成 17:25,且這句話會進 meta description 被索引,
+    // 見 DECISIONS.md)。星期本身沒有問題(聯集正確),放棄的只是「單一時間」這個過度精簡的
+    // 承諾,交給下方逐列的時刻表呈現正確細節。規模:高雄 1,078、台中 3,664、桃園 1,470 筆。
+    const variedVariants = [
+      `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},垃圾車在${daysText}收運,不同星期的到站時間略有不同,詳見下方時刻表。`,
+      `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車在${daysText}收運,各星期到站時間不盡相同,詳細時段請見下方時刻表。`,
+      `這是${point.district}${point.village ?? ''}的其中一個清運點,收運日固定在${daysText},但不同星期到站時間略有不同,詳見下方時刻表。`,
+    ];
+    return pick(variedVariants, seed);
+  }
   const variants = passThrough
     ? [
         `${point.address ?? point.point_name} 是${point.district}的沿街收運路段,垃圾車固定於${daysText} ${timeText},行進中不停等,請提前在路邊準備好垃圾。`,
-        `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車在${daysText}會${timeText},此處為沿街收運、車輛不會停留。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」,垃圾車在${daysText} ${timeText},此處為沿街收運、車輛不會停留。`,
         `這是${point.district}${point.village ?? ''}的其中一個沿街收運路段,收運日固定在${daysText},垃圾車${timeText},請提早在路邊等候。`,
       ]
     : typeKnown

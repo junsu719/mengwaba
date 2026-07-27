@@ -80,44 +80,52 @@ const jsonLd = [
 
   <p>{introSentence(point)}</p>
 
-  <h2>本週時刻表</h2>
   {
-    scheduleWeekdayUnknown && (
-      <p class="weekday-unknown-notice">
-        {weekdayUnknownNotice(point)}
-        {officialQuerySystem(point) && (
-          <>
-            {' '}
-            <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
-              前往查詢
-            </a>
-          </>
-        )}
-      </p>
+    // I1(2026-07-27 拍板):純資源回收點 point.schedule 為空陣列,不渲染這整個區塊——
+    // 空的 <tbody> 只會產生一個沒有任何列的殘缺表格,對使用者沒有意義。
+    point.schedule.length > 0 && (
+      <>
+        <h2>本週時刻表</h2>
+        {
+          scheduleWeekdayUnknown && (
+            <p class="weekday-unknown-notice">
+              {weekdayUnknownNotice(point)}
+              {officialQuerySystem(point) && (
+                <>
+                  {' '}
+                  <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+                    前往查詢
+                  </a>
+                </>
+              )}
+            </p>
+          )
+        }
+        <table class="schedule-table">
+          <colgroup>
+            <col class="col-weekday" />
+            <col class="col-time" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>收運日</th>
+              <th>時間</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              point.schedule.map((s) => (
+                <tr>
+                  <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
+                  <td>{scheduleTimeText(s, point.collection_type)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </>
     )
   }
-  <table class="schedule-table">
-    <colgroup>
-      <col class="col-weekday" />
-      <col class="col-time" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th>收運日</th>
-        <th>時間</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        point.schedule.map((s) => (
-          <tr>
-            <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
-            <td>{scheduleTimeText(s, point.collection_type)}</td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
 
   {
     hasRecycling && (
