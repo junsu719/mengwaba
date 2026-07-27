@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig, sessionDrivers } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
 import cloudflare from '@astrojs/cloudflare';
 
 // 正式網域為 mengwaba.com(已註冊,2026-07-13 併入「悶蛙吧」站群品牌拍板)。
@@ -26,9 +25,8 @@ export default defineConfig({
       enabled: true,
     },
   }),
-  integrations: [
-    sitemap({
-      entryLimit: 10000,
-    }),
-  ],
+  // @astrojs/sitemap 移除(S1,2026-07-27 拍板):該套件只能自動收錄 build 時預生成的靜態頁面,
+  // 行政區頁/清運點頁改 on-demand D1 查詢後完全不在它的收錄範圍內。改由 sitemap-index.xml.ts、
+  // sitemap-static.xml.ts、sitemap-[city].xml.ts 三支端點手動接手、依城市拆分,詳見各檔案註解與
+  // DECISIONS.md 2026-07-27 條目。
 });

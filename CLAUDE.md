@@ -88,7 +88,8 @@
 5. 腳本失敗建議發 Telegram 通知(2026-07-17 起降級為選配,非強制鐵律——原為每日無人值守排程設計的安全網,改為季度手動執行後,執行者當下即可看到結果,不再是必要條件)
 6. 座標落在台灣範圍外(§7 L2 判定,21.5-25.5N、119.5-122.5E 之外)的清運點,資料層維持原值不竄改,但頁面層不得輸出該點的 geo 座標相關 JSON-LD(如 GeoCoordinates),只顯示地址文字,避免錯誤地理標記傷害 SEO(2026-07-09 Jun 拍板,見 DECISIONS.md)
 7. **任何影響 production(`mengwaba.com`)的部署動作,一律先向 Jun 說明並取得同意才執行**,不得在對話中途自行判斷「反正是既定計畫」就直接動手(2026-07-20 拍板,見 DECISIONS.md 2026-07-20 事故記錄)
-8. **架構有變動(換 adapter、換部署方式、換資料存取層等)首次影響 production 前,必須先部署到非正式環境(`*.pages.dev` preview / `*.workers.dev` 等)完成 curl 紅線驗證(HTML 內容、JSON-LD、狀態碼皆正確),確認無誤才切換正式網域**,不得把「新架構第一次上線」和「正式網域」同一步做掉(2026-07-20 拍板,起因見 DECISIONS.md 2026-07-20:D1 動態版第一次上線直接推 production,事後才發現 `@astrojs/cloudflare` v14 是 Workers-only adapter 與 Pages 保留的 `ASSETS` binding 硬衝突,導致正式網域一度回傳錯誤內容)
+8. **架構有變動(換 adapter、換部署方式、換資料存取層等)首次影響 production 前,必須先部署到非正式環境完成 curl 紅線驗證(HTML 內容、JSON-LD、狀態碼皆正確),確認無誤才切換正式網域**,不得把「新架構第一次上線」和「正式網域」同一步做掉(2026-07-20 拍板,起因見 DECISIONS.md 2026-07-20:D1 動態版第一次上線直接推 production,事後才發現 `@astrojs/cloudflare` v14 是 Workers-only adapter 與 Pages 保留的 `ASSETS` binding 硬衝突,導致正式網域一度回傳錯誤內容)。**「非正式環境」的定義見鐵律 9——`*.workers.dev` 基礎網址不算在內**,原本這裡寫的 `*.workers.dev` 是錯誤示範,已於 2026-07-27 修正。
+9. **`trash-pseo.junsu578.workers.dev`(不含版本 ID 的基礎網址)與 `mengwaba.com` 共用同一個已部署的 Worker 版本,不是彼此隔離的環境**——對其中一個做的任何驗證,等同對另一個做,兩者會同時反映最新一次 `wrangler versions deploy` 切換到的版本。真正跟正式流量隔離、可以放心驗證新版本而不影響現有使用者的,是 `wrangler versions upload`(不是 `versions deploy`)產生的**版本專屬預覽網址**(格式 `https://<version-id>-trash-pseo.junsu578.workers.dev`,例如 `https://b0dcf3aa-trash-pseo.junsu578.workers.dev`)——每次上線前的驗證(含鐵律 8 要求的 curl 紅線驗證)一律用這種版本專屬網址,不得用不含版本 ID 的基礎網址當作「預覽」(2026-07-27 拍板,見 DECISIONS.md 2026-07-27 條目)
 
 ## MVP 範圍(Phase 0-3)
 
@@ -107,6 +108,7 @@
 
 - 高雄市正規化資料中有 109 筆(0.62%)座標落在台灣範圍外(L2 檢出但未達 5% 中止門檻,如實保留原值)。頁面層規則見鐵律 6。
 - `~/.npm/_cacache` 內有 root 擁有的殘留檔案(非本專案造成,推測是之前某次 sudo npm 操作留下的),導致一般權限的 `npm install`/`npx` 會報 EACCES。Phase 2 開發時繞過方式:用 `npm install --cache <暫存路徑>` 指定暫時快取目錄。若要一勞永逸,可執行 `sudo chown -R $(whoami) ~/.npm`(需 Jun 手動執行或明確同意後才動,屬全域環境變更)。
+- **repo 根目錄的 `.env` 會讓 `wrangler` 誤用錯的 token**:根目錄 `.env` 裡的 `CLOUDFLARE_API_TOKEN` 是 DNS 切換用的 `mengwaba-dns-cutover` token(無 D1 權限),wrangler 在有 `.env` 的目錄下執行會自動讀取並優先於 OAuth 登入,導致 `wrangler d1` 相關指令在根目錄執行會報 403/10000 認證錯誤(2026-07-27 排查,見 DECISIONS.md)。`site/` 目錄下沒有 `.env`,一律在 `site/` 目錄執行 `wrangler d1`/`wrangler versions`/`wrangler deployments` 等指令;保險起見可加 `env -u CLOUDFLARE_API_TOKEN` 前綴強制略過該變數。
 
 ## 本專案專屬規則
 
