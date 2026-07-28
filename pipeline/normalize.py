@@ -159,13 +159,148 @@ def normalize_record_taichung(raw: dict[str, Any], city: str, source: str, fetch
     }
 
 
+# ============ 新北市(Phase 4,2026-07-28,見 DECISIONS.md)============
+#
+# data.ntpc.gov.tw 資料集「新北市垃圾車路線」,單一 API 端點一次拉取全市 26,671 筆,
+# 結構與臺中相同(單一 JSON 陣列、逐列已含完整星期欄位),故沿用 normalize_city() 通用
+# 驅動,不必比照桃園寫獨立驅動函式。每一列原始資料代表單一 lineid(路線)+ rank(清運序)
+# 組合造訪某地點的一筆班次紀錄——同一地址若被多個班次(常見為「下午班」+「晚上班」)
+# 分別造訪,視為個別清運點分開列示(比照臺中「同址不同班次視為不同頁面」既有慣例,
+# 不做跨路線 schedule 陣列 union;已實測 60.1% 同址多班次案例座標 100% 一致,確認非
+# 名稱誤判)。
+#
+# 原始資料的 "city" 欄位實際存的是**行政區**名稱(如「萬里區」),與本站 schema 的
+# city(縣市層級,如「新北市」)語意不同,故程式碼一律用 district_raw 稱呼,避免混淆。
+XINBEI_DISTRICT_MAP = {
+    "板橋區": ("板橋區", "banqiao"),
+    "三重區": ("三重區", "sanchong"),
+    "中和區": ("中和區", "zhonghe"),
+    "永和區": ("永和區", "yonghe"),
+    "新莊區": ("新莊區", "xinzhuang"),
+    "新店區": ("新店區", "xindian"),
+    "樹林區": ("樹林區", "shulin"),
+    "鶯歌區": ("鶯歌區", "yingge"),
+    "三峽區": ("三峽區", "sanxia"),
+    "淡水區": ("淡水區", "danshui"),
+    "汐止區": ("汐止區", "xizhi"),
+    "瑞芳區": ("瑞芳區", "ruifang"),
+    "土城區": ("土城區", "tucheng"),
+    "蘆洲區": ("蘆洲區", "luzhou"),
+    "五股區": ("五股區", "wugu"),
+    "泰山區": ("泰山區", "taishan"),
+    "林口區": ("林口區", "linkou"),
+    "深坑區": ("深坑區", "shenkeng"),
+    "石碇區": ("石碇區", "shiding"),
+    "坪林區": ("坪林區", "pinglin"),
+    "三芝區": ("三芝區", "sanzhi"),
+    "石門區": ("石門區", "shimen"),
+    "八里區": ("八里區", "bali"),
+    "平溪區": ("平溪區", "pingxi"),
+    "雙溪區": ("雙溪區", "shuangxi"),
+    "貢寮區": ("貢寮區", "gongliao"),
+    "金山區": ("金山區", "jinshan"),
+    "萬里區": ("萬里區", "wanli"),
+    "烏來區": ("烏來區", "wulai"),
+}
+
+# 星期旗標欄位後綴(英文全名,非高雄/台中慣用的 d1..d7 編號),對齊本站 1=一...7=日 慣例。
+XINBEI_WEEKDAY_SUFFIXES = (
+    ("monday", 1),
+    ("tuesday", 2),
+    ("wednesday", 3),
+    ("thursday", 4),
+    ("friday", 5),
+    ("saturday", 6),
+    ("sunday", 7),
+)
+
+
+def _parse_xinbei_day_flags(raw: dict[str, Any], prefix: str, time_value: str | None, notes: list[str]) -> list[dict[str, Any]]:
+    """掃描 raw 的 {prefix}{monday..sunday} 七個旗標欄位(全量掃描確認過值域只有 "Y" 與
+    空字串兩種),收集為 "Y" 的星期,組成單一 schedule entry(該類型完全無 "Y" 時回傳
+    空陣列,不生成假的 entry)。若出現 "Y"/空字串以外的值,視為未知格式,忽略該天並記錄
+    捨棄原因(不猜測歸類),見 DECISIONS.md 2026-07-28。三種類型共用同一個已解析的
+    time_value,呼叫端只解析一次時間,不在這裡重複解析。
+    """
+    days: list[int] = []
+    for day_name, iso_weekday in XINBEI_WEEKDAY_SUFFIXES:
+        val = raw.get(f"{prefix}{day_name}", "")
+        if val == "Y":
+            days.append(iso_weekday)
+        elif val not in ("", None):
+            notes.append(f"{prefix}{day_name} 未知格式已捨棄:{val!r}")
+    if not days or time_value is None:
+        return []
+    return [{"weekday": sorted(days), "arrive": time_value, "depart": None}]
+
+
+def normalize_record_xinbei(raw: dict[str, Any], city: str, source: str, fetched_at: str) -> dict[str, Any] | None:
+    """新北原始資料只有單一 time 欄位、無離站時間,depart 一律 None(比照桃園既有慣例,
+    不推算補值)。collection_type 來源無此欄位,留 None(比照桃園 D3 拍板:不斷言、不啟發
+    式判斷)。memo 備註原樣併入 notes 顯示,不嘗試從內容反推任何結構化欄位。
+    """
+    district_raw = (raw.get("city") or "").strip()  # 來源欄位 "city" 實為行政區,見上方說明
+    district, slug = XINBEI_DISTRICT_MAP.get(district_raw, (None, "unknown"))
+
+    point_name = (raw.get("name") or "").strip() or None
+    village = (raw.get("village") or "").strip() or None
+    address = f"{city}{district}{point_name}" if district and point_name else None
+
+    time_raw = (raw.get("time") or "").strip()
+    time_value = _normalize_time_token(time_raw) if time_raw else None
+    notes_parts: list[str] = []
+    if time_raw and not time_value:
+        notes_parts.append(f"原始 time 格式異常:{time_raw!r}")
+
+    schedule = _parse_xinbei_day_flags(raw, "garbage", time_value, notes_parts)
+    recycling_schedule = _parse_xinbei_day_flags(raw, "recycling", time_value, notes_parts)
+    foodscraps_schedule = _parse_xinbei_day_flags(raw, "foodscraps", time_value, notes_parts)
+
+    lat = lng = None
+    lat_raw, lng_raw = raw.get("latitude"), raw.get("longitude")
+    try:
+        lat = float(lat_raw) if lat_raw not in (None, "") else None
+        lng = float(lng_raw) if lng_raw not in (None, "") else None
+    except ValueError:
+        notes_parts.append(f"經緯度格式異常:{lat_raw!r}/{lng_raw!r}")
+
+    memo = (raw.get("memo") or "").strip()
+    if memo:
+        notes_parts.append(memo)
+
+    lineid = (raw.get("lineid") or "").strip() or None
+
+    return {
+        "_district_slug": slug,
+        "_plate": None,
+        "_route_scope": lineid,
+        "_first_arrive": time_value,
+        "city": city,
+        "district": district,
+        "village": village,
+        "point_name": point_name,
+        "address": address,
+        "lat": lat,
+        "lng": lng,
+        "schedule": schedule,
+        "recycling_schedule": recycling_schedule,
+        "foodscraps_schedule": foodscraps_schedule,
+        "collection_type": None,
+        "notes": "、".join(notes_parts) or None,
+        "source": source,
+        "fetched_at": fetched_at,
+    }
+
+
 NORMALIZERS = {
     "taichung": normalize_record_taichung,
+    "xinbei": normalize_record_xinbei,
 }
 
 # 各 city_key 對應的 point_id 前綴(pipeline/point_id.py 用)。
 ID_PREFIXES = {
     "taichung": "TXG",
+    "xinbei": "XBC",
 }
 
 
@@ -532,6 +667,9 @@ def normalize_city(city_key: str) -> int:
             "village": r["village"],
             "point_name": r["point_name"],
             "plate": r["_plate"],
+            # route_scope 為選用欄位(桃園/新北用,高雄/台中不設 "_route_scope",
+            # .get() 缺 key 時回傳 None,行為與原本完全一致)。
+            "route_scope": r.get("_route_scope"),
             "first_arrive": r["_first_arrive"],
         }
         for r in normalized
@@ -541,6 +679,7 @@ def normalize_city(city_key: str) -> int:
         del record["_district_slug"]
         del record["_plate"]
         del record["_first_arrive"]
+        record.pop("_route_scope", None)
         # 欄位順序:point_id 放最前面,對齊既有 schema 慣例
         normalized[i] = {"point_id": point_id, **record}
 

@@ -61,7 +61,13 @@ def check_l2_reasonableness(records: list[dict[str, Any]]) -> dict[str, Any]:
         # (見 DECISIONS.md D4:查無資源回收資料時如實存 NULL,非缺欄位)會直接回傳 None,
         # 與 list 相加即 TypeError——高雄/台中至今未實際存過 null 才沒觸發過,桃園會是
         # 第一個真的用上 null 的縣市,改用 `or []` 讓 None 與缺 key 都正確回退。
-        for entry in (r.get("schedule") or []) + (r.get("recycling_schedule") or []):
+        # foodscraps_schedule(2026-07-28 新北市新增維度,見 DECISIONS.md)缺 key 時
+        # `.get(...) or []` 安全回退成空陣列,對既有高雄/台中/桃園資料無影響。
+        for entry in (
+            (r.get("schedule") or [])
+            + (r.get("recycling_schedule") or [])
+            + (r.get("foodscraps_schedule") or [])
+        ):
             arrive, depart = entry.get("arrive"), entry.get("depart")
             # depart 可為 null 是既定資料形狀(見 DECISIONS.md D1、site/src/lib/data.ts
             # ScheduleEntry.depart 註解:部分縣市如桃園只有到站時間、無離站時間,不得推算填補),
