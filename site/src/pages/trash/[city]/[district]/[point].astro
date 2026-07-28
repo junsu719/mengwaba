@@ -3,7 +3,16 @@ export const prerender = false;
 
 import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { CITIES, parsePointId, nearestPoints, isWeekdayUnknown, getCity } from '../../../../lib/data';
+import {
+  CITIES,
+  parsePointId,
+  nearestPoints,
+  isWeekdayUnknown,
+  getCity,
+  type CollectionPoint,
+  type DistrictGroup,
+  type CityInfo,
+} from '../../../../lib/data';
 import { loadDistrictFromD1, toDistrictGroup, lookupLegacyRedirect, isLegacyPointSlug } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
 import {
@@ -15,6 +24,7 @@ import {
   officialQuerySystem,
 } from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
+import NotFoundContent from '../../../../components/NotFoundContent.astro';
 
 // Phase 4.5 Step 4:清運點頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3)。
 // 與行政區頁共用同一支「查整個行政區」的 D1 查詢——本頁的「鄰近清運點」需要同區其他點,
@@ -22,234 +32,282 @@ import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
 const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
 
-if (!CITIES.some((c) => c.slug === citySlug)) {
-  return new Response('Not Found', { status: 404 });
-}
-const city = getCity(citySlug!);
-
 const db = (env as unknown as { POINTS_DB?: unknown }).POINTS_DB;
 if (!db) {
   return new Response('D1 binding 未設定(POINTS_DB)', { status: 500 });
 }
 
-// 舊格式(全域流水號)pointSlug 的 301 導向:2026-07-22 point_id 改內容雜湊方案後,
-// 已被 Google 索引的舊網址全數 404(見 DECISIONS.md 2026-07-28 事故記錄)。純數字 pointSlug
-// 是舊格式的明確特徵(新雜湊 pointSlug 一律含字母,兩者不重疊),獨立於下方一般查詢路徑,
-// 查得到就 301 到現行網址(用新 point_id 解析出的行政區,避免行政區本身也變動時導向到錯誤網址)、
-// 查不到維持誠實 404,不猜測配對到其他點。
-if (isLegacyPointSlug(pointSlug!)) {
-  const newPointId = await lookupLegacyRedirect(db as never, citySlug!, districtSlug!, pointSlug!);
-  if (newPointId) {
-    const parsed = parsePointId(newPointId);
-    if (parsed) {
-      return Astro.redirect(`/trash/${citySlug}/${parsed.districtSlug}/${parsed.pointSlug}/`, 301);
+// 2026-07-28 拍板(見 DECISIONS.md):找不到清運點時,維持真正的 HTTP 404(不得改 200
+// 或導向其他頁面,軟性 404 對 SEO 更糟),但改用 NotFoundContent 渲染有用的頁面內容,
+// 而不是純文字「Not Found」——高雄有 269 個舊格式網址在現行資料裡查無對應,301 修復
+// 上線後 Google 仍會持續帶使用者撞上這批網址。city/group 能解析出多少就帶多少 context
+// 進 NotFoundContent(例如「行政區清運點列表」連結),解析不出來的就交給它退回通用版本。
+let city: CityInfo | null = null;
+let group: DistrictGroup | null = null;
+let point: CollectionPoint | null = null;
+
+if (CITIES.some((c) => c.slug === citySlug)) {
+  city = getCity(citySlug!);
+
+  // 舊格式(全域流水號)pointSlug 的 301 導向:2026-07-22 point_id 改內容雜湊方案後,
+  // 已被 Google 索引的舊網址全數 404(見 DECISIONS.md 2026-07-28 事故記錄)。純數字 pointSlug
+  // 是舊格式的明確特徵(新雜湊 pointSlug 一律含字母,兩者不重疊),查得到就 301 到現行網址
+  // (用新 point_id 解析出的行政區,避免行政區本身也變動時導向到錯誤網址)。
+  if (isLegacyPointSlug(pointSlug!)) {
+    const newPointId = await lookupLegacyRedirect(db as never, citySlug!, districtSlug!, pointSlug!);
+    if (newPointId) {
+      const parsed = parsePointId(newPointId);
+      if (parsed) {
+        return Astro.redirect(`/trash/${citySlug}/${parsed.districtSlug}/${parsed.pointSlug}/`, 301);
+      }
     }
+    // 查無對應:不在這裡直接回 404,讓流程繼續往下走一般查詢路徑——這個 pointSlug 不會
+    // 比對到任何現有點,自然落入下方 point 為 null 的分支,且該分支已有 group(行政區)
+    // 資訊,可以組出比純文字 404 更有用的內容,不猜測配對到其他點。
   }
-  return new Response('Not Found', { status: 404 });
+
+  const districtPoints = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
+  group = toDistrictGroup(districtPoints, districtSlug!);
+  if (group) {
+    // point_id 解析失敗的點視同不比對(parsePointId 回傳 null 時 optional chaining 短路為
+    // undefined,不等於任何合法 pointSlug),自然落入下方 404 分支,不會額外崩潰。
+    point = group.points.find((p) => parsePointId(p.point_id)?.pointSlug === pointSlug) ?? null;
+  }
 }
 
-const districtPoints = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
-const group = toDistrictGroup(districtPoints, districtSlug!);
-if (!group) {
-  return new Response('Not Found', { status: 404 });
-}
-
-// point_id 解析失敗的點視同不比對(parsePointId 回傳 null 時 optional chaining 短路為 undefined,
-// 不等於任何合法 pointSlug),自然落入下方既有的 404 分支,不會額外崩潰。
-const point = group.points.find((p) => parsePointId(p.point_id)?.pointSlug === pointSlug);
 if (!point) {
-  return new Response('Not Found', { status: 404 });
+  Astro.response.status = 404;
 }
 
-const nearby = nearestPoints(point, group.points, 5);
-const faq = buildFaq(point, group.district);
 const pageUrl = Astro.url.href;
-const hasRecycling = !!point.recycling_schedule && point.recycling_schedule.length > 0;
-const scheduleWeekdayUnknown = point.schedule.some(isWeekdayUnknown);
-const recyclingWeekdayUnknown = hasRecycling && point.recycling_schedule!.some(isWeekdayUnknown);
+const nearby = point && group ? nearestPoints(point, group.points, 5) : [];
+const faq = point && group ? buildFaq(point, group.district) : [];
+const hasRecycling = !!point?.recycling_schedule && point.recycling_schedule.length > 0;
+const scheduleWeekdayUnknown = point ? point.schedule.some(isWeekdayUnknown) : false;
+const recyclingWeekdayUnknown = hasRecycling && point!.recycling_schedule!.some(isWeekdayUnknown);
 
-const jsonLd = [
-  breadcrumbJsonLd([
-    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
-    { name: '垃圾車清運時間查詢', url: new URL('/trash/', Astro.site ?? Astro.url).href },
-    { name: city.name, url: new URL(`/trash/${city.slug}/`, Astro.site ?? Astro.url).href },
-    { name: group.district, url: new URL(`/trash/${city.slug}/${group.districtSlug}/`, Astro.site ?? Astro.url).href },
-    { name: point.point_name ?? point.point_id, url: pageUrl },
-  ]),
-  faqPageJsonLd(faq),
-  placeJsonLd(point, pageUrl),
-].filter(Boolean);
+const title =
+  point && city && group
+    ? `${point.point_name}垃圾車時間｜${city.name}${group.district}清運時刻查詢`
+    : '找不到這個清運點｜悶蛙吧 MengWaBa';
+const description = point
+  ? introSentence(point)
+  : '這個網址對應的清運點可能已停止服務,或資料來源已更新調整,可透過搜尋或行政區列表查詢其他清運點。';
+
+const jsonLd =
+  point && city && group
+    ? [
+        breadcrumbJsonLd([
+          { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+          { name: '垃圾車清運時間查詢', url: new URL('/trash/', Astro.site ?? Astro.url).href },
+          { name: city.name, url: new URL(`/trash/${city.slug}/`, Astro.site ?? Astro.url).href },
+          { name: group.district, url: new URL(`/trash/${city.slug}/${group.districtSlug}/`, Astro.site ?? Astro.url).href },
+          { name: point.point_name ?? point.point_id, url: pageUrl },
+        ]),
+        faqPageJsonLd(faq),
+        placeJsonLd(point, pageUrl),
+      ].filter(Boolean)
+    : [];
 ---
 
-<BaseLayout
-  title={`${point.point_name}垃圾車時間｜${city.name}${group.district}清運時刻查詢`}
-  description={introSentence(point)}
-  jsonLd={jsonLd}
->
-  <nav>
-    <a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> / <a href={`/trash/${city.slug}/`}>{city.name}</a> / <a href={`/trash/${city.slug}/${group.districtSlug}/`}>{group.district}</a> / {point.point_name}
-  </nav>
-
-  <h1>{point.point_name}垃圾車時間</h1>
-
-  <p class="today-answer">{todaySummarySentence(point)}</p>
-
-  <p>{introSentence(point)}</p>
-
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
   {
-    // I1(2026-07-27 拍板):純資源回收點 point.schedule 為空陣列,不渲染這整個區塊——
-    // 空的 <tbody> 只會產生一個沒有任何列的殘缺表格,對使用者沒有意義。
-    point.schedule.length > 0 && (
+    point && city && group ? (
       <>
-        <h2>本週時刻表</h2>
+        <nav>
+          <a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> /{' '}
+          <a href={`/trash/${city.slug}/`}>{city.name}</a> /{' '}
+          <a href={`/trash/${city.slug}/${group.districtSlug}/`}>{group.district}</a> / {point.point_name}
+        </nav>
+
+        <h1>{point.point_name}垃圾車時間</h1>
+
+        <p class="today-answer">{todaySummarySentence(point)}</p>
+
+        <p>{introSentence(point)}</p>
+
         {
-          scheduleWeekdayUnknown && (
-            <p class="weekday-unknown-notice">
-              {weekdayUnknownNotice(point)}
-              {officialQuerySystem(point) && (
-                <>
-                  {' '}
-                  <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
-                    前往查詢
-                  </a>
-                </>
+          // I1(2026-07-27 拍板):純資源回收點 point.schedule 為空陣列,不渲染這整個區塊——
+          // 空的 <tbody> 只會產生一個沒有任何列的殘缺表格,對使用者沒有意義。
+          point.schedule.length > 0 && (
+            <>
+              <h2>本週時刻表</h2>
+              {scheduleWeekdayUnknown && (
+                <p class="weekday-unknown-notice">
+                  {weekdayUnknownNotice(point)}
+                  {officialQuerySystem(point) && (
+                    <>
+                      {' '}
+                      <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+                        前往查詢
+                      </a>
+                    </>
+                  )}
+                </p>
               )}
-            </p>
+              <table class="schedule-table">
+                <colgroup>
+                  <col class="col-weekday" />
+                  <col class="col-time" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>收運日</th>
+                    <th>時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {point.schedule.map((s) => (
+                    <tr>
+                      <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
+                      <td>{scheduleTimeText(s, point.collection_type)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )
         }
-        <table class="schedule-table">
-          <colgroup>
-            <col class="col-weekday" />
-            <col class="col-time" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>收運日</th>
-              <th>時間</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              point.schedule.map((s) => (
-                <tr>
-                  <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
-                  <td>{scheduleTimeText(s, point.collection_type)}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </>
-    )
-  }
 
-  {
-    hasRecycling && (
-      <>
-        <h2>資源回收時刻</h2>
         {
-          recyclingWeekdayUnknown && (
-            <p class="weekday-unknown-notice">
-              {weekdayUnknownNotice(point, '回收')}
-              {officialQuerySystem(point) && (
-                <>
-                  {' '}
-                  <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
-                    前往查詢
-                  </a>
-                </>
+          hasRecycling && (
+            <>
+              <h2>資源回收時刻</h2>
+              {recyclingWeekdayUnknown && (
+                <p class="weekday-unknown-notice">
+                  {weekdayUnknownNotice(point, '回收')}
+                  {officialQuerySystem(point) && (
+                    <>
+                      {' '}
+                      <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+                        前往查詢
+                      </a>
+                    </>
+                  )}
+                </p>
               )}
-            </p>
+              <table class="schedule-table">
+                <colgroup>
+                  <col class="col-weekday" />
+                  <col class="col-time" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>回收日</th>
+                    <th>時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {point.recycling_schedule!.map((s) => (
+                    <tr>
+                      <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
+                      <td>{scheduleTimeText(s, point.collection_type)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )
         }
-        <table class="schedule-table">
-          <colgroup>
-            <col class="col-weekday" />
-            <col class="col-time" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>回收日</th>
-              <th>時間</th>
-            </tr>
-          </thead>
-          <tbody>
-            {point.recycling_schedule!.map((s) => (
-              <tr>
-                <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
-                <td>{scheduleTimeText(s, point.collection_type)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <style>
+          .schedule-table {
+            table-layout: fixed;
+          }
+          .col-weekday {
+            width: 8rem;
+          }
+          .schedule-table td {
+            white-space: nowrap;
+          }
+        </style>
+
+        {
+          point.collection_type && (
+            <>
+              <h2>清運方式</h2>
+              <p>
+                {point.collection_type}。{point.notes ? point.notes : ''}
+              </p>
+            </>
+          )
+        }
+
+        {point.address && <p>地址參考:{point.address}</p>}
+
+        <h2>鄰近清運點</h2>
+        <ul class="plain">
+          {nearby.map((n) => {
+            const nearbyPointSlug = parsePointId(n.point_id)?.pointSlug;
+            const entry = n.schedule[0];
+            return (
+              <li>
+                {
+                  // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
+                  nearbyPointSlug ? (
+                    <a href={`/trash/${city.slug}/${group.districtSlug}/${nearbyPointSlug}/`}>{n.point_name}</a>
+                  ) : (
+                    <span>{n.point_name}</span>
+                  )
+                }
+                {entry ? `・${scheduleTimeText(entry, n.collection_type)}` : ''}
+              </li>
+            );
+          })}
+        </ul>
+
+        <h2>{group.district}注意事項</h2>
+        <p>
+          請將垃圾裝入合格垃圾袋,於垃圾車抵達前在定點等候,避免提早棄置造成環境問題;資源回收請分類後交給清潔隊員。若時刻有異動,請以
+          {city.name}政府環境保護局公告為準。
+        </p>
+
+        <h2>常見問題</h2>
+        {faq.map((f) => (
+          <details>
+            <summary>{f.question}</summary>
+            <p>{f.answer}</p>
+          </details>
+        ))}
       </>
+    ) : (
+      <NotFoundContent
+        district={
+          city && group
+            ? { cityName: city.name, citySlug: city.slug, districtName: group.district, districtSlug: group.districtSlug }
+            : undefined
+        }
+      />
     )
   }
-
-  <style>
-    .schedule-table {
-      table-layout: fixed;
-    }
-    .col-weekday {
-      width: 8rem;
-    }
-    .schedule-table td {
-      white-space: nowrap;
-    }
-  </style>
-
   {
-    point.collection_type && (
-      <>
-        <h2>清運方式</h2>
-        <p>{point.collection_type}。{point.notes ? point.notes : ''}</p>
-      </>
-    )
+    // footer slot 獨立於上方主內容的 ternary 之外(2026-07-28 除錯記錄:曾經包在同一個
+    // ternary/fragment 裡,結果 Astro 把整段誤判成單一 slot 內容,導致 <main> 整段變空、
+    // NotFoundContent 連同 footer 文字一起被塞進 <footer>)。這個 Fragment 本身一律
+    // 無條件存在(slot="footer" 屬性不能被 `{cond && ...}` 包住否則永遠不會 render——
+    // 同樣是除錯時發現:即使條件為 false,Astro 仍判定 footer slot「已由外層提供內容」,
+    // 導致 BaseLayout 自己的預設 fallback 文案也不會顯示,footer 整個變空),只有裡面
+    // 的文字內容依 point 是否存在做條件切換。
   }
-
-  {point.address && <p>地址參考:{point.address}</p>}
-
-  <h2>鄰近清運點</h2>
-  <ul class="plain">
+  <Fragment slot="footer">
     {
-      nearby.map((n) => {
-        const pointSlug = parsePointId(n.point_id)?.pointSlug;
-        const entry = n.schedule[0];
-        return (
-          <li>
-            {
-              // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
-              pointSlug ? (
-                <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{n.point_name}</a>
-              ) : (
-                <span>{n.point_name}</span>
-              )
-            }
-            {entry ? `・${scheduleTimeText(entry, n.collection_type)}` : ''}
-          </li>
-        );
-      })
+      point && city ? (
+        <>
+          <p>
+            資料來源:{city.sourceName}(
+            <a href={city.sourceUrl} rel="noopener">
+              {city.name}政府資料開放平台
+            </a>
+            ),依「政府資料開放授權條款第1版」提供。
+          </p>
+          <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+        </>
+      ) : (
+        <>
+          <p>資料來源:各縣市政府資料開放平台,依「政府資料開放授權條款第1版」提供,各頁面詳細來源請見頁面內標註。</p>
+          <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+        </>
+      )
     }
-  </ul>
-
-  <h2>{group.district}注意事項</h2>
-  <p>
-    請將垃圾裝入合格垃圾袋,於垃圾車抵達前在定點等候,避免提早棄置造成環境問題;資源回收請分類後交給清潔隊員。若時刻有異動,請以
-    {city.name}政府環境保護局公告為準。
-  </p>
-
-  <h2>常見問題</h2>
-  {
-    faq.map((f) => (
-      <details>
-        <summary>{f.question}</summary>
-        <p>{f.answer}</p>
-      </details>
-    ))
-  }
-
-  <p slot="footer">
-    資料來源:{city.sourceName}(<a href={city.sourceUrl} rel="noopener">{city.name}政府資料開放平台</a>),依「政府資料開放授權條款第1版」提供。
-  </p>
-  <p slot="footer">本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+  </Fragment>
 </BaseLayout>

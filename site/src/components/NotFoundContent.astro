@@ -1,0 +1,50 @@
+---
+// 404 頁面內容(2026-07-28 拍板,見 DECISIONS.md):高雄有 269 個舊格式清運點網址查無新資料
+// 對應,301 修復上線後 Google 仍會持續帶使用者撞上這批網址,純文字「Not Found」對使用者
+// 與 SEO 都沒有幫助。維持真正的 HTTP 404(不得改 200 或導向其他頁面,軟性 404 更糟),
+// 只改善頁面內容,提供可用的下一步(搜尋、行政區清運點列表、城市索引)。
+import { CITIES } from '../lib/data';
+import SearchBox from './SearchBox.astro';
+
+interface Props {
+  /** 從網址解析得出行政區時提供;無法解析(城市本身無效、或行政區在現行資料裡不存在)時省略,退回通用版本。 */
+  district?: {
+    cityName: string;
+    citySlug: string;
+    districtName: string;
+    districtSlug: string;
+  };
+}
+
+const { district } = Astro.props;
+// 城市已知時,搜尋框用該城市的索引(較小、較相關);城市本身無效時退回全站索引。
+const searchIndexUrl = district ? `/trash/${district.citySlug}/search-index.json` : '/trash/search-index.json';
+---
+
+<h1>找不到這個清運點</h1>
+<p>這個網址對應的清運點可能已停止服務,或資料來源已更新調整,清運路線與地點有所變動。你可以:</p>
+
+<SearchBox indexUrl={searchIndexUrl} />
+
+{
+  district && (
+    <p>
+      <a href={`/trash/${district.citySlug}/${district.districtSlug}/`}>
+        查看{district.cityName}{district.districtName}完整清運點列表
+      </a>
+    </p>
+  )
+}
+
+<h2>或選擇縣市查詢</h2>
+<ul class="card-grid">
+  {
+    CITIES.map((city) => (
+      <li>
+        <a class="card" href={`/trash/${city.slug}/`}>
+          <strong>{city.name}</strong>
+        </a>
+      </li>
+    ))
+  }
+</ul>
