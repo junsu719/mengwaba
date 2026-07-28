@@ -4,7 +4,7 @@ export const prerender = false;
 import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { CITIES, parsePointId, nearestPoints, isWeekdayUnknown, getCity } from '../../../../lib/data';
-import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
+import { loadDistrictFromD1, toDistrictGroup, lookupLegacyRedirect, isLegacyPointSlug } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
 import {
   todaySummarySentence,
@@ -30,6 +30,22 @@ const city = getCity(citySlug!);
 const db = (env as unknown as { POINTS_DB?: unknown }).POINTS_DB;
 if (!db) {
   return new Response('D1 binding 未設定(POINTS_DB)', { status: 500 });
+}
+
+// 舊格式(全域流水號)pointSlug 的 301 導向:2026-07-22 point_id 改內容雜湊方案後,
+// 已被 Google 索引的舊網址全數 404(見 DECISIONS.md 2026-07-28 事故記錄)。純數字 pointSlug
+// 是舊格式的明確特徵(新雜湊 pointSlug 一律含字母,兩者不重疊),獨立於下方一般查詢路徑,
+// 查得到就 301 到現行網址(用新 point_id 解析出的行政區,避免行政區本身也變動時導向到錯誤網址)、
+// 查不到維持誠實 404,不猜測配對到其他點。
+if (isLegacyPointSlug(pointSlug!)) {
+  const newPointId = await lookupLegacyRedirect(db as never, citySlug!, districtSlug!, pointSlug!);
+  if (newPointId) {
+    const parsed = parsePointId(newPointId);
+    if (parsed) {
+      return Astro.redirect(`/trash/${citySlug}/${parsed.districtSlug}/${parsed.pointSlug}/`, 301);
+    }
+  }
+  return new Response('Not Found', { status: 404 });
 }
 
 const districtPoints = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);

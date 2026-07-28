@@ -49,3 +49,27 @@ export function toDistrictGroup(points: CollectionPoint[], districtSlug: string)
   if (points.length === 0) return null;
   return { district: points[0].district!, districtSlug, points };
 }
+
+/**
+ * 查舊格式(全域流水號)point_id 是否有對應的新格式(內容雜湊)point_id,供 301 導向用。
+ * 見 d1/schema.sql 的 legacy_point_redirects 表與 DECISIONS.md 2026-07-28 事故記錄——
+ * 2026-07-22 point_id 改雜湊方案後已索引的舊網址全數 404,這支查詢是修復手段。
+ * 查不到回傳 null,呼叫端維持既有 404,不猜測配對。
+ */
+export async function lookupLegacyRedirect(
+  db: D1Like,
+  citySlug: string,
+  districtSlug: string,
+  oldSlug: string
+): Promise<string | null> {
+  const { results } = await db
+    .prepare('SELECT new_point_id FROM legacy_point_redirects WHERE city_slug = ? AND district_slug = ? AND old_slug = ?')
+    .bind(citySlug, districtSlug, oldSlug)
+    .all();
+  return results.length > 0 ? (results[0].new_point_id as string) : null;
+}
+
+/** 舊格式 pointSlug 特徵:純數字流水號(如 "06852"),新格式一律含雜湊字母,兩者不重疊。 */
+export function isLegacyPointSlug(pointSlug: string): boolean {
+  return /^\d+$/.test(pointSlug);
+}

@@ -30,3 +30,18 @@ CREATE TABLE IF NOT EXISTS points (
 -- 行政區頁與清運點頁的查詢皆為「整個行政區」(WHERE city_slug = ? AND district_slug = ?):
 -- 清運點頁需要同區其他點做 nearestPoints 排序,天生沒有「只查單一點」的路徑,故不另建 point_id 專用索引(PK 已覆蓋)。
 CREATE INDEX IF NOT EXISTS idx_points_district ON points(city_slug, district_slug);
+
+-- 舊格式(全域流水號)point_id → 新格式(內容雜湊)point_id 的 301 導向對照表。
+-- 背景:2026-07-22 point_id 改內容雜湊方案後,已被 Google 索引的舊格式清運點網址全數 404,
+-- 見 DECISIONS.md 2026-07-28 事故記錄。[point].astro 偵測到純數字 pointSlug(舊格式特徵)時
+-- 查這張表,查到就 301 導向、查不到維持誠實 404。資料由 pipeline/build_legacy_redirects.py +
+-- pipeline/push_legacy_redirects_d1.py 產生,只收「唯一可信賴配對」,不猜測配對。
+-- 注意:CREATE TABLE IF NOT EXISTS 對已存在的正式環境表是 no-op,既有 DB 需靠
+-- d1/migrations/003-legacy-point-redirects.sql 套用這張新表。
+CREATE TABLE IF NOT EXISTS legacy_point_redirects (
+  city_slug     TEXT NOT NULL,
+  district_slug TEXT NOT NULL,
+  old_slug      TEXT NOT NULL,
+  new_point_id  TEXT NOT NULL,
+  PRIMARY KEY (city_slug, district_slug, old_slug)
+);

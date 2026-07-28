@@ -90,6 +90,7 @@
 7. **任何影響 production(`mengwaba.com`)的部署動作,一律先向 Jun 說明並取得同意才執行**,不得在對話中途自行判斷「反正是既定計畫」就直接動手(2026-07-20 拍板,見 DECISIONS.md 2026-07-20 事故記錄)
 8. **架構有變動(換 adapter、換部署方式、換資料存取層等)首次影響 production 前,必須先部署到非正式環境完成 curl 紅線驗證(HTML 內容、JSON-LD、狀態碼皆正確),確認無誤才切換正式網域**,不得把「新架構第一次上線」和「正式網域」同一步做掉(2026-07-20 拍板,起因見 DECISIONS.md 2026-07-20:D1 動態版第一次上線直接推 production,事後才發現 `@astrojs/cloudflare` v14 是 Workers-only adapter 與 Pages 保留的 `ASSETS` binding 硬衝突,導致正式網域一度回傳錯誤內容)。**「非正式環境」的定義見鐵律 9——`*.workers.dev` 基礎網址不算在內**,原本這裡寫的 `*.workers.dev` 是錯誤示範,已於 2026-07-27 修正。
 9. **`trash-pseo.junsu578.workers.dev`(不含版本 ID 的基礎網址)與 `mengwaba.com` 共用同一個已部署的 Worker 版本,不是彼此隔離的環境**——對其中一個做的任何驗證,等同對另一個做,兩者會同時反映最新一次 `wrangler versions deploy` 切換到的版本。真正跟正式流量隔離、可以放心驗證新版本而不影響現有使用者的,是 `wrangler versions upload`(不是 `versions deploy`)產生的**版本專屬預覽網址**(格式 `https://<version-id>-trash-pseo.junsu578.workers.dev`,例如 `https://b0dcf3aa-trash-pseo.junsu578.workers.dev`)——每次上線前的驗證(含鐵律 8 要求的 curl 紅線驗證)一律用這種版本專屬網址,不得用不含版本 ID 的基礎網址當作「預覽」(2026-07-27 拍板,見 DECISIONS.md 2026-07-27 條目)
+10. **任何改變 URL 結構或 ID 方案的變更,必須同時提出舊網址的處理方案(301 導向),並在上線前驗證**——已被搜尋引擎索引的網址是資產,不是可以任意汰換的內部識別碼。2026-07-22 point_id 從全域流水號改內容雜湊時,所有檢查都只放在「新資料能不能正確顯示」,沒有人問「已經被索引的舊網址怎麼辦」,導致已索引頁面全數 404、曝光與點擊歸零,直到 7/28 才發現並修復,累積損失約 27% 曝光(高雄無法挽回的部分,詳見 DECISIONS.md 2026-07-28 事故記錄)。這與鐵律 9 加上前的 `parsePointId` 教訓是同一類盲區:改變內部識別方案時只驗證了內部消費端,沒考慮外部既有引用(搜尋引擎索引、書籤、外部連結)。
 
 ## MVP 範圍(Phase 0-3)
 
