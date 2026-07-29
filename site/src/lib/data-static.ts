@@ -17,9 +17,10 @@ const _cache = new Map<string, CollectionPoint[]>();
 
 /**
  * 讀取指定縣市的正規化資料,僅保留 L1 必填欄位(district/point_name)齊全、且 schedule 或
- * recycling_schedule 至少一個非空(可發佈成頁面)的清運點。與 pipeline/push_d1.py 的 classify()
- * 過濾邏輯保持一致(I1,2026-07-27 拍板:純資源回收點 schedule=[] 但 recycling_schedule 有值,
- * 不得被排除,否則會出現「D1 頁面存在但搜尋索引/縣市總數找不到」的不一致)。
+ * recycling_schedule、foodscraps_schedule 至少一個非空(可發佈成頁面)的清運點。與
+ * pipeline/push_d1.py 的 classify() 過濾邏輯保持一致(I1,2026-07-27 拍板:純資源回收點
+ * schedule=[] 但 recycling_schedule 有值,不得被排除,否則會出現「D1 頁面存在但搜尋索引/
+ * 縣市總數找不到」的不一致;foodscraps_schedule 比照辦理,見 CLAUDE.md 鐵律 10 同類教訓)。
  */
 export function loadCityPoints(citySlugFile: string): CollectionPoint[] {
   if (_cache.has(citySlugFile)) return _cache.get(citySlugFile)!;
@@ -29,7 +30,12 @@ export function loadCityPoints(citySlugFile: string): CollectionPoint[] {
   if (!entry) throw new Error(`找不到縣市資料檔案: ${citySlugFile}.json`);
   const all = entry[1].default as CollectionPoint[];
   const publishable = all.filter(
-    (p) => p.district && p.point_name && (p.schedule.length > 0 || (p.recycling_schedule?.length ?? 0) > 0)
+    (p) =>
+      p.district &&
+      p.point_name &&
+      (p.schedule.length > 0 ||
+        (p.recycling_schedule?.length ?? 0) > 0 ||
+        (p.foodscraps_schedule?.length ?? 0) > 0)
   );
   _cache.set(citySlugFile, publishable);
   return publishable;

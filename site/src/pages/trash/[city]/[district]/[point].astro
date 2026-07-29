@@ -83,8 +83,10 @@ const pageUrl = Astro.url.href;
 const nearby = point && group ? nearestPoints(point, group.points, 5) : [];
 const faq = point && group ? buildFaq(point, group.district) : [];
 const hasRecycling = !!point?.recycling_schedule && point.recycling_schedule.length > 0;
+const hasFoodscraps = !!point?.foodscraps_schedule && point.foodscraps_schedule.length > 0;
 const scheduleWeekdayUnknown = point ? point.schedule.some(isWeekdayUnknown) : false;
 const recyclingWeekdayUnknown = hasRecycling && point!.recycling_schedule!.some(isWeekdayUnknown);
+const foodscrapsWeekdayUnknown = hasFoodscraps && point!.foodscraps_schedule!.some(isWeekdayUnknown);
 
 const title =
   point && city && group
@@ -199,6 +201,50 @@ const jsonLd =
                 </thead>
                 <tbody>
                   {point.recycling_schedule!.map((s) => (
+                    <tr>
+                      <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
+                      <td>{scheduleTimeText(s, point.collection_type)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )
+        }
+
+        {
+          hasFoodscraps && (
+            <>
+              <h2>廚餘回收時刻</h2>
+              <p class="foodscraps-notice">
+                廚餘與一般垃圾由同一輛清潔車收運,到站時間與上方本週時刻表相同,下表僅列出有提供廚餘回收的星期。
+              </p>
+              {foodscrapsWeekdayUnknown && (
+                <p class="weekday-unknown-notice">
+                  {weekdayUnknownNotice(point, '廚餘回收')}
+                  {officialQuerySystem(point) && (
+                    <>
+                      {' '}
+                      <a href={officialQuerySystem(point)!.url} rel="noopener" target="_blank">
+                        前往查詢
+                      </a>
+                    </>
+                  )}
+                </p>
+              )}
+              <table class="schedule-table">
+                <colgroup>
+                  <col class="col-weekday" />
+                  <col class="col-time" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>收運日</th>
+                    <th>時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {point.foodscraps_schedule!.map((s) => (
                     <tr>
                       <td>{s.weekday.length > 0 ? <WeekdayBadge weekday={s.weekday} /> : '—'}</td>
                       <td>{scheduleTimeText(s, point.collection_type)}</td>

@@ -19,9 +19,8 @@
 --   完整備份現有資料,確認備份檔案非空、可還原,才執行本 migration(依鐵律 7 精神)。
 -- ③依 001 的實測經驗:**不要**用 BEGIN TRANSACTION/COMMIT 包裝這批語句,D1 的 remote
 --   匯入機制本身就是把整個檔案當一個批次處理,只留裸的 DDL/DML 語句序列。
--- ④本次 migration 執行時,新北市資料本身尚未真的匯入(見 pipeline/push_d1.py 的 COLUMNS
---   尚未加入 foodscraps_schedule,那是之後真的要把新北推 D1 時才需要改的範圍,不在本次
---   資料層工作範圍內)——這支 migration 只負責讓 points 表的欄位定義先就緒。
+-- ④pipeline/push_d1.py 的 COLUMNS 已於 2026-07-29 加入 foodscraps_schedule(B1/B2 接續工作),
+--   本 migration 執行完成後即可接著跑 `python pipeline/push_d1.py xinbei` 產生新北匯入 SQL。
 --
 -- 執行指令(核准後才執行,不在本次對話內跑):
 --   npx wrangler d1 execute mengwaba-trash-points --remote --file=d1/migrations/002-add-foodscraps-schedule.sql

@@ -8,8 +8,8 @@
 `wrangler d1 execute mengwaba-trash-points [--local|--remote] --file=d1/import/<city_key>.sql`
 (於 site/ 目錄下執行,因 D1 binding 設定在 site/wrangler.jsonc)套用,兩步驟分開以便套用前可先檢查 SQL 內容。
 
-匯入範圍:只匯入「publishable」子集(district && point_name && (schedule 或 recycling_schedule
-至少一個非空)),與 site/src/lib/data-static.ts 的 loadCityPoints() 靜態 build 過濾邏輯一致,
+匯入範圍:只匯入「publishable」子集(district && point_name && (schedule、recycling_schedule、
+foodscraps_schedule 三者至少一個非空)),與 site/src/lib/data-static.ts 的 loadCityPoints() 靜態 build 過濾邏輯一致,
 確保 D1 on-demand 查詢回傳的頁面集合與現行靜態頁面集合完全相同。被濾除的筆數逐縣市記錄於報告,
 不靜默丟棄(2026-07-17 拍板)。
 
@@ -39,7 +39,7 @@ BATCH_SIZE = 50
 COLUMNS = (
     "point_id", "city", "city_slug", "district", "district_slug", "village",
     "point_name", "address", "lat", "lng", "schedule", "recycling_schedule",
-    "collection_type", "notes", "source", "fetched_at",
+    "foodscraps_schedule", "collection_type", "notes", "source", "fetched_at",
 )
 
 
@@ -62,7 +62,11 @@ def classify(record: dict[str, Any]) -> str | None:
         return "missing_district"
     if not record.get("point_name"):
         return "missing_point_name"
-    if not record.get("schedule") and not record.get("recycling_schedule"):
+    if (
+        not record.get("schedule")
+        and not record.get("recycling_schedule")
+        and not record.get("foodscraps_schedule")
+    ):
         return "empty_schedule_and_recycling"
     return None
 
@@ -134,6 +138,7 @@ def build_insert_statements(records: list[dict[str, Any]]) -> list[str]:
             sql_num(r.get("lng")),
             sql_json_array(sanitize_schedule_entries(r["schedule"])),
             sql_json(sanitize_schedule_entries(r.get("recycling_schedule"))),
+            sql_json(sanitize_schedule_entries(r.get("foodscraps_schedule"))),
             sql_str(r["collection_type"]),
             sql_str(r.get("notes")),
             sql_str(r["source"]),

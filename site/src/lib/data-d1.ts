@@ -21,6 +21,9 @@ function rowToPoint(row: Record<string, unknown>): CollectionPoint {
     lng: row.lng as number | null,
     schedule: JSON.parse(row.schedule as string),
     recycling_schedule: row.recycling_schedule ? JSON.parse(row.recycling_schedule as string) : undefined,
+    foodscraps_schedule: row.foodscraps_schedule
+      ? JSON.parse(row.foodscraps_schedule as string)
+      : undefined,
     collection_type: row.collection_type as string | null,
     notes: row.notes as string | null,
     source: row.source as string,

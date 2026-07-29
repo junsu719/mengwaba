@@ -34,6 +34,12 @@ export interface CollectionPoint {
   schedule: ScheduleEntry[];
   /** 資源回收時刻,與 schedule 同形狀;非所有縣市資料皆有此欄位(如高雄無),頁面層需判斷是否存在再顯示區塊。 */
   recycling_schedule?: ScheduleEntry[];
+  /**
+   * 廚餘收運時刻,與 schedule 同形狀;目前僅新北市有此維度(2026-07-28 新增,見 DECISIONS.md)。
+   * 新北資料裡一般垃圾/資源回收/廚餘三者共用同一個到站時間(同一輛車、同一時刻,只是依星期
+   * 決定當天收運哪些品項),頁面層渲染廚餘區塊時需說明此點,避免使用者誤以為是三個不同時刻。
+   */
+  foodscraps_schedule?: ScheduleEntry[];
   /** 可為 null:部分縣市資料源(如桃園)無法區分定點/沿街,不得斷言其中一種,見 DECISIONS.md D3。頁面層需判斷是否存在再顯示相關文案。 */
   collection_type: string | null;
   notes: string | null;
@@ -86,6 +92,13 @@ export const CITIES: CityInfo[] = [
     file: 'taoyuan',
     sourceName: '桃園市政府環境保護局環境管理處',
     sourceUrl: 'https://route.tyoem.gov.tw/',
+  },
+  {
+    slug: 'xinbei',
+    name: '新北市',
+    file: 'xinbei',
+    sourceName: '新北市政府環境保護局',
+    sourceUrl: 'https://data.ntpc.gov.tw/datasets/edc3ad26-8ae7-4916-a00b-bc6048d19bf8',
   },
 ];
 
