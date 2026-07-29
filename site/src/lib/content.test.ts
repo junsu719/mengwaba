@@ -15,10 +15,19 @@ import { introSentence, scheduleTimeText, todaySummarySentence } from './content
  * 是從實際資料摘錄下來的真實形狀(見各筆註解的 point_id 出處與所屬組合矩陣分類 A–J,
  * 對應 I4 的分類),固定下來只為了鎖住行為,不是要驗證資料本身。
  *
- * 組合矩陣分類(I4):
+ * 組合矩陣分類(I4,2026-07-27;K–P 為 2026-07-29 新北 foodscraps_schedule 擴充新增,
+ * 見 B4/B5 稽核,DECISIONS.md 2026-07-29):
  *   A 星期已知×depart有值  B 星期已知×depart null(多時段/Bug A)  C 星期未知×depart null
  *   D/E 有/無 recycling_schedule  G I1 純資源回收點  H I2 單一時段 vs 多時段
  *   I I3 沿街收運 arrive=depart vs arrive≠depart  J I2+I3 共同案例
+ *   K 有 foodscraps_schedule,星期為一般垃圾子集(新北最常見型態,26,209 筆)
+ *   L 有 foodscraps_schedule,多出的星期由 recycling_schedule 涵蓋、到站時間一致(333 筆)
+ *   M 有 foodscraps_schedule,多出的星期在 schedule/recycling_schedule 皆查無對應(20 筆孤立點)
+ *   N 無 foodscraps_schedule——回歸測試,確認新增欄位不影響既有輸出(107 筆)
+ *   O foodscraps_schedule 非空但 schedule 為空、recycling_schedule 非空(僅回收+廚餘,2 筆)
+ *   P 合成防禦性測試:schedule 與 recycling_schedule 皆空、僅 foodscraps_schedule 非空
+ *     ——目前新北資料尚未出現此形狀,但 B3 稽核發現原本的程式碼會誤判成「完全無公開時刻
+ *     資料」,2026-07-29 已修正 introSentence()/todaySummarySentence() 補上對應分支
  */
 
 function point(overrides: Partial<CollectionPoint>): CollectionPoint {
@@ -329,6 +338,126 @@ describe('introSentence(meta description)', () => {
       '位於光復里的「光復路119號(豪華戲院前)」,垃圾車在週一、週二、週四、週五、週六收運,各星期到站時間不盡相同,詳細時段請見下方時刻表。'
     );
   });
+
+  it('K:新北 foodscraps_schedule 為一般垃圾子集(XBC-WANLI-8EAAE1E23D)——introSentence 不受 foodscraps 欄位影響', () => {
+    const p = point({
+      point_id: 'XBC-WANLI-8EAAE1E23D',
+      city: '新北市',
+      district: '萬里區',
+      village: '瑪鋉里',
+      point_name: '瑪鋉路30巷2弄4號',
+      address: '新北市萬里區瑪鋉路30巷2弄4號',
+      schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '19:17', depart: null }],
+      recycling_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '19:17', depart: null }],
+      foodscraps_schedule: [{ weekday: [1, 2, 5, 6], arrive: '19:17', depart: null }],
+      collection_type: null,
+    });
+    expect(introSentence(p)).toBe(
+      '新北市萬里區瑪鋉路30巷2弄4號 位於萬里區瑪鋉里,垃圾車固定於週一、週二、週四、週五、週六 約 19:17 抵達。'
+    );
+  });
+
+  it('L:新北 foodscraps_schedule 多出的星期由 recycling_schedule 涵蓋(XBC-WANLI-9FA3B36F8E)', () => {
+    const p = point({
+      point_id: 'XBC-WANLI-9FA3B36F8E',
+      city: '新北市',
+      district: '萬里區',
+      village: '萬里里',
+      point_name: '獅頭路2號巷口',
+      address: '新北市萬里區獅頭路2號巷口',
+      schedule: [{ weekday: [2, 4, 5, 6], arrive: '18:38', depart: null }],
+      recycling_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '18:38', depart: null }],
+      foodscraps_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '18:38', depart: null }],
+      collection_type: null,
+    });
+    expect(introSentence(p)).toBe(
+      '新北市萬里區獅頭路2號巷口 位於萬里區萬里里,垃圾車固定於週二、週四、週五、週六 約 18:38 抵達。'
+    );
+  });
+
+  it('M:新北 foodscraps_schedule 多出的星期查無任何對應(XBC-WULAI-73594FD90B,20 筆孤立點之一)', () => {
+    const p = point({
+      point_id: 'XBC-WULAI-73594FD90B',
+      city: '新北市',
+      district: '烏來區',
+      village: '忠治里',
+      point_name: '忠治產道沿線清運(每周2.6)',
+      address: '新北市烏來區忠治產道沿線清運(每周2.6)',
+      schedule: [{ weekday: [1, 6], arrive: '19:25', depart: null }],
+      recycling_schedule: [],
+      foodscraps_schedule: [{ weekday: [1, 4], arrive: '19:25', depart: null }],
+      collection_type: null,
+    });
+    expect(introSentence(p)).toBe(
+      '新北市烏來區忠治產道沿線清運(每周2.6) 位於烏來區忠治里,垃圾車固定於週一、週六 約 19:25 抵達。'
+    );
+  });
+
+  it('N:新北無 foodscraps_schedule(XBC-PINGLIN-189FC31531)——回歸測試,確認既有輸出不受新欄位影響', () => {
+    const p = point({
+      point_id: 'XBC-PINGLIN-189FC31531',
+      city: '新北市',
+      district: '坪林區',
+      village: '長源里',
+      point_name: '石嘈停車場',
+      address: '新北市坪林區石嘈停車場',
+      schedule: [{ weekday: [4], arrive: '06:40', depart: null }],
+      recycling_schedule: [{ weekday: [4], arrive: '06:40', depart: null }],
+      foodscraps_schedule: [],
+      collection_type: null,
+    });
+    expect(introSentence(p)).toBe('位於長源里的「石嘈停車場」,垃圾車在週四 約 06:40 抵達。');
+  });
+
+  it('O:新北僅資源回收+廚餘、無一般垃圾班次(XBC-PINGLIN-96C48AE958)——foodscraps 非空不改變既有 I1 分支', () => {
+    const p = point({
+      point_id: 'XBC-PINGLIN-96C48AE958',
+      city: '新北市',
+      district: '坪林區',
+      village: null,
+      point_name: '北宜路7段338號',
+      address: '新北市坪林區北宜路7段338號',
+      schedule: [],
+      recycling_schedule: [{ weekday: [2], arrive: '07:25', depart: null }],
+      foodscraps_schedule: [{ weekday: [2, 4], arrive: '07:25', depart: null }],
+      collection_type: null,
+    });
+    expect(introSentence(p)).toBe(
+      '新北市坪林區北宜路7段338號 位於坪林區,此清運點僅提供資源回收收運,固定於週二 到站時間約 07:25。'
+    );
+  });
+
+  it('P 防禦性:純廚餘點、單一時段(schedule 與 recycling_schedule 皆空)——目前無真實案例,B3 稽核發現的落差修正', () => {
+    const p = point({
+      point_id: 'TEST-FOODSCRAPS-ONLY',
+      city: '新北市',
+      district: '測試區',
+      village: '測試里',
+      point_name: '測試廚餘專屬點',
+      address: '新北市測試區測試廚餘專屬點',
+      schedule: [],
+      recycling_schedule: undefined,
+      foodscraps_schedule: [{ weekday: [2, 5], arrive: '16:25', depart: '16:29' }],
+    });
+    expect(introSentence(p)).toBe(
+      '新北市測試區測試廚餘專屬點 位於測試區測試里,此清運點僅提供廚餘回收,固定於週二、週五 到站時間約在 16:25〜16:29 之間。'
+    );
+  });
+
+  it('P2 防禦性:純廚餘點、星期未知——同上修正,foodscraps 星期未知分支', () => {
+    const p = point({
+      point_id: 'TEST-FOODSCRAPS-ONLY-UNKNOWN',
+      city: '新北市',
+      district: '測試區',
+      village: '測試里',
+      point_name: '測試廚餘專屬點2',
+      address: '新北市測試區測試廚餘專屬點2',
+      schedule: [],
+      recycling_schedule: undefined,
+      foodscraps_schedule: [{ weekday: [], arrive: '17:00', depart: null }],
+    });
+    expect(introSentence(p)).toBe('位於測試里的「測試廚餘專屬點2」僅提供廚餘回收,到站時間約 17:00。');
+  });
 });
 
 describe('todaySummarySentence', () => {
@@ -493,6 +622,123 @@ describe('todaySummarySentence', () => {
   it('J1 I2+I3:今天休收(週三)', () => {
     expect(todaySummarySentence(taichungBugAB, 3)).toBe(
       '光復路119號(豪華戲院前)今天(週三)休收,下一個收運日請參考本頁時刻表(固定為週一、週二、週四、週五、週六)。'
+    );
+  });
+
+  const xinbeiFoodscrapsSubset = point({
+    point_id: 'XBC-WANLI-8EAAE1E23D',
+    city: '新北市',
+    district: '萬里區',
+    point_name: '瑪鋉路30巷2弄4號',
+    schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '19:17', depart: null }],
+    recycling_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '19:17', depart: null }],
+    foodscraps_schedule: [{ weekday: [1, 2, 5, 6], arrive: '19:17', depart: null }],
+    collection_type: null,
+  });
+
+  it('K:新北 foodscraps_schedule 為一般垃圾子集,今天有班(週二)——foodscraps 欄位不影響既有分流', () => {
+    expect(todaySummarySentence(xinbeiFoodscrapsSubset, 2)).toBe(
+      '今天(週二)垃圾車會到瑪鋉路30巷2弄4號,預計 19:17 抵達,請提前將垃圾拿到現場等候。'
+    );
+  });
+
+  const xinbeiFoodscrapsCoveredByRecycling = point({
+    point_id: 'XBC-WANLI-9FA3B36F8E',
+    city: '新北市',
+    district: '萬里區',
+    point_name: '獅頭路2號巷口',
+    schedule: [{ weekday: [2, 4, 5, 6], arrive: '18:38', depart: null }],
+    recycling_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '18:38', depart: null }],
+    foodscraps_schedule: [{ weekday: [1, 2, 4, 5, 6], arrive: '18:38', depart: null }],
+    collection_type: null,
+  });
+
+  it('L:新北 foodscraps_schedule 多出的星期由 recycling_schedule 涵蓋,今天有班(週二)', () => {
+    expect(todaySummarySentence(xinbeiFoodscrapsCoveredByRecycling, 2)).toBe(
+      '今天(週二)垃圾車會到獅頭路2號巷口,預計 18:38 抵達,請提前將垃圾拿到現場等候。'
+    );
+  });
+
+  const xinbeiFoodscrapsOrphan = point({
+    point_id: 'XBC-WULAI-73594FD90B',
+    city: '新北市',
+    district: '烏來區',
+    point_name: '忠治產道沿線清運(每周2.6)',
+    schedule: [{ weekday: [1, 6], arrive: '19:25', depart: null }],
+    recycling_schedule: [],
+    foodscraps_schedule: [{ weekday: [1, 4], arrive: '19:25', depart: null }],
+    collection_type: null,
+  });
+
+  it('M:新北 foodscraps_schedule 多出的星期查無任何對應,今天休收(週二,一般垃圾固定週一、週六)', () => {
+    expect(todaySummarySentence(xinbeiFoodscrapsOrphan, 2)).toBe(
+      '週二垃圾車不會經過忠治產道沿線清運(每周2.6),此清運點的收運日固定在週一、週六。'
+    );
+  });
+
+  const xinbeiNoFoodscraps = point({
+    point_id: 'XBC-PINGLIN-189FC31531',
+    city: '新北市',
+    district: '坪林區',
+    point_name: '石嘈停車場',
+    schedule: [{ weekday: [4], arrive: '06:40', depart: null }],
+    recycling_schedule: [{ weekday: [4], arrive: '06:40', depart: null }],
+    foodscraps_schedule: [],
+    collection_type: null,
+  });
+
+  it('N:新北無 foodscraps_schedule,今天休收(週二,一般垃圾固定週四)——回歸測試', () => {
+    expect(todaySummarySentence(xinbeiNoFoodscraps, 2)).toBe(
+      '石嘈停車場今天(週二)休收,下一個收運日請參考本頁時刻表(固定為週四)。'
+    );
+  });
+
+  const xinbeiRecyclingAndFoodscrapsOnly = point({
+    point_id: 'XBC-PINGLIN-96C48AE958',
+    city: '新北市',
+    district: '坪林區',
+    point_name: '北宜路7段338號',
+    schedule: [],
+    recycling_schedule: [{ weekday: [2], arrive: '07:25', depart: null }],
+    foodscraps_schedule: [{ weekday: [2, 4], arrive: '07:25', depart: null }],
+    collection_type: null,
+  });
+
+  it('O:新北僅資源回收+廚餘、無一般垃圾班次——foodscraps 非空不改變既有 G1/I1 分支', () => {
+    expect(todaySummarySentence(xinbeiRecyclingAndFoodscrapsOnly, 2)).toBe(
+      '北宜路7段338號僅提供資源回收收運,無一般垃圾清運服務,回收到站時間請見下方時刻表。'
+    );
+  });
+
+  const foodscrapsOnlyFixed = point({
+    point_id: 'TEST-FOODSCRAPS-ONLY',
+    city: '新北市',
+    district: '測試區',
+    point_name: '測試廚餘專屬點',
+    schedule: [],
+    recycling_schedule: undefined,
+    foodscraps_schedule: [{ weekday: [2, 5], arrive: '16:25', depart: '16:29' }],
+  });
+
+  it('P 防禦性:純廚餘點、單一時段(schedule 與 recycling_schedule 皆空)——B3 稽核發現的落差修正', () => {
+    expect(todaySummarySentence(foodscrapsOnlyFixed, 2)).toBe(
+      '測試廚餘專屬點僅提供廚餘回收,無一般垃圾清運服務,到站時間請見下方時刻表。'
+    );
+  });
+
+  const foodscrapsOnlyUnknown = point({
+    point_id: 'TEST-FOODSCRAPS-ONLY-UNKNOWN',
+    city: '新北市',
+    district: '測試區',
+    point_name: '測試廚餘專屬點2',
+    schedule: [],
+    recycling_schedule: undefined,
+    foodscraps_schedule: [{ weekday: [], arrive: '17:00', depart: null }],
+  });
+
+  it('P2 防禦性:純廚餘點、星期未知——同上修正,foodscraps-only 分支的第二個文案變體', () => {
+    expect(todaySummarySentence(foodscrapsOnlyUnknown, 2)).toBe(
+      '本站僅取得測試廚餘專屬點2的廚餘回收班表,此點不提供一般垃圾清運,到站時間請參考下方時刻表。'
     );
   });
 });

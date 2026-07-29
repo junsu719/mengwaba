@@ -84,7 +84,19 @@ export function todaySummarySentence(point: CollectionPoint, weekday: number = t
       ];
       return pick(recyclingVariants, seed + 2);
     }
-    // 理論上不會走到這裡(push_d1.py 已排除 schedule 與 recycling_schedule 皆空的點),防禦性保留。
+    // 2026-07-29 拍板:純廚餘點(schedule、recycling_schedule 皆空,僅 foodscraps_schedule
+    // 非空)目前新北資料尚未實際出現(見 introSentence() 同一分支的註解),但比照該處補上,
+    // 避免誤判成「本站尚未取得收運時刻資料」——該點其實有廚餘收運服務。
+    const hasFoodscraps = !!point.foodscraps_schedule && point.foodscraps_schedule.length > 0;
+    if (hasFoodscraps) {
+      const foodscrapsVariants = [
+        `${place}僅提供廚餘回收,無一般垃圾清運服務,到站時間請見下方時刻表。`,
+        `本站僅取得${place}的廚餘回收班表,此點不提供一般垃圾清運,到站時間請參考下方時刻表。`,
+      ];
+      return pick(foodscrapsVariants, seed + 4);
+    }
+    // 理論上不會走到這裡(push_d1.py 已排除 schedule、recycling_schedule、foodscraps_schedule
+    // 三者皆空的點),防禦性保留。
     return `本站尚未取得${place}的收運時刻資料。`;
   }
 
@@ -153,7 +165,41 @@ export function introSentence(point: CollectionPoint): string {
     // 一般垃圾班次,措辭需明講「僅提供資源回收」,不能誤導成完全沒有資料。
     const recyclingTimes = point.recycling_schedule?.[0];
     if (!recyclingTimes) {
-      return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
+      // 2026-07-29 拍板:純廚餘點(schedule、recycling_schedule 皆空,僅 foodscraps_schedule
+      // 非空)目前新北資料尚未實際出現(現有 2 筆「僅資源回收+廚餘」點的 recycling_schedule
+      // 皆非空,會在上面 recyclingTimes 分支被接住),但邏輯上不能排除未來資料出現這種形狀,
+      // 見 B3 稽核(2026-07-29)發現的落差:原本這裡沒有 foodscraps 分支,會誤判成「完全無
+      // 公開時刻資料」,但實際上該點有廚餘收運服務。
+      const foodscrapsTimes = point.foodscraps_schedule?.[0];
+      if (!foodscrapsTimes) {
+        return `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},目前尚無公開時刻資料。`;
+      }
+      const foodscrapsDays = [...new Set(point.foodscraps_schedule!.flatMap((s) => s.weekday))].sort((a, b) => a - b);
+      const foodscrapsArrival =
+        foodscrapsTimes.depart === null
+          ? `到站時間約 ${foodscrapsTimes.arrive}`
+          : `到站時間約在 ${foodscrapsTimes.arrive}〜${foodscrapsTimes.depart} 之間`;
+      if (foodscrapsDays.length === 0) {
+        const foodscrapsUnknownVariants = [
+          `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供廚餘回收,${foodscrapsArrival}。`,
+          `位於${point.village ?? point.district}的「${point.point_name}」僅提供廚餘回收,${foodscrapsArrival}。`,
+        ];
+        return pick(foodscrapsUnknownVariants, seed);
+      }
+      const foodscrapsDaysText = weekdayListText(foodscrapsDays);
+      const foodscrapsVaried = new Set(point.foodscraps_schedule!.map((s) => `${s.arrive}|${s.depart}`)).size > 1;
+      if (foodscrapsVaried) {
+        const foodscrapsVariedVariants = [
+          `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供廚餘回收,固定於${foodscrapsDaysText}收運,不同星期的到站時間略有不同,詳見下方時刻表。`,
+          `位於${point.village ?? point.district}的「${point.point_name}」僅提供廚餘回收,固定於${foodscrapsDaysText}收運,各星期到站時間不盡相同,詳見下方時刻表。`,
+        ];
+        return pick(foodscrapsVariedVariants, seed);
+      }
+      const foodscrapsVariants = [
+        `${point.address ?? point.point_name} 位於${point.district}${point.village ?? ''},此清運點僅提供廚餘回收,固定於${foodscrapsDaysText} ${foodscrapsArrival}。`,
+        `位於${point.village ?? point.district}的「${point.point_name}」僅提供廚餘回收,固定於${foodscrapsDaysText} ${foodscrapsArrival}。`,
+      ];
+      return pick(foodscrapsVariants, seed);
     }
     const recyclingDays = [...new Set(point.recycling_schedule!.flatMap((s) => s.weekday))].sort((a, b) => a - b);
     const recyclingArrival =
