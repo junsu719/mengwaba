@@ -3,10 +3,26 @@ export const prerender = false;
 
 import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import { CITIES, parsePointId, getCity } from '../../../../lib/data';
-import { loadDistrictFromD1, toDistrictGroup } from '../../../../lib/data-d1';
+import {
+  CITIES,
+  WEEKDAY_NAMES,
+  parsePointId,
+  getCity,
+  groupByVillage,
+  computeDistrictStats,
+  fetchedAtDateRange,
+  type CollectionPoint,
+} from '../../../../lib/data';
+import { loadDistrictFromD1, toDistrictGroup, loadCityDistrictList } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
-import { districtNoteSentence, scheduleTimeText } from '../../../../lib/content';
+import {
+  districtNoteSentence,
+  scheduleTimeText,
+  buildDistrictFaq,
+  weekdaySummarySentence,
+  weekdayDistributionCaveat,
+  districtTimeDistributionSentence,
+} from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
 // Phase 4.5 Step 4:行政區頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3),
@@ -31,6 +47,25 @@ if (!group) {
   return new Response('Not Found', { status: 404 });
 }
 
+// 2026-08-10 行政區頁強化(GSC 130 個行政區頁集中收錄策略,見 DECISIONS.md):以下皆為
+// 從既有 D1 資料聚合而來的計算,不新增網址、不引入外部資料。
+const stats = computeDistrictStats(group.points);
+const villages = groupByVillage(group.points);
+const unassignedPoints = group.points.filter((p) => !p.village);
+const dateRange = fetchedAtDateRange(group.points);
+const faq = buildDistrictFaq(group, stats);
+const weekdaySummary = weekdaySummarySentence(stats);
+const weekdayCaveat = weekdayDistributionCaveat(stats);
+const timeDistSentence = districtTimeDistributionSentence(stats);
+const siblingDistricts = (await loadCityDistrictList(db as never, citySlug!)).filter(
+  (d) => d.districtSlug !== group.districtSlug
+);
+
+function pointHref(p: CollectionPoint): string | null {
+  const pointSlug = parsePointId(p.point_id)?.pointSlug;
+  return pointSlug ? `/trash/${city.slug}/${group.districtSlug}/${pointSlug}/` : null;
+}
+
 const sortedByTime = [...group.points].sort((a, b) => {
   const at = a.schedule[0]?.arrive ?? '99:99';
   const bt = b.schedule[0]?.arrive ?? '99:99';
@@ -48,33 +83,65 @@ const jsonLd = [
 ---
 
 <BaseLayout
-  title={`${group.district}垃圾車時間查詢｜${city.name}${group.district}清運點總表`}
-  description={`${city.name}${group.district}垃圾車清運時間總表,共 ${group.points.length} 個清運點,依到站時間排序,點選查看各點詳細時刻與地址。`}
+  title={`${group.district}垃圾車時間表｜${city.name}清運點查詢｜悶蛙吧`}
+  description={`${city.name}${group.district}垃圾車清運時間總表,共 ${group.points.length} 個清運點,分布在 ${stats.villageCount} 個里,依到站時間排序,點選查看各點詳細時刻與地址。`}
   jsonLd={jsonLd}
 >
   <nav><a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> / <a href={`/trash/${city.slug}/`}>{city.name}</a> / {group.district}</nav>
   <h1>{group.district}垃圾車清運時間查詢</h1>
   <p>{districtNoteSentence(group)}</p>
 
+  {
+    villages.length > 0 && (
+      <>
+        <h2>里別索引</h2>
+        <ul class="chip-list">
+          {villages.map((v) => (
+            <li>
+              <a href={`#li-${v.village}`}>
+                {v.village}({v.points.length})
+              </a>
+            </li>
+          ))}
+          {unassignedPoints.length > 0 && (
+            <li>
+              <a href="#li-unassigned">未標示里別({unassignedPoints.length})</a>
+            </li>
+          )}
+        </ul>
+      </>
+    )
+  }
+
   <h2>清運點列表</h2>
-  <ul class="plain">
-    {
-      group.points.map((p) => {
-        // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
-        const pointSlug = parsePointId(p.point_id)?.pointSlug;
-        return (
-          <li>
-            {pointSlug ? (
-              <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
-            ) : (
-              <span>{p.point_name}</span>
-            )}
-            {p.village ? ` ・${p.village}` : ''}
-          </li>
-        );
-      })
-    }
-  </ul>
+  {
+    villages.map((v) => (
+      <section id={`li-${v.village}`}>
+        <h3>
+          {v.village}({v.points.length} 個點)
+        </h3>
+        <ul class="plain">
+          {v.points.map((p) => {
+            const href = pointHref(p);
+            return <li>{href ? <a href={href}>{p.point_name}</a> : <span>{p.point_name}</span>}</li>;
+          })}
+        </ul>
+      </section>
+    ))
+  }
+  {
+    unassignedPoints.length > 0 && (
+      <section id="li-unassigned">
+        <h3>未標示里別({unassignedPoints.length} 個點)</h3>
+        <ul class="plain">
+          {unassignedPoints.map((p) => {
+            const href = pointHref(p);
+            return <li>{href ? <a href={href}>{p.point_name}</a> : <span>{p.point_name}</span>}</li>;
+          })}
+        </ul>
+      </section>
+    )
+  }
 
   <h2>時段總表(依到站時間排序)</h2>
   <table>
@@ -89,19 +156,12 @@ const jsonLd = [
     <tbody>
       {
         sortedByTime.map((p) => {
-          // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整列資訊、也不讓整頁崩潰
-          const pointSlug = parsePointId(p.point_id)?.pointSlug;
+          const href = pointHref(p);
           const entry = p.schedule[0];
           return (
             <tr>
               <td>{entry ? scheduleTimeText(entry, p.collection_type) : '—'}</td>
-              <td>
-                {pointSlug ? (
-                  <a href={`/trash/${city.slug}/${group.districtSlug}/${pointSlug}/`}>{p.point_name}</a>
-                ) : (
-                  <span>{p.point_name}</span>
-                )}
-              </td>
+              <td>{href ? <a href={href}>{p.point_name}</a> : <span>{p.point_name}</span>}</td>
               <td>{p.village || '—'}</td>
               <td>{entry && entry.weekday.length > 0 ? <WeekdayBadge weekday={entry.weekday} /> : '—'}</td>
             </tr>
@@ -111,10 +171,138 @@ const jsonLd = [
     </tbody>
   </table>
 
+  <h2>星期分佈總覽</h2>
+  {weekdaySummary && <p>{weekdaySummary}</p>}
+  <table>
+    <thead>
+      <tr>
+        <th>星期</th>
+        <th>清運點數</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        WEEKDAY_NAMES.slice(1).map((name, i) => (
+          <tr>
+            <td>週{name}</td>
+            <td>{stats.weekdayScheduleCounts[i + 1]}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  {weekdayCaveat && <p class="muted">{weekdayCaveat}</p>}
+
+  {
+    timeDistSentence && (
+      <>
+        <h2>時段分佈</h2>
+        <p>{timeDistSentence}</p>
+      </>
+    )
+  }
+
+  {
+    (stats.recyclingPointCount > 0 || stats.foodscrapsPointCount > 0) && (
+      <>
+        <h2>資源回收/廚餘覆蓋概況</h2>
+        <ul class="plain">
+          {stats.recyclingPointCount > 0 && (
+            <li>
+              資源回收:{stats.recyclingPointCount} 個點提供(約 {stats.recyclingCoveragePct}%)
+            </li>
+          )}
+          {stats.foodscrapsPointCount > 0 && (
+            <li>
+              廚餘回收:{stats.foodscrapsPointCount} 個點提供(約 {stats.foodscrapsCoveragePct}%)
+            </li>
+          )}
+        </ul>
+      </>
+    )
+  }
+
+  {
+    faq.length > 0 && (
+      <>
+        <h2>常見問題</h2>
+        {faq.map((f) => (
+          <details>
+            <summary>{f.question}</summary>
+            <p>{f.answer}</p>
+          </details>
+        ))}
+      </>
+    )
+  }
+
+  <h2>資料來源與更新日期</h2>
+  <p>
+    資料來源:{city.sourceName}(
+    <a href={city.sourceUrl} rel="noopener">
+      {city.name}政府資料開放平台
+    </a>
+    ),依「政府資料開放授權條款第1版」提供。資料更新於 {dateRange.min === dateRange.max ? dateRange.min : `${dateRange.min} ~ ${dateRange.max}`}。
+  </p>
+
+  <h2>站內連結</h2>
+  <ul class="plain">
+    <li>
+      <a href={`/trash/${city.slug}/`}>{city.name}行政區索引</a>
+    </li>
+    <li>
+      <a href="/trash/">全台垃圾車清運時間查詢工具首頁</a>
+    </li>
+  </ul>
+  {
+    siblingDistricts.length > 0 && (
+      <>
+        <h3>{city.name}其他行政區</h3>
+        <ul class="chip-list">
+          {siblingDistricts.map((d) => (
+            <li>
+              <a href={`/trash/${city.slug}/${d.districtSlug}/`}>{d.district}</a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+  <h3>其他縣市</h3>
+  <ul class="chip-list">
+    {
+      CITIES.filter((c) => c.slug !== city.slug).map((c) => (
+        <li>
+          <a href={`/trash/${c.slug}/`}>{c.name}</a>
+        </li>
+      ))
+    }
+  </ul>
+
   <style>
     table td:first-child,
     table td:last-child {
       white-space: nowrap;
+    }
+    .chip-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chip-list li a {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
     }
   </style>
 

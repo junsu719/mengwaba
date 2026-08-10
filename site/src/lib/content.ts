@@ -1,4 +1,4 @@
-import type { CollectionPoint, DistrictGroup, ScheduleEntry } from './data';
+import type { CollectionPoint, DistrictGroup, DistrictStats, ScheduleEntry } from './data';
 import { WEEKDAY_NAMES, todayScheduleEntry, todayWeekdayTaipei } from './data';
 
 interface OfficialQuerySystem {
@@ -327,6 +327,146 @@ export function buildFaq(point: CollectionPoint, districtName: string): FaqItem[
     { question: '大型垃圾可以放在這裡等清運嗎?', answer: pick(bulkyAnswers, seed + 2) },
     { question: '廚餘要怎麼處理?', answer: pick(kitchenAnswers, seed + 3) },
   ];
+}
+
+function daysLabel(days: number[]): string {
+  return days.map((d) => `週${WEEKDAY_NAMES[d]}`).join('、');
+}
+
+/**
+ * 星期分佈的口語化摘要:多數星期點數相近時合併成一句話(差異用「約 X–Y 個點」帶過),
+ * 明顯偏低(含 0)的星期才逐一點名——2026-08-10 Jun 審查三民區範例後指出逐日列出 7 個
+ * 數字太冗長,改成這種「多數/例外」分組方式。以最高星期點數的一半為門檻切分「多數」
+ * 與「偏低」兩組,純粹依資料算出,不套用「早班/晚班」之類自訂標籤。
+ * 呼叫端需自行保證至少有一個星期有已知班次,否則回傳 null(maxCount===0 時)。
+ */
+export function weekdaySummarySentence(stats: DistrictStats): string | null {
+  const counts = stats.weekdayScheduleCounts;
+  const maxCount = Math.max(...counts.slice(1, 8));
+  if (maxCount === 0) return null;
+  const threshold = maxCount / 2;
+
+  const normalDays: number[] = [];
+  const reducedDays: number[] = [];
+  for (let d = 1; d <= 7; d++) {
+    (counts[d] >= threshold ? normalDays : reducedDays).push(d);
+  }
+
+  const normalCounts = normalDays.map((d) => counts[d]);
+  const normalMin = Math.min(...normalCounts);
+  const normalMax = Math.max(...normalCounts);
+  const normalText =
+    normalMin === normalMax
+      ? `${daysLabel(normalDays)} ${normalMin} 個點有班次`
+      : `${daysLabel(normalDays)}約 ${normalMin}–${normalMax} 個點有班次`;
+
+  if (reducedDays.length === 0) return `${normalText}。`;
+
+  const zeroDays = reducedDays.filter((d) => counts[d] === 0);
+  const lowDays = reducedDays.filter((d) => counts[d] > 0);
+
+  const parts = [normalText];
+  if (lowDays.length > 0) {
+    parts.push(lowDays.map((d) => `週${WEEKDAY_NAMES[d]}僅 ${counts[d]} 個點`).join('、'));
+  }
+  if (zeroDays.length > 0) {
+    parts.push(`${daysLabel(zeroDays)}目前沒有登記的收運班次`);
+  }
+  return `${parts.join(';')}。`;
+}
+
+/**
+ * 區級 FAQ,4 題固定順序,每題答不出來(資料不支援)就從陣列中整項省略,不硬答、
+ * 不寫「通常」「一般來說」這類沒有依據的措辭——所有答案都可回溯到 DistrictStats 的計算結果。
+ */
+export function buildDistrictFaq(group: DistrictGroup, stats: DistrictStats): FaqItem[] {
+  const items: FaqItem[] = [];
+
+  // Q1:僅在至少有一個點知道星期時才回答;weekdaySummarySentence 在全區星期皆未知時
+  // 回傳 null,改用誠實版本,不得假裝「每天都算出 0」。
+  const scheduledPointCount = stats.pointCount - stats.noSchedulePointCount;
+  if (scheduledPointCount > 0) {
+    const summary = weekdaySummarySentence(stats);
+    const answer =
+      summary === null
+        ? `本站尚未取得${group.district}清運點的逐日收運星期資料,僅取得到站時間,請見下方時段總表。`
+        : `根據本站資料,${group.district}${summary}`;
+    items.push({ question: `${group.district}星期幾有收垃圾?`, answer });
+  }
+
+  // Q2:永遠可答(group 非空由呼叫端保證)。
+  items.push({
+    question: `${group.district}有幾個清運點?`,
+    answer: `${group.district}目前共登記 ${stats.pointCount} 個清運點,分布在 ${stats.villageCount} 個里。`,
+  });
+
+  // Q3:earliestArrive/latestArrive 皆為 null(全區無 schedule 資料)時整題省略。
+  if (stats.earliestArrive !== null && stats.latestArrive !== null) {
+    items.push({
+      question: `${group.district}最早、最晚的清運時間是幾點?`,
+      answer: `${group.district}記錄到的清運到站時間中,最早為 ${stats.earliestArrive},最晚為 ${stats.latestArrive}。`,
+    });
+  }
+
+  // Q4:recyclingPointCount/foodscrapsPointCount 皆為 0 時整題省略;僅其中一項 >0 時只講該項,
+  // 不特別註明「未取得另一項資料」——單純數字,不做解釋。
+  const segments: string[] = [];
+  if (stats.recyclingPointCount > 0) {
+    segments.push(`有 ${stats.recyclingPointCount} 個(約 ${stats.recyclingCoveragePct}%)提供資源回收`);
+  }
+  if (stats.foodscrapsPointCount > 0) {
+    segments.push(`有 ${stats.foodscrapsPointCount} 個(約 ${stats.foodscrapsCoveragePct}%)提供廚餘回收`);
+  }
+  if (segments.length > 0) {
+    items.push({
+      question: `${group.district}有資源回收或廚餘回收嗎?`,
+      answer: `${group.district}的清運點中,${segments.join('、')}。`,
+    });
+  }
+
+  return items;
+}
+
+/** 星期分佈總覽表格旁的補充說明(未知星期/純回收廚餘點各自的排除說明),無需說明時回傳 null。 */
+export function weekdayDistributionCaveat(stats: DistrictStats): string | null {
+  const parts: string[] = [];
+  if (stats.weekdayUnknownPointCount > 0) {
+    parts.push(
+      `另有 ${stats.weekdayUnknownPointCount} 個點的收運星期本站尚未取得,未列入以上統計(到站時間仍列在下方時段總表中)`
+    );
+  }
+  if (stats.noSchedulePointCount > 0) {
+    parts.push(
+      `另有 ${stats.noSchedulePointCount} 個點僅提供資源回收或廚餘回收服務,無一般垃圾收運班次,未列入以上統計`
+    );
+  }
+  if (parts.length === 0) return null;
+  return `${parts.join(';')}。`;
+}
+
+/**
+ * 時段分佈段落:最早/最晚到站時間 + 集中時段。maxCount<=1 或並列超過 3 個小時時代表班次太分散,
+ * 談不上「集中」,不硬套此句型(避免灌水)。earliestArrive 為 null(全區無 schedule 資料)時回傳 null,
+ * 呼叫端整段不渲染。
+ */
+export function districtTimeDistributionSentence(stats: DistrictStats): string | null {
+  if (stats.earliestArrive === null || stats.latestArrive === null) return null;
+  const rangeText =
+    stats.earliestArrive === stats.latestArrive
+      ? `全區到站時間集中在 ${stats.earliestArrive}`
+      : `全區到站時間最早 ${stats.earliestArrive},最晚 ${stats.latestArrive}`;
+
+  const maxCount = Math.max(...stats.hourCounts);
+  const peakHours = stats.hourCounts
+    .map((count, hour) => ({ hour, count }))
+    .filter((h) => h.count === maxCount)
+    .map((h) => h.hour);
+  const peakText =
+    maxCount > 1 && peakHours.length <= 3
+      ? `,收運時段以 ${peakHours.map((h) => `${h}時`).join('、')} 最為集中(共 ${maxCount} 筆班次)`
+      : '';
+
+  return `${rangeText}${peakText}。`;
 }
 
 export function districtNoteSentence(group: DistrictGroup): string {

@@ -150,6 +150,25 @@ export function groupByDistrict(points: CollectionPoint[]): DistrictGroup[] {
   return [...map.values()].sort((a, b) => a.districtSlug.localeCompare(b.districtSlug));
 }
 
+export interface VillageGroup {
+  village: string;
+  points: CollectionPoint[];
+}
+
+/** 僅納入 village 非 null/非空字串的點;依中文排序回傳,供里別索引與清運點列表分組共用。 */
+export function groupByVillage(points: CollectionPoint[]): VillageGroup[] {
+  const map = new Map<string, CollectionPoint[]>();
+  for (const p of points) {
+    if (!p.village) continue;
+    const list = map.get(p.village);
+    if (list) list.push(p);
+    else map.set(p.village, [p]);
+  }
+  return [...map.entries()]
+    .map(([village, pts]) => ({ village, points: pts }))
+    .sort((a, b) => a.village.localeCompare(b.village, 'zh-Hant'));
+}
+
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -194,4 +213,87 @@ export function todayWeekdayTaipei(): number {
 
 export function todayScheduleEntry(p: CollectionPoint, weekday = todayWeekdayTaipei()): ScheduleEntry | null {
   return p.schedule.find((s) => s.weekday.includes(weekday)) ?? null;
+}
+
+export interface DistrictStats {
+  pointCount: number;
+  villageCount: number;
+  /** 長度 8,index 1-7 有效:該星期有 schedule 班次覆蓋的「相異點數」(非筆數)。 */
+  weekdayScheduleCounts: number[];
+  /** schedule.length > 0,但每筆 entry.weekday 皆為 [] 的點數(星期未知,非「不收運」,見 ScheduleEntry.weekday 註解)。 */
+  weekdayUnknownPointCount: number;
+  /** schedule.length === 0 的點數(純資源回收或純廚餘點)。 */
+  noSchedulePointCount: number;
+  /** 全區 schedule[] 的最早/最晚到站時間(HH:MM 字串比較),無 schedule 資料時為 null。 */
+  earliestArrive: string | null;
+  latestArrive: string | null;
+  /** 長度 24,依 schedule[] entry.arrive 的小時分佈(以「筆」計,非去重點數)。 */
+  hourCounts: number[];
+  recyclingPointCount: number;
+  recyclingCoveragePct: number;
+  foodscrapsPointCount: number;
+  foodscrapsCoveragePct: number;
+}
+
+function coveragePct(count: number, total: number): number {
+  return total === 0 ? 0 : Math.round((count / total) * 100);
+}
+
+function coveredPointCount(points: CollectionPoint[], field: 'recycling_schedule' | 'foodscraps_schedule'): number {
+  return points.filter((p) => (p[field]?.length ?? 0) > 0).length;
+}
+
+export function computeDistrictStats(points: CollectionPoint[]): DistrictStats {
+  const pointCount = points.length;
+  const villageCount = new Set(points.map((p) => p.village).filter(Boolean)).size;
+
+  const weekdayScheduleCounts = new Array(8).fill(0);
+  let weekdayUnknownPointCount = 0;
+  let noSchedulePointCount = 0;
+  let earliestArrive: string | null = null;
+  let latestArrive: string | null = null;
+  const hourCounts = new Array(24).fill(0);
+
+  for (const p of points) {
+    if (p.schedule.length === 0) {
+      noSchedulePointCount++;
+      continue;
+    }
+    const days = new Set(p.schedule.flatMap((s) => s.weekday));
+    if (days.size === 0) {
+      weekdayUnknownPointCount++;
+    } else {
+      for (const d of days) weekdayScheduleCounts[d]++;
+    }
+    for (const entry of p.schedule) {
+      if (earliestArrive === null || entry.arrive < earliestArrive) earliestArrive = entry.arrive;
+      if (latestArrive === null || entry.arrive > latestArrive) latestArrive = entry.arrive;
+      const hour = Number(entry.arrive.slice(0, 2));
+      if (!Number.isNaN(hour) && hour >= 0 && hour < 24) hourCounts[hour]++;
+    }
+  }
+
+  const recyclingPointCount = coveredPointCount(points, 'recycling_schedule');
+  const foodscrapsPointCount = coveredPointCount(points, 'foodscraps_schedule');
+
+  return {
+    pointCount,
+    villageCount,
+    weekdayScheduleCounts,
+    weekdayUnknownPointCount,
+    noSchedulePointCount,
+    earliestArrive,
+    latestArrive,
+    hourCounts,
+    recyclingPointCount,
+    recyclingCoveragePct: coveragePct(recyclingPointCount, pointCount),
+    foodscrapsPointCount,
+    foodscrapsCoveragePct: coveragePct(foodscrapsPointCount, pointCount),
+  };
+}
+
+/** fetched_at 縣市間格式不一致(純日期 vs 含微秒的完整時間戳),一律取前 10 碼(YYYY-MM-DD)後再取 min/max。 */
+export function fetchedAtDateRange(points: CollectionPoint[]): { min: string; max: string } {
+  const dates = points.map((p) => p.fetched_at.slice(0, 10)).sort();
+  return { min: dates[0], max: dates[dates.length - 1] };
 }

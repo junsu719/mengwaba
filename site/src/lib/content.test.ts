@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import type { CollectionPoint } from './data';
-import { introSentence, scheduleTimeText, todaySummarySentence } from './content';
+import type { CollectionPoint, DistrictGroup, DistrictStats } from './data';
+import {
+  buildDistrictFaq,
+  districtTimeDistributionSentence,
+  introSentence,
+  scheduleTimeText,
+  todaySummarySentence,
+  weekdayDistributionCaveat,
+  weekdaySummarySentence,
+} from './content';
 
 /**
  * ⚠️ Golden/snapshot 測試 —— 這些字串是 2026-07-27 由 Jun 人工逐句讀過、確認正確的輸出
@@ -740,5 +748,189 @@ describe('todaySummarySentence', () => {
     expect(todaySummarySentence(foodscrapsOnlyUnknown, 2)).toBe(
       '本站僅取得測試廚餘專屬點2的廚餘回收班表,此點不提供一般垃圾清運,到站時間請參考下方時刻表。'
     );
+  });
+});
+
+/**
+ * ⚠️ Golden 測試——這些字串是 2026-08-10 由 Jun 用真實資料(高雄三民區 1,643 點、
+ * 臺中石岡區 22 點、桃園八德區 541 點、新北平溪區 16 點,各取一個行政區 + 1 個合成
+ * 邊界案例)人工讀過確認正確的輸出,規則同上方 introSentence/todaySummarySentence 區塊:
+ * 任何導致這裡失敗的改動,修改前都必須把新輸出重新貼給 Jun 審閱過才能更新期望值。
+ *
+ * 這裡的函式吃 DistrictStats(而非原始 CollectionPoint[]),fixture 直接手寫 DistrictStats
+ * 物件(部分沿用上述 4 個真實案例的實際數字,部分為精準命中單一分支而寫的小型合成案例),
+ * 不透過 computeDistrictStats 從點陣列反推——聚合計算本身的正確性由 data.test.ts 負責,
+ * 這裡只鎖「數字 → 句子」這段文案邏輯。
+ */
+
+function stats(overrides: Partial<DistrictStats>): DistrictStats {
+  return {
+    pointCount: 0,
+    villageCount: 0,
+    weekdayScheduleCounts: [0, 0, 0, 0, 0, 0, 0, 0],
+    weekdayUnknownPointCount: 0,
+    noSchedulePointCount: 0,
+    earliestArrive: null,
+    latestArrive: null,
+    hourCounts: new Array(24).fill(0),
+    recyclingPointCount: 0,
+    recyclingCoveragePct: 0,
+    foodscrapsPointCount: 0,
+    foodscrapsCoveragePct: 0,
+    ...overrides,
+  };
+}
+
+describe('weekdaySummarySentence', () => {
+  it('均勻分佈,含兩個 0 點的日子(臺中石岡區真實數字,22 點)', () => {
+    expect(weekdaySummarySentence(stats({ weekdayScheduleCounts: [0, 22, 22, 0, 22, 22, 22, 0] }))).toBe(
+      '週一、週二、週四、週五、週六 22 個點有班次;週三、週日目前沒有登記的收運班次。'
+    );
+  });
+
+  it('多數星期點數相近(約...區間)+ 兩個非零但明顯偏低的例外日(高雄三民區真實數字,1,643 點)', () => {
+    expect(weekdaySummarySentence(stats({ weekdayScheduleCounts: [0, 1641, 1642, 31, 1641, 1642, 1641, 17] }))).toBe(
+      '週一、週二、週四、週五、週六約 1641–1642 個點有班次;週三僅 31 個點、週日僅 17 個點。'
+    );
+  });
+
+  it('偏低與 0 兩種例外日同時出現(合成案例,精準命中 lowDays+zeroDays 同時非空的分支)', () => {
+    expect(weekdaySummarySentence(stats({ weekdayScheduleCounts: [0, 10, 10, 2, 10, 10, 0, 10] }))).toBe(
+      '週一、週二、週四、週五、週日 10 個點有班次;週三僅 2 個點;週六目前沒有登記的收運班次。'
+    );
+  });
+
+  it('全部星期點數為 0(全區星期未知)——回傳 null,呼叫端須改用誠實版本文案', () => {
+    expect(weekdaySummarySentence(stats({ weekdayScheduleCounts: [0, 0, 0, 0, 0, 0, 0, 0] }))).toBeNull();
+  });
+});
+
+describe('buildDistrictFaq', () => {
+  const group: DistrictGroup = { district: '平溪區', districtSlug: 'pingxi', points: [] };
+
+  it('完整資料(新北平溪區真實數字,16 點,含廚餘)——4 題全部出現', () => {
+    const s = stats({
+      pointCount: 16,
+      villageCount: 8,
+      weekdayScheduleCounts: [0, 16, 16, 0, 16, 16, 16, 0],
+      earliestArrive: '18:02',
+      latestArrive: '20:10',
+      recyclingPointCount: 16,
+      recyclingCoveragePct: 100,
+      foodscrapsPointCount: 16,
+      foodscrapsCoveragePct: 100,
+    });
+    expect(buildDistrictFaq(group, s)).toEqual([
+      {
+        question: '平溪區星期幾有收垃圾?',
+        answer: '根據本站資料,平溪區週一、週二、週四、週五、週六 16 個點有班次;週三、週日目前沒有登記的收運班次。',
+      },
+      { question: '平溪區有幾個清運點?', answer: '平溪區目前共登記 16 個清運點,分布在 8 個里。' },
+      { question: '平溪區最早、最晚的清運時間是幾點?', answer: '平溪區記錄到的清運到站時間中,最早為 18:02,最晚為 20:10。' },
+      {
+        question: '平溪區有資源回收或廚餘回收嗎?',
+        answer: '平溪區的清運點中,有 16 個(約 100%)提供資源回收、有 16 個(約 100%)提供廚餘回收。',
+      },
+    ]);
+  });
+
+  it('無資源回收、無廚餘(合成 2 點邊界案例,2026-08-10 已經 Jun 審閱)——Q4 整項省略', () => {
+    const testGroup: DistrictGroup = { district: '測試區', districtSlug: 'test', points: [] };
+    const s = stats({
+      pointCount: 2,
+      villageCount: 1,
+      weekdayScheduleCounts: [0, 1, 1, 1, 0, 1, 0, 0],
+      earliestArrive: '18:00',
+      latestArrive: '19:30',
+    });
+    const faq = buildDistrictFaq(testGroup, s);
+    expect(faq.map((f) => f.question)).toEqual(['測試區星期幾有收垃圾?', '測試區有幾個清運點?', '測試區最早、最晚的清運時間是幾點?']);
+  });
+
+  it('全區星期未知(合成案例)——Q1 改用誠實版本,不假裝每天都是 0', () => {
+    const s = stats({
+      pointCount: 5,
+      villageCount: 2,
+      weekdayScheduleCounts: [0, 0, 0, 0, 0, 0, 0, 0],
+      weekdayUnknownPointCount: 5,
+      earliestArrive: '07:00',
+      latestArrive: '18:00',
+    });
+    const faq = buildDistrictFaq(group, s);
+    expect(faq[0]).toEqual({
+      question: '平溪區星期幾有收垃圾?',
+      answer: '本站尚未取得平溪區清運點的逐日收運星期資料,僅取得到站時間,請見下方時段總表。',
+    });
+  });
+
+  it('全區無 schedule(純資源回收行政區,合成案例)——Q1、Q3 皆整項省略,只剩 Q2、Q4', () => {
+    const s = stats({
+      pointCount: 3,
+      villageCount: 2,
+      noSchedulePointCount: 3,
+      earliestArrive: null,
+      latestArrive: null,
+      recyclingPointCount: 3,
+      recyclingCoveragePct: 100,
+    });
+    const faq = buildDistrictFaq(group, s);
+    expect(faq.map((f) => f.question)).toEqual(['平溪區有幾個清運點?', '平溪區有資源回收或廚餘回收嗎?']);
+  });
+});
+
+describe('weekdayDistributionCaveat', () => {
+  it('無需說明時回傳 null', () => {
+    expect(weekdayDistributionCaveat(stats({}))).toBeNull();
+  });
+
+  it('僅有星期未知的點', () => {
+    expect(weekdayDistributionCaveat(stats({ weekdayUnknownPointCount: 3 }))).toBe(
+      '另有 3 個點的收運星期本站尚未取得,未列入以上統計(到站時間仍列在下方時段總表中)。'
+    );
+  });
+
+  it('僅有純回收/廚餘點(桃園八德區真實數字,98 點無一般垃圾班次)', () => {
+    expect(weekdayDistributionCaveat(stats({ noSchedulePointCount: 98 }))).toBe(
+      '另有 98 個點僅提供資源回收或廚餘回收服務,無一般垃圾收運班次,未列入以上統計。'
+    );
+  });
+
+  it('兩者皆有(桃園八德區真實數字:280 個星期未知 + 98 個純回收廚餘點)', () => {
+    expect(weekdayDistributionCaveat(stats({ weekdayUnknownPointCount: 280, noSchedulePointCount: 98 }))).toBe(
+      '另有 280 個點的收運星期本站尚未取得,未列入以上統計(到站時間仍列在下方時段總表中);另有 98 個點僅提供資源回收或廚餘回收服務,無一般垃圾收運班次,未列入以上統計。'
+    );
+  });
+});
+
+describe('districtTimeDistributionSentence', () => {
+  it('明確集中在單一小時(新北平溪區真實數字)', () => {
+    const s = stats({
+      earliestArrive: '18:02',
+      latestArrive: '20:10',
+      hourCounts: Object.assign(new Array(24).fill(0), { 18: 9, 19: 6, 20: 1 }),
+    });
+    expect(districtTimeDistributionSentence(s)).toBe('全區到站時間最早 18:02,最晚 20:10,收運時段以 18時 最為集中(共 9 筆班次)。');
+  });
+
+  it('全區到站時間相同(合成案例)——「集中在」單一時間點的分支', () => {
+    const s = stats({
+      earliestArrive: '12:00',
+      latestArrive: '12:00',
+      hourCounts: Object.assign(new Array(24).fill(0), { 12: 1 }),
+    });
+    expect(districtTimeDistributionSentence(s)).toBe('全區到站時間集中在 12:00。');
+  });
+
+  it('班次太分散(每小時最多 1 筆、跨超過 3 個小時)——不硬套「集中」句型', () => {
+    const s = stats({
+      earliestArrive: '06:00',
+      latestArrive: '10:00',
+      hourCounts: Object.assign(new Array(24).fill(0), { 6: 1, 7: 1, 8: 1, 9: 1, 10: 1 }),
+    });
+    expect(districtTimeDistributionSentence(s)).toBe('全區到站時間最早 06:00,最晚 10:00。');
+  });
+
+  it('全區無 schedule 資料時回傳 null', () => {
+    expect(districtTimeDistributionSentence(stats({}))).toBeNull();
   });
 });

@@ -76,3 +76,15 @@ export async function lookupLegacyRedirect(
 export function isLegacyPointSlug(pointSlug: string): boolean {
   return /^\d+$/.test(pointSlug);
 }
+
+/** 只取 district/district_slug 兩欄、DISTINCT,供行政區頁「站內連結:同縣市其他行政區」使用,不撈整批 points。 */
+export async function loadCityDistrictList(
+  db: D1Like,
+  citySlug: string
+): Promise<{ district: string; districtSlug: string }[]> {
+  const { results } = await db
+    .prepare('SELECT DISTINCT district, district_slug FROM points WHERE city_slug = ? ORDER BY district_slug')
+    .bind(citySlug)
+    .all();
+  return results.map((r) => ({ district: r.district as string, districtSlug: r.district_slug as string }));
+}
