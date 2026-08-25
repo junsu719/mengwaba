@@ -10,10 +10,16 @@ import {
   isWeekdayUnknown,
   getCity,
   type CollectionPoint,
-  type DistrictGroup,
   type CityInfo,
 } from '../../../../lib/data';
-import { loadDistrictFromD1, toDistrictGroup, lookupLegacyRedirect, isLegacyPointSlug } from '../../../../lib/data-d1';
+import {
+  buildPointId,
+  loadPointById,
+  loadDistrictDisplayName,
+  loadNearbyCandidates,
+  lookupLegacyRedirect,
+  isLegacyPointSlug,
+} from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
 import {
   todaySummarySentence,
@@ -26,9 +32,11 @@ import {
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 import NotFoundContent from '../../../../components/NotFoundContent.astro';
 
-// Phase 4.5 Step 4:清運點頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3)。
-// 與行政區頁共用同一支「查整個行政區」的 D1 查詢——本頁的「鄰近清運點」需要同區其他點,
-// 天生沒有「只查單一點」的路徑,見 d1/schema.sql 註解。
+// 2026-08-25 D1 額度優化(見 DECISIONS.md):本頁原本借用行政區頁的「整區」查詢(loadDistrictFromD1)
+// 來找單一清運點,理由是「鄰近清運點」天生要同區其他點——但這也是 D1 免費額度(500 萬 rows/天)
+// 超額 3 倍以上的主因(單一查詢佔總讀取量 87%,板橋等大行政區單次請求就讀進 6,000+ 列)。改為:
+// 目標點用 point_id(PK)直接查(rows_read=1),鄰近點改用限量候選集(見 data-d1.ts
+// loadNearbyCandidates 註解:優先同村里、不足才擴大整區但仍有上限),而非整個行政區。
 
 const { city: citySlug, district: districtSlug, point: pointSlug } = Astro.params;
 
@@ -40,11 +48,13 @@ if (!db) {
 // 2026-07-28 拍板(見 DECISIONS.md):找不到清運點時,維持真正的 HTTP 404(不得改 200
 // 或導向其他頁面,軟性 404 對 SEO 更糟),但改用 NotFoundContent 渲染有用的頁面內容,
 // 而不是純文字「Not Found」——高雄有 269 個舊格式網址在現行資料裡查無對應,301 修復
-// 上線後 Google 仍會持續帶使用者撞上這批網址。city/group 能解析出多少就帶多少 context
-// 進 NotFoundContent(例如「行政區清運點列表」連結),解析不出來的就交給它退回通用版本。
+// 上線後 Google 仍會持續帶使用者撞上這批網址。city/districtName 能解析出多少就帶多少
+// context 進 NotFoundContent(例如「行政區清運點列表」連結),解析不出來的就交給它退回通用版本。
 let city: CityInfo | null = null;
-let group: DistrictGroup | null = null;
 let point: CollectionPoint | null = null;
+// 行政區顯示名稱:找到點時直接用該點的 district 欄位,不需要再查一次;找不到點時才用
+// loadDistrictDisplayName 額外查(LIMIT 1,不撈整區),供 404 頁面帶 context。
+let districtName: string | null = null;
 
 if (CITIES.some((c) => c.slug === citySlug)) {
   city = getCity(citySlug!);
@@ -62,17 +72,17 @@ if (CITIES.some((c) => c.slug === citySlug)) {
       }
     }
     // 查無對應:不在這裡直接回 404,讓流程繼續往下走一般查詢路徑——這個 pointSlug 不會
-    // 比對到任何現有點,自然落入下方 point 為 null 的分支,且該分支已有 group(行政區)
-    // 資訊,可以組出比純文字 404 更有用的內容,不猜測配對到其他點。
+    // 比對到任何現有點,自然落入下方 point 為 null 的分支,且該分支已有 districtName
+    // context 可用,可以組出比純文字 404 更有用的內容,不猜測配對到其他點。
   }
 
-  const districtPoints = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
-  group = toDistrictGroup(districtPoints, districtSlug!);
-  if (group) {
-    // point_id 解析失敗的點視同不比對(parsePointId 回傳 null 時 optional chaining 短路為
-    // undefined,不等於任何合法 pointSlug),自然落入下方 404 分支,不會額外崩潰。
-    point = group.points.find((p) => parsePointId(p.point_id)?.pointSlug === pointSlug) ?? null;
+  // buildPointId 組不出 point_id(未知縣市前綴)時 pointId 為 null,point 維持 null,
+  // 落入下方一般 404 分支——理論上不會發生(citySlug 已通過 CITIES 檢查),防禦性寫法。
+  const pointId = buildPointId(citySlug!, districtSlug!, pointSlug!);
+  if (pointId) {
+    point = await loadPointById(db as never, pointId);
   }
+  districtName = point ? point.district : await loadDistrictDisplayName(db as never, citySlug!, districtSlug!);
 }
 
 if (!point) {
@@ -80,8 +90,11 @@ if (!point) {
 }
 
 const pageUrl = Astro.url.href;
-const nearby = point && group ? nearestPoints(point, group.points, 5) : [];
-const faq = point && group ? buildFaq(point, group.district) : [];
+const nearbyCandidates = point
+  ? await loadNearbyCandidates(db as never, citySlug!, districtSlug!, point.village, point.point_id)
+  : [];
+const nearby = point ? nearestPoints(point, nearbyCandidates, 5) : [];
+const faq = point && districtName ? buildFaq(point, districtName) : [];
 const hasRecycling = !!point?.recycling_schedule && point.recycling_schedule.length > 0;
 const hasFoodscraps = !!point?.foodscraps_schedule && point.foodscraps_schedule.length > 0;
 const scheduleWeekdayUnknown = point ? point.schedule.some(isWeekdayUnknown) : false;
@@ -89,21 +102,21 @@ const recyclingWeekdayUnknown = hasRecycling && point!.recycling_schedule!.some(
 const foodscrapsWeekdayUnknown = hasFoodscraps && point!.foodscraps_schedule!.some(isWeekdayUnknown);
 
 const title =
-  point && city && group
-    ? `${point.point_name}垃圾車時間｜${city.name}${group.district}清運時刻查詢`
+  point && city && districtName
+    ? `${point.point_name}垃圾車時間｜${city.name}${districtName}清運時刻查詢`
     : '找不到這個清運點｜悶蛙吧 MengWaBa';
 const description = point
   ? introSentence(point)
   : '這個網址對應的清運點可能已停止服務,或資料來源已更新調整,可透過搜尋或行政區列表查詢其他清運點。';
 
 const jsonLd =
-  point && city && group
+  point && city && districtName
     ? [
         breadcrumbJsonLd([
           { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
           { name: '垃圾車清運時間查詢', url: new URL('/trash/', Astro.site ?? Astro.url).href },
           { name: city.name, url: new URL(`/trash/${city.slug}/`, Astro.site ?? Astro.url).href },
-          { name: group.district, url: new URL(`/trash/${city.slug}/${group.districtSlug}/`, Astro.site ?? Astro.url).href },
+          { name: districtName, url: new URL(`/trash/${city.slug}/${districtSlug}/`, Astro.site ?? Astro.url).href },
           { name: point.point_name ?? point.point_id, url: pageUrl },
         ]),
         faqPageJsonLd(faq),
@@ -114,12 +127,12 @@ const jsonLd =
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
   {
-    point && city && group ? (
+    point && city && districtName ? (
       <>
         <nav>
           <a href="/">首頁</a> / <a href="/trash/">垃圾車清運時間查詢</a> /{' '}
           <a href={`/trash/${city.slug}/`}>{city.name}</a> /{' '}
-          <a href={`/trash/${city.slug}/${group.districtSlug}/`}>{group.district}</a> / {point.point_name}
+          <a href={`/trash/${city.slug}/${districtSlug}/`}>{districtName}</a> / {point.point_name}
         </nav>
 
         <h1>{point.point_name}垃圾車時間</h1>
@@ -291,7 +304,7 @@ const jsonLd =
                 {
                   // point_id 格式異常時無法組出合法連結,退化為純文字顯示,不拿掉整筆資訊、也不讓整頁崩潰
                   nearbyPointSlug ? (
-                    <a href={`/trash/${city.slug}/${group.districtSlug}/${nearbyPointSlug}/`}>{n.point_name}</a>
+                    <a href={`/trash/${city.slug}/${districtSlug}/${nearbyPointSlug}/`}>{n.point_name}</a>
                   ) : (
                     <span>{n.point_name}</span>
                   )
@@ -302,7 +315,7 @@ const jsonLd =
           })}
         </ul>
 
-        <h2>{group.district}注意事項</h2>
+        <h2>{districtName}注意事項</h2>
         <p>
           請將垃圾裝入合格垃圾袋,於垃圾車抵達前在定點等候,避免提早棄置造成環境問題;資源回收請分類後交給清潔隊員。若時刻有異動,請以
           {city.name}政府環境保護局公告為準。
@@ -319,8 +332,8 @@ const jsonLd =
     ) : (
       <NotFoundContent
         district={
-          city && group
-            ? { cityName: city.name, citySlug: city.slug, districtName: group.district, districtSlug: group.districtSlug }
+          city && districtName
+            ? { cityName: city.name, citySlug: city.slug, districtName, districtSlug: districtSlug! }
             : undefined
         }
       />

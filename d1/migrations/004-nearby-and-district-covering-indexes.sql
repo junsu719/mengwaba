@@ -1,0 +1,52 @@
+-- Migration 004:新增兩個索引,修正 D1 免費額度超額問題(2026-08-25 拍板,見 DECISIONS.md)
+--
+-- 背景:Cloudflare 通知 D1 免費額度(500 萬 rows 讀取/天)將於 2026-09-01 起強制執行,
+-- 診斷發現帳號經常超過(過去 24h 約 1,521 萬,約 304%)。根因是清運點頁借用行政區頁的
+-- 「整區」查詢,單一請求就讀進整個行政區(板橋 6,779 列、新莊 4,706 列)。已改用
+-- loadPointById(PK 查單點)+ loadNearbyCandidates(村里優先候選集)取代,但實測發現
+-- 「村里優先」查詢若沒有專用索引,SQLite 只能靠 idx_points_district 鎖定整個行政區範圍,
+-- 再逐列篩 village=? 這個殘餘條件——當 LIMIT 大於村里實際筆數時(村里通常只有幾十筆,
+-- 遠小於候選集上限),SQLite 無法提早停手,必須掃到整個行政區範圍結束才能確定「沒有更多
+-- 符合的了」,等同又讀回整個行政區,優化完全失效。實測:板橋玉光里(30 筆)+ LIMIT 200,
+-- rows_read = 6,780(整個板橋區),不加索引無法解決。
+--
+-- 第二個索引解決另一個次要貢獻者(過去 24h 約 172 萬 rows,占比 11%):行政區頁「其他行政區」
+-- 連結用的 `SELECT DISTINCT district, district_slug FROM points WHERE city_slug=?`,
+-- district 顯示名稱不在 idx_points_district 索引裡,DISTINCT 仍需對整個城市的列做 table
+-- lookup。加上 district 欄位讓索引變成覆蓋索引(covering index),SQLite 可以完全在索引內
+-- 完成 DISTINCT,不需要回表讀取主表資料列。
+--
+-- 這是純新增索引,不涉及 points 表欄位變更、不需要像 001/002 那樣走「建新表→搬資料→
+-- 刪舊表→改名」的重建流程,CREATE INDEX IF NOT EXISTS 對現有資料零風險、可逆(DROP INDEX
+-- 可還原)。仍依鐵律 7 精神:執行前備份、待 Jun 核准才對 --remote 執行。
+--
+-- 執行前置條件(尚未執行,待 Jun 核准):
+-- ①先在本機 --local D1 跑過一次,確認語法正確、EXPLAIN QUERY PLAN 出現預期的 index 用法。
+-- ②執行前用 `wrangler d1 export mengwaba-trash-points --remote --output=<日期標記檔名>.sql`
+--   完整備份現有資料(雖然本 migration 只動索引不動資料,仍依鐵律 7 精神保留可回退路徑)。
+-- ③不用 BEGIN TRANSACTION/COMMIT 包裝(見 migration 001 的實測教訓:D1 remote 不支援)。
+-- ④執行後用 EXPLAIN QUERY PLAN 確認兩條查詢分別出現 SEARCH ... USING INDEX
+--   idx_points_village 與 SEARCH ... USING COVERING INDEX idx_points_district_display,
+--   並用 wrangler d1 insights 或直接查詢實測 rows_read 是否如預期下降。
+-- ⑤四縣市筆數需與 migration 前一致(高雄 19,435 / 台中 19,986 / 桃園 7,152 / 新北 26,671)
+--   ——本 migration 不改資料,理論上筆數不會變,執行後仍應覆核一次。
+--
+-- 執行指令(核准後才執行,不在本次對話內跑):
+--   npx wrangler d1 execute mengwaba-trash-points --local --file=d1/migrations/004-nearby-and-district-covering-indexes.sql   (先本機驗證)
+--   npx wrangler d1 execute mengwaba-trash-points --remote --file=d1/migrations/004-nearby-and-district-covering-indexes.sql  (待核准後)
+
+-- 供清運點頁「鄰近清運點」的村里優先候選集查詢(site/src/lib/data-d1.ts loadNearbyCandidates)使用。
+CREATE INDEX IF NOT EXISTS idx_points_village ON points(city_slug, district_slug, village);
+
+-- 供行政區頁「其他行政區」連結的 DISTINCT 查詢(site/src/lib/data-d1.ts loadCityDistrictList)使用,
+-- 欄位順序需與該查詢的 SELECT/WHERE 完全對應(city_slug 等值、district_slug 供 ORDER BY、
+-- district 為額外覆蓋欄位)才能達成 covering index、不回表。
+CREATE INDEX IF NOT EXISTS idx_points_district_display ON points(city_slug, district_slug, district);
+
+-- 驗證(migration 執行完後手動跑):
+--   SELECT city_slug, COUNT(*) FROM points GROUP BY city_slug;
+--   -- 應與 migration 前的筆數逐一相符(高雄 19,435 / 台中 19,986 / 桃園 7,152 / 新北 26,671)
+--   EXPLAIN QUERY PLAN SELECT * FROM points WHERE city_slug='xinbei' AND district_slug='banqiao' AND village='玉光里' AND point_id != 'x' LIMIT 200;
+--   -- 應出現 SEARCH points USING INDEX idx_points_village (city_slug=? AND district_slug=? AND village=?)
+--   EXPLAIN QUERY PLAN SELECT DISTINCT district, district_slug FROM points WHERE city_slug='xinbei' ORDER BY district_slug;
+--   -- 應出現 USING COVERING INDEX idx_points_district_display(或等效字樣,不再需要 USE TEMP B-TREE 之外的回表)
