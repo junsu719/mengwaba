@@ -57,7 +57,7 @@ const faq = buildDistrictFaq(group, stats);
 const weekdaySummary = weekdaySummarySentence(stats);
 const weekdayCaveat = weekdayDistributionCaveat(stats);
 const timeDistSentence = districtTimeDistributionSentence(stats);
-const siblingDistricts = (await loadCityDistrictList(db as never, citySlug!)).filter(
+const siblingDistricts = loadCityDistrictList(citySlug!).filter(
   (d) => d.districtSlug !== group.districtSlug
 );
 

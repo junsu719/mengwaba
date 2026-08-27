@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "build:district-index": "node --experimental-strip-types scripts/build-district-index.ts",
+    "prebuild": "npm run build:district-index",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",

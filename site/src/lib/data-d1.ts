@@ -1,4 +1,5 @@
 import type { CollectionPoint, DistrictGroup } from './data';
+import districtIndex from '../data/district-index.json';
 
 /** Cloudflare D1 binding 型別,見 wrangler.jsonc 的 d1_databases[0].binding = "POINTS_DB"。 */
 export interface D1Like {
@@ -173,14 +174,15 @@ export function isLegacyPointSlug(pointSlug: string): boolean {
   return /^\d+$/.test(pointSlug);
 }
 
-/** 只取 district/district_slug 兩欄、DISTINCT,供行政區頁「站內連結:同縣市其他行政區」使用,不撈整批 points。 */
-export async function loadCityDistrictList(
-  db: D1Like,
-  citySlug: string
-): Promise<{ district: string; districtSlug: string }[]> {
-  const { results } = await db
-    .prepare('SELECT DISTINCT district, district_slug FROM points WHERE city_slug = ? ORDER BY district_slug')
-    .bind(citySlug)
-    .all();
-  return results.map((r) => ({ district: r.district as string, districtSlug: r.district_slug as string }));
+/**
+ * 供行政區頁「站內連結:同縣市其他行政區」使用。改讀 build-time 產生的 site/src/data/district-index.json
+ * (見 site/scripts/build-district-index.ts),不再查 D1(2026-08-27 拍板,見 DECISIONS.md)——原本的
+ * `SELECT DISTINCT district, district_slug ... WHERE city_slug = ?` 雖然只回傳幾十列,但 D1 的
+ * rows_read 計費是依「掃過的列數」而非「回傳的列數」,DISTINCT 仍要掃過該縣市全部列才能去重,
+ * 大縣市(如新北)單一行政區頁請求就會把整個縣市的 rows_read 算進帳,是 2026-08-25 D1 額度優化
+ * 拆掉「整區查詢」後少數還留著的全縣市規模查詢。行政區清單只隨季度資料更新才變動,不需要每次
+ * 請求都即時查 D1。不再需要 db 參數,呼叫端(page.astro)也不需要 await。
+ */
+export function loadCityDistrictList(citySlug: string): { district: string; districtSlug: string }[] {
+  return (districtIndex as Record<string, { district: string; districtSlug: string }[]>)[citySlug] ?? [];
 }

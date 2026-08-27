@@ -1,0 +1,438 @@
+{
+  "kaohsiung": [
+    {
+      "district": "阿蓮區",
+      "districtSlug": "alian"
+    },
+    {
+      "district": "旗津區",
+      "districtSlug": "cijin"
+    },
+    {
+      "district": "大寮區",
+      "districtSlug": "daliao"
+    },
+    {
+      "district": "大社區",
+      "districtSlug": "dashe"
+    },
+    {
+      "district": "大樹區",
+      "districtSlug": "dashu"
+    },
+    {
+      "district": "鳳山區",
+      "districtSlug": "fengshan"
+    },
+    {
+      "district": "岡山區",
+      "districtSlug": "gangshan"
+    },
+    {
+      "district": "鼓山區",
+      "districtSlug": "gushan"
+    },
+    {
+      "district": "湖內區",
+      "districtSlug": "hunei"
+    },
+    {
+      "district": "甲仙區",
+      "districtSlug": "jiaxian"
+    },
+    {
+      "district": "苓雅區",
+      "districtSlug": "lingya"
+    },
+    {
+      "district": "林園區",
+      "districtSlug": "linyuan"
+    },
+    {
+      "district": "六龜區",
+      "districtSlug": "liugui"
+    },
+    {
+      "district": "路竹區",
+      "districtSlug": "luzhu"
+    },
+    {
+      "district": "美濃區",
+      "districtSlug": "meinong"
+    },
+    {
+      "district": "彌陀區",
+      "districtSlug": "mituo"
+    },
+    {
+      "district": "楠梓區",
+      "districtSlug": "nanzi"
+    },
+    {
+      "district": "內門區",
+      "districtSlug": "neimen"
+    },
+    {
+      "district": "鳥松區",
+      "districtSlug": "niaosong"
+    },
+    {
+      "district": "前金區",
+      "districtSlug": "qianjin"
+    },
+    {
+      "district": "前鎮區",
+      "districtSlug": "qianzhen"
+    },
+    {
+      "district": "橋頭區",
+      "districtSlug": "qiaotou"
+    },
+    {
+      "district": "茄萣區",
+      "districtSlug": "qieding"
+    },
+    {
+      "district": "旗山區",
+      "districtSlug": "qishan"
+    },
+    {
+      "district": "仁武區",
+      "districtSlug": "renwu"
+    },
+    {
+      "district": "三民區",
+      "districtSlug": "sanmin"
+    },
+    {
+      "district": "杉林區",
+      "districtSlug": "shanlin"
+    },
+    {
+      "district": "桃源區",
+      "districtSlug": "taoyuan"
+    },
+    {
+      "district": "田寮區",
+      "districtSlug": "tianliao"
+    },
+    {
+      "district": "小港區",
+      "districtSlug": "xiaogang"
+    },
+    {
+      "district": "新興區",
+      "districtSlug": "xinxing"
+    },
+    {
+      "district": "燕巢區",
+      "districtSlug": "yanchao"
+    },
+    {
+      "district": "鹽埕區",
+      "districtSlug": "yancheng"
+    },
+    {
+      "district": "永安區",
+      "districtSlug": "yongan"
+    },
+    {
+      "district": "梓官區",
+      "districtSlug": "ziguan"
+    },
+    {
+      "district": "左營區",
+      "districtSlug": "zuoying"
+    }
+  ],
+  "taichung": [
+    {
+      "district": "北區",
+      "districtSlug": "beiqu"
+    },
+    {
+      "district": "北屯區",
+      "districtSlug": "beitun"
+    },
+    {
+      "district": "大安區",
+      "districtSlug": "daan"
+    },
+    {
+      "district": "大肚區",
+      "districtSlug": "dadu"
+    },
+    {
+      "district": "大甲區",
+      "districtSlug": "dajia"
+    },
+    {
+      "district": "大里區",
+      "districtSlug": "dali"
+    },
+    {
+      "district": "大雅區",
+      "districtSlug": "daya"
+    },
+    {
+      "district": "東區",
+      "districtSlug": "dongqu"
+    },
+    {
+      "district": "東勢區",
+      "districtSlug": "dongshi"
+    },
+    {
+      "district": "豐原區",
+      "districtSlug": "fengyuan"
+    },
+    {
+      "district": "和平區",
+      "districtSlug": "heping"
+    },
+    {
+      "district": "后里區",
+      "districtSlug": "houli"
+    },
+    {
+      "district": "龍井區",
+      "districtSlug": "longjing"
+    },
+    {
+      "district": "南區",
+      "districtSlug": "nanqu"
+    },
+    {
+      "district": "南屯區",
+      "districtSlug": "nantun"
+    },
+    {
+      "district": "清水區",
+      "districtSlug": "qingshui"
+    },
+    {
+      "district": "沙鹿區",
+      "districtSlug": "shalu"
+    },
+    {
+      "district": "神岡區",
+      "districtSlug": "shengang"
+    },
+    {
+      "district": "石岡區",
+      "districtSlug": "shigang"
+    },
+    {
+      "district": "太平區",
+      "districtSlug": "taiping"
+    },
+    {
+      "district": "潭子區",
+      "districtSlug": "tanzi"
+    },
+    {
+      "district": "外埔區",
+      "districtSlug": "waipu"
+    },
+    {
+      "district": "霧峰區",
+      "districtSlug": "wufeng"
+    },
+    {
+      "district": "梧棲區",
+      "districtSlug": "wuqi"
+    },
+    {
+      "district": "烏日區",
+      "districtSlug": "wuri"
+    },
+    {
+      "district": "新社區",
+      "districtSlug": "xinshe"
+    },
+    {
+      "district": "西區",
+      "districtSlug": "xiqu"
+    },
+    {
+      "district": "西屯區",
+      "districtSlug": "xitun"
+    },
+    {
+      "district": "中區",
+      "districtSlug": "zhongqu"
+    }
+  ],
+  "taoyuan": [
+    {
+      "district": "八德區",
+      "districtSlug": "bade"
+    },
+    {
+      "district": "大溪區",
+      "districtSlug": "daxi"
+    },
+    {
+      "district": "大園區",
+      "districtSlug": "dayuan"
+    },
+    {
+      "district": "復興區",
+      "districtSlug": "fuxing"
+    },
+    {
+      "district": "觀音區",
+      "districtSlug": "guanyin"
+    },
+    {
+      "district": "龜山區",
+      "districtSlug": "guishan"
+    },
+    {
+      "district": "龍潭區",
+      "districtSlug": "longtan"
+    },
+    {
+      "district": "蘆竹區",
+      "districtSlug": "luzhu"
+    },
+    {
+      "district": "平鎮區",
+      "districtSlug": "pingzhen"
+    },
+    {
+      "district": "桃園區",
+      "districtSlug": "taoyuan"
+    },
+    {
+      "district": "新屋區",
+      "districtSlug": "xinwu"
+    },
+    {
+      "district": "楊梅區",
+      "districtSlug": "yangmei"
+    },
+    {
+      "district": "中壢區",
+      "districtSlug": "zhongli"
+    }
+  ],
+  "xinbei": [
+    {
+      "district": "八里區",
+      "districtSlug": "bali"
+    },
+    {
+      "district": "板橋區",
+      "districtSlug": "banqiao"
+    },
+    {
+      "district": "淡水區",
+      "districtSlug": "danshui"
+    },
+    {
+      "district": "貢寮區",
+      "districtSlug": "gongliao"
+    },
+    {
+      "district": "金山區",
+      "districtSlug": "jinshan"
+    },
+    {
+      "district": "林口區",
+      "districtSlug": "linkou"
+    },
+    {
+      "district": "蘆洲區",
+      "districtSlug": "luzhou"
+    },
+    {
+      "district": "坪林區",
+      "districtSlug": "pinglin"
+    },
+    {
+      "district": "平溪區",
+      "districtSlug": "pingxi"
+    },
+    {
+      "district": "瑞芳區",
+      "districtSlug": "ruifang"
+    },
+    {
+      "district": "三重區",
+      "districtSlug": "sanchong"
+    },
+    {
+      "district": "三峽區",
+      "districtSlug": "sanxia"
+    },
+    {
+      "district": "三芝區",
+      "districtSlug": "sanzhi"
+    },
+    {
+      "district": "深坑區",
+      "districtSlug": "shenkeng"
+    },
+    {
+      "district": "石碇區",
+      "districtSlug": "shiding"
+    },
+    {
+      "district": "石門區",
+      "districtSlug": "shimen"
+    },
+    {
+      "district": "雙溪區",
+      "districtSlug": "shuangxi"
+    },
+    {
+      "district": "樹林區",
+      "districtSlug": "shulin"
+    },
+    {
+      "district": "泰山區",
+      "districtSlug": "taishan"
+    },
+    {
+      "district": "土城區",
+      "districtSlug": "tucheng"
+    },
+    {
+      "district": "萬里區",
+      "districtSlug": "wanli"
+    },
+    {
+      "district": "五股區",
+      "districtSlug": "wugu"
+    },
+    {
+      "district": "烏來區",
+      "districtSlug": "wulai"
+    },
+    {
+      "district": "新店區",
+      "districtSlug": "xindian"
+    },
+    {
+      "district": "新莊區",
+      "districtSlug": "xinzhuang"
+    },
+    {
+      "district": "汐止區",
+      "districtSlug": "xizhi"
+    },
+    {
+      "district": "鶯歌區",
+      "districtSlug": "yingge"
+    },
+    {
+      "district": "永和區",
+      "districtSlug": "yonghe"
+    },
+    {
+      "district": "中和區",
+      "districtSlug": "zhonghe"
+    }
+  ]
+}
