@@ -1,19 +1,18 @@
 ---
-export const prerender = false;
-
-import { env } from 'cloudflare:workers';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import {
   CITIES,
   WEEKDAY_NAMES,
   parsePointId,
-  getCity,
+  groupByDistrict,
   groupByVillage,
   computeDistrictStats,
   fetchedAtDateRange,
+  type CityInfo,
+  type DistrictGroup,
   type CollectionPoint,
 } from '../../../../lib/data';
-import { loadDistrictFromD1, toDistrictGroup, loadCityDistrictList } from '../../../../lib/data-d1';
+import { loadCityPoints } from '../../../../lib/data-static';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
 import {
   districtNoteSentence,
@@ -25,30 +24,45 @@ import {
 } from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 
-// Phase 4.5 Step 4:行政區頁改 on-demand D1 查詢(見 phase4.5-hybrid-rendering-spec.md §3),
-// 縣市索引頁(/trash/{city}/)仍靜態預生成,此頁的 city/district 組合不再於 build 時窮舉,
-// 改在 request 時驗證。
+// 2026-08-28 拍板(見 DECISIONS.md):行政區頁改回完全靜態預生成,不再 on-demand 查 D1。
+// 背景:8/25-8/27 已陸續拆掉本頁借用的全區/全縣市規模 D1 查詢(見 692a1fb9、13ab45c8),
+// 拆到最後這頁對 D1 只剩「單一行政區」規模的查詢——但全台行政區頁數量本身是有限集合
+// (現行已上線縣市 + 全台 22 縣市擴充後合計數百頁),與清運點頁(數萬頁,必須 on-demand
+// 才能繞開 Cloudflare 部署檔案數上限)不同,完全在靜態預生成可負擔的範圍內。改回靜態後
+// 這頁的 D1 讀取額度歸零,且不受 D1 額度重演同類事故影響;縣市/行政區組合改在 build 時
+// 窮舉(getStaticPaths),不再於 request 時查驗。清運點頁維持 on-demand D1(見該檔案開頭
+// 註解),不受此變動影響。
+//
+// 靜態化後的重要影響:季度資料更新(fetch → normalize → validate → 推送 D1)後,行政區頁
+// 需要額外重新 build + deploy 才會反映新資料,不像清運點頁下次請求就自動拿到最新 D1 內容
+// ——已記錄進 CLAUDE.md「資料更新與機器角色」與 DECISIONS.md 2026-08-28 條目,避免流程
+// 遺漏導致行政區頁停在舊資料且無錯誤訊息。
 
-const { city: citySlug, district: districtSlug } = Astro.params;
-
-if (!CITIES.some((c) => c.slug === citySlug)) {
-  return new Response('Not Found', { status: 404 });
+export function getStaticPaths() {
+  return CITIES.flatMap((city) => {
+    const points = loadCityPoints(city.file);
+    const districts = groupByDistrict(points);
+    return districts.map((group) => ({
+      params: { city: city.slug, district: group.districtSlug },
+      props: {
+        city,
+        group,
+        siblingDistricts: districts
+          .filter((d) => d.districtSlug !== group.districtSlug)
+          .map((d) => ({ district: d.district, districtSlug: d.districtSlug })),
+      },
+    }));
+  });
 }
-const city = getCity(citySlug!);
 
-const db = (env as unknown as { POINTS_DB?: unknown }).POINTS_DB;
-if (!db) {
-  return new Response('D1 binding 未設定(POINTS_DB)', { status: 500 });
-}
-
-const points = await loadDistrictFromD1(db as never, citySlug!, districtSlug!);
-const group = toDistrictGroup(points, districtSlug!);
-if (!group) {
-  return new Response('Not Found', { status: 404 });
-}
+const { city, group, siblingDistricts } = Astro.props as {
+  city: CityInfo;
+  group: DistrictGroup;
+  siblingDistricts: { district: string; districtSlug: string }[];
+};
 
 // 2026-08-10 行政區頁強化(GSC 130 個行政區頁集中收錄策略,見 DECISIONS.md):以下皆為
-// 從既有 D1 資料聚合而來的計算,不新增網址、不引入外部資料。
+// 從既有資料聚合而來的計算,不新增網址、不引入外部資料。
 const stats = computeDistrictStats(group.points);
 const villages = groupByVillage(group.points);
 const unassignedPoints = group.points.filter((p) => !p.village);
@@ -57,9 +71,6 @@ const faq = buildDistrictFaq(group, stats);
 const weekdaySummary = weekdaySummarySentence(stats);
 const weekdayCaveat = weekdayDistributionCaveat(stats);
 const timeDistSentence = districtTimeDistributionSentence(stats);
-const siblingDistricts = loadCityDistrictList(citySlug!).filter(
-  (d) => d.districtSlug !== group.districtSlug
-);
 
 function pointHref(p: CollectionPoint): string | null {
   const pointSlug = parsePointId(p.point_id)?.pointSlug;

@@ -1,0 +1,19 @@
+---
+// 全站層級 404(2026-08-28 補齊,見 CLAUDE.md 補記與 DECISIONS.md 2026-08-28 條目)。
+// 行政區頁改回完全靜態預生成後,不存在的 city/district 組合不再有任何一支路由手動接住、
+// 回傳 NotFoundContent——不像清運點頁([point].astro)本身是 on-demand 萬用路由,可以在
+// 內部判斷找不到時自行渲染客製內容。這支頁面補上「完全不對應任何路由」的情形(含不存在的
+// 行政區組合),與清運點頁共用同一份 NotFoundContent(搜尋框 + 縣市列表),維持真正的
+// HTTP 404(不得改 200 或導向其他頁面,軟性 404 對 SEO 更糟,見鐵律與 2026-07-28 事故記錄)。
+//
+// 這支頁面本身維持靜態預生成(不加 prerender = false)——它只需要固定的搜尋框 + 縣市列表,
+// 不需要依 URL 動態組出行政區 context,靜態即可涵蓋所有「完全查無路由」的情形。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NotFoundContent from '../components/NotFoundContent.astro';
+
+Astro.response.status = 404;
+---
+
+<BaseLayout title="找不到這個頁面｜悶蛙吧 MengWaBa" description="這個網址可能已失效或輸入有誤,可從搜尋框或縣市列表重新查詢垃圾車清運時間。">
+  <NotFoundContent />
+</BaseLayout>

@@ -21,8 +21,8 @@ const { district } = Astro.props;
 const searchIndexUrl = district ? `/trash/${district.citySlug}/search-index.json` : '/trash/search-index.json';
 ---
 
-<h1>找不到這個清運點</h1>
-<p>這個網址對應的清運點可能已停止服務,或資料來源已更新調整,清運路線與地點有所變動。你可以:</p>
+<h1>找不到這個頁面</h1>
+<p>這個網址可能已失效、清運點已停止服務,或資料來源已更新調整,清運路線與地點有所變動。你可以:</p>
 
 <SearchBox indexUrl={searchIndexUrl} />
 

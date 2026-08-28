@@ -1,5 +1,4 @@
-import type { CollectionPoint, DistrictGroup } from './data';
-import districtIndex from '../data/district-index.json';
+import type { CollectionPoint } from './data';
 
 /** Cloudflare D1 binding 型別,見 wrangler.jsonc 的 d1_databases[0].binding = "POINTS_DB"。 */
 export interface D1Like {
@@ -30,25 +29,6 @@ function rowToPoint(row: Record<string, unknown>): CollectionPoint {
     source: row.source as string,
     fetched_at: row.fetched_at as string,
   };
-}
-
-/**
- * 查詢單一行政區的全部清運點(d1/schema.sql 的 idx_points_district 索引覆蓋此查詢)。
- * 僅供行政區頁使用(該頁本來就要列出全區)。清運點頁 2026-08-25 起改用 loadPointById +
- * loadNearbyCandidates,不再借用這支「整區」查詢——見 DECISIONS.md 2026-08-25 D1 額度事故:
- * 板橋(6,779 點)、新莊(4,706 點)等大行政區,單一清運點頁請求就會讀進整區資料,是 D1 免費
- * 額度(500 萬 rows/天)超額 3 倍以上的主因(佔 87%)。
- */
-export async function loadDistrictFromD1(
-  db: D1Like,
-  citySlug: string,
-  districtSlug: string
-): Promise<CollectionPoint[]> {
-  const { results } = await db
-    .prepare('SELECT * FROM points WHERE city_slug = ? AND district_slug = ?')
-    .bind(citySlug, districtSlug)
-    .all();
-  return results.map(rowToPoint);
 }
 
 /**
@@ -145,11 +125,6 @@ export async function loadNearbyCandidates(
   return results.map(rowToPoint);
 }
 
-export function toDistrictGroup(points: CollectionPoint[], districtSlug: string): DistrictGroup | null {
-  if (points.length === 0) return null;
-  return { district: points[0].district!, districtSlug, points };
-}
-
 /**
  * 查舊格式(全域流水號)point_id 是否有對應的新格式(內容雜湊)point_id,供 301 導向用。
  * 見 d1/schema.sql 的 legacy_point_redirects 表與 DECISIONS.md 2026-07-28 事故記錄——
@@ -172,17 +147,4 @@ export async function lookupLegacyRedirect(
 /** 舊格式 pointSlug 特徵:純數字流水號(如 "06852"),新格式一律含雜湊字母,兩者不重疊。 */
 export function isLegacyPointSlug(pointSlug: string): boolean {
   return /^\d+$/.test(pointSlug);
-}
-
-/**
- * 供行政區頁「站內連結:同縣市其他行政區」使用。改讀 build-time 產生的 site/src/data/district-index.json
- * (見 site/scripts/build-district-index.ts),不再查 D1(2026-08-27 拍板,見 DECISIONS.md)——原本的
- * `SELECT DISTINCT district, district_slug ... WHERE city_slug = ?` 雖然只回傳幾十列,但 D1 的
- * rows_read 計費是依「掃過的列數」而非「回傳的列數」,DISTINCT 仍要掃過該縣市全部列才能去重,
- * 大縣市(如新北)單一行政區頁請求就會把整個縣市的 rows_read 算進帳,是 2026-08-25 D1 額度優化
- * 拆掉「整區查詢」後少數還留著的全縣市規模查詢。行政區清單只隨季度資料更新才變動,不需要每次
- * 請求都即時查 D1。不再需要 db 參數,呼叫端(page.astro)也不需要 await。
- */
-export function loadCityDistrictList(citySlug: string): { district: string; districtSlug: string }[] {
-  return (districtIndex as Record<string, { district: string; districtSlug: string }[]>)[citySlug] ?? [];
 }
