@@ -18,5 +18,9 @@ data/raw/*
 !data/raw/taoyuan/
 # 新北市原始抓取例外:同上理由,2026-07-28 全量抓取(data.ntpc.gov.tw)版控留存正本。
 !data/raw/xinbei.json
+# 行事曆工具原始資料例外:2026-08-31 從政府資料開放平臺(dataset/14718,行政院人事行政總處)
+# 人工下載,年更新一次且來源站 dgpa.gov.tw robots.txt 禁止非 Google 爬蟲,不做自動化重抓,
+# 版控留存正本,避免遺失須改回人工重新下載。
+!data/raw/calendar/
 .DS_Store
 .claude/settings.local.json
