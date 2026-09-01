@@ -1,0 +1,25 @@
+---
+interface Props {
+  year: number;
+}
+const { year } = Astro.props;
+---
+
+<p>
+  <a class="ics-download" href={`/calendar/${year}.ics`} download={`mengwaba-holidays-${year}.ics`}>
+    下載 {year} 年行事曆({year}.ics)
+  </a>
+  ,下載後可匯入 Google 日曆、Outlook、iPhone / Mac 行事曆等大部分行事曆 App。
+</p>
+
+<style>
+  .ics-download {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>

@@ -29,6 +29,10 @@ const calendarModules = import.meta.glob<{ default: CalendarYearData }>(
   { eager: true }
 );
 
+// 新增年度時(季度/年度手動更新流程的一部分):除了這裡加一筆、放對應的
+// data/normalized/calendar/{year}.json,還要在 site/public/_headers 補一條
+// `/calendar/{year}.ics` 的 Content-Disposition: attachment 規則(下載用單年度檔的正確
+// 標頭只能靠這個檔案宣告,見 [year].ics.ts 開頭註解),不會自動產生。
 export const CALENDAR_YEARS = [2026, 2027] as const;
 
 const _cache = new Map<number, CalendarYearData>();
@@ -210,6 +214,14 @@ export function leavePlanTitle(plan: LeavePlan): string {
   return `${label}拼假攻略`;
 }
 
+/**
+ * 代價在前、收益在後(2026-09-01 拍板,見 DECISIONS.md):先講需要請幾天假,再講換到幾天連休,
+ * 不能把總天數放在請假天數前面——那會讓「請 5 天特休」這種佔掉大半年假的代價看起來像小事。
+ */
+export function leavePlanSentence(plan: LeavePlan): string {
+  return `請 ${plan.leaveDates.length} 天特休(${plan.leaveDates.join('、')}),可連休 ${plan.totalDays} 天(${plan.start} ~ ${plan.end})。`;
+}
+
 function icsEscape(text: string): string {
   return text.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
 }
@@ -258,10 +270,14 @@ function nextDay(dateStr: string): string {
 }
 
 /**
- * 產生單一年度的 .ics 訂閱內容。只收錄「備註非空」的放假日(國定假日/補假等,約 20 餘筆/年),
- * 不含純週六日的空白放假列——訂閱這份行事曆的人本來就知道週末,塞進去只是雜訊。
+ * 產生 .ics 內容,可接受一個或多個年度(多年度用於跨年份訂閱合併檔,見下方 buildSubscribeIcsFeed)。
+ * 只收錄「備註非空」的放假日(國定假日/補假等,約 20 餘筆/年),不含純週六日的空白放假列——
+ * 這份行事曆的使用者本來就知道週末,塞進去只是雜訊。UID 以日期為 key,跨年度不會撞號
+ * (不同年度的日期天生不同),故多年度合併時可放心逐年疊加、不需額外去重。
  */
-export function buildIcsFeed(data: CalendarYearData, siteBase: string, generatedAt: Date): string {
+export function buildIcsFeed(dataYears: CalendarYearData[], siteBase: string, generatedAt: Date): string {
+  const years = dataYears.map((d) => d.year);
+  const yearLabel = years.length === 1 ? `${years[0]} 年` : `${Math.min(...years)}-${Math.max(...years)} 年`;
   const dtstamp = `${generatedAt.toISOString().slice(0, 10).replace(/-/g, '')}T${generatedAt
     .toISOString()
     .slice(11, 19)
@@ -269,24 +285,26 @@ export function buildIcsFeed(data: CalendarYearData, siteBase: string, generated
   const lines: string[] = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//MengWaBa//Taiwan Public Holidays ' + data.year + '//ZH-TW',
+    `PRODID:-//MengWaBa//Taiwan Public Holidays ${years.join(',')}//ZH-TW`,
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:中華民國政府行政機關辦公日曆表 ${data.year} 年(悶蛙吧)`,
+    `X-WR-CALNAME:中華民國政府行政機關辦公日曆表 ${yearLabel}(悶蛙吧)`,
     'X-WR-TIMEZONE:Asia/Taipei',
   ];
-  for (const day of data.days) {
-    if (!day.is_holiday || !day.memo) continue;
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:${icsDate(day.d)}-mengwaba-calendar@mengwaba.com`,
-      `DTSTAMP:${dtstamp}`,
-      `DTSTART;VALUE=DATE:${icsDate(day.d)}`,
-      `DTEND;VALUE=DATE:${icsDate(nextDay(day.d))}`,
-      `SUMMARY:${icsEscape(day.memo)}`,
-      `DESCRIPTION:${icsEscape(`資料來源:行政院人事行政總處辦公日曆表,詳見 ${siteBase}/calendar/${data.year}/`)}`,
-      'END:VEVENT'
-    );
+  for (const data of dataYears) {
+    for (const day of data.days) {
+      if (!day.is_holiday || !day.memo) continue;
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:${icsDate(day.d)}-mengwaba-calendar@mengwaba.com`,
+        `DTSTAMP:${dtstamp}`,
+        `DTSTART;VALUE=DATE:${icsDate(day.d)}`,
+        `DTEND;VALUE=DATE:${icsDate(nextDay(day.d))}`,
+        `SUMMARY:${icsEscape(day.memo)}`,
+        `DESCRIPTION:${icsEscape(`資料來源:行政院人事行政總處辦公日曆表,詳見 ${siteBase}/calendar/${data.year}/`)}`,
+        'END:VEVENT'
+      );
+    }
   }
   lines.push('END:VCALENDAR');
   return lines.map(foldLine).join('\r\n') + '\r\n';

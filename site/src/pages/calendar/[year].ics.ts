@@ -5,6 +5,9 @@ import { CALENDAR_YEARS, loadCalendarYear, buildIcsFeed } from '../../lib/calend
 // D1」的方向,不做 on-demand 產生。季度/年度更新資料後需重新 build + deploy 才會反映新年度
 // 資料,與行政區頁的既有慣例(CLAUDE.md「資料更新與機器角色」段落)一致。
 //
+// 單一年度檔案是「下載」的主要用途(2026-09-01 二輪拍板改為下載優先,見 DECISIONS.md):
+// 一次性資料,下載後匯入既有行事曆即可,不需要訂閱。跨年度訂閱另見 subscribe.ics.ts。
+//
 // 重要:這支路由沒有設 `prerender = false`,output:'static' 預設下 GET() 只在 build 時被呼叫
 // 一次、把回傳的 body 寫成靜態檔(見 dist/client/calendar/{year}.ics),之後正式環境的請求完全
 // 由 Cloudflare 的 assets 靜態資源層直接回應,不會再執行這段程式碼——下面 Response 裡設的
@@ -21,11 +24,11 @@ export const GET: APIRoute = ({ params, site }) => {
   const year = Number(params.year);
   const data = loadCalendarYear(year);
   const base = (site?.href ?? 'https://mengwaba.com/').replace(/\/$/, '');
-  const body = buildIcsFeed(data, base, generatedAt);
+  const body = buildIcsFeed([data], base, generatedAt);
   return new Response(body, {
     headers: {
       'Content-Type': 'text/calendar; charset=utf-8',
-      'Content-Disposition': `inline; filename="mengwaba-holidays-${year}.ics"`,
+      'Content-Disposition': `attachment; filename="mengwaba-holidays-${year}.ics"`,
     },
   });
 };

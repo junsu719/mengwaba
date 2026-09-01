@@ -76,7 +76,9 @@ const jsonLd = [
       <a href="/calendar/">國定假日與連假查詢首頁</a>
     </li>
     <li>
-      <a href={`/calendar/${data.year}.ics`}>{data.year} 年行事曆訂閱網址(.ics)</a>
+      <a href={`/calendar/${data.year}.ics`} download={`mengwaba-holidays-${data.year}.ics`}>
+        下載 {data.year} 年行事曆(.ics)
+      </a>
     </li>
   </ul>
 

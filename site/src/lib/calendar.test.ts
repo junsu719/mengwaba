@@ -7,6 +7,7 @@ import {
   buildIcsFeed,
   computeLeavePlans,
   leavePlanTitle,
+  leavePlanSentence,
   type CalendarYearData,
   type LongWeekend,
   type CalendarDay,
@@ -114,13 +115,36 @@ describe('buildIcsFeed', () => {
         { d: '2027-01-04', weekday: '一', is_holiday: false, memo: '' },
       ],
     });
-    const ics = buildIcsFeed(data, 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
+    const ics = buildIcsFeed([data], 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
     expect(ics).toContain('BEGIN:VCALENDAR');
+    // X-WR-CALNAME 本身就會超過 75 octets 而摺行,反摺行後再比對完整內容。
+    expect(ics.replace(/\r\n /g, '')).toContain('X-WR-CALNAME:中華民國政府行政機關辦公日曆表 2027 年(悶蛙吧)');
     expect(ics).toContain('SUMMARY:開國紀念日');
     expect(ics).toContain('DTSTART;VALUE=DATE:20270101');
     expect(ics).toContain('DTEND;VALUE=DATE:20270102');
     expect((ics.match(/BEGIN:VEVENT/g) ?? []).length).toBe(1);
     expect(ics.includes('\r\n')).toBe(true);
+  });
+
+  it('多年度合併:事件跨年度疊加、UID 不衝突、日曆名稱顯示年度範圍', () => {
+    const y2026 = calendarFixture({
+      year: 2026,
+      days: [{ d: '2026-01-01', weekday: '四', is_holiday: true, memo: '開國紀念日' }],
+    });
+    const y2027 = calendarFixture({
+      year: 2027,
+      days: [{ d: '2027-01-01', weekday: '五', is_holiday: true, memo: '開國紀念日' }],
+    });
+    const ics = buildIcsFeed([y2026, y2027], 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
+    // 反摺行後比對(CALNAME/DESCRIPTION 都可能因超過 75 octets 而摺行)。
+    const unfolded = ics.replace(/\r\n /g, '');
+    expect(unfolded).toContain('X-WR-CALNAME:中華民國政府行政機關辦公日曆表 2026-2027 年(悶蛙吧)');
+    expect((ics.match(/BEGIN:VEVENT/g) ?? []).length).toBe(2);
+    expect(ics).toContain('UID:20260101-mengwaba-calendar@mengwaba.com');
+    expect(ics).toContain('UID:20270101-mengwaba-calendar@mengwaba.com');
+    // 各年度事件的 DESCRIPTION 連結指回各自年度的頁面,不是統一指向同一年。
+    expect(unfolded).toContain('/calendar/2026/');
+    expect(unfolded).toContain('/calendar/2027/');
   });
 
   it('RFC5545 line folding:中文內容超過 75 octets 時摺行,且不切斷多位元組字元', () => {
@@ -130,7 +154,7 @@ describe('buildIcsFeed', () => {
         { d: '2027-10-25', weekday: '一', is_holiday: true, memo: '臺灣光復暨金門古寧頭大捷紀念日' },
       ],
     });
-    const ics = buildIcsFeed(data, 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
+    const ics = buildIcsFeed([data], 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
     const rawLines = ics.split('\r\n');
     // 每一條實際輸出行(換行本身不計入)都不得超過 75 octets。
     for (const line of rawLines) {
@@ -170,6 +194,10 @@ describe('computeLeavePlans', () => {
       anchorNames: ['端午節'],
     });
     expect(leavePlanTitle(plans[0])).toBe('端午節拼假攻略');
+    // 代價在前、收益在後(2026-09-01 拍板):先講要請幾天假,再講換到幾天連休。
+    expect(leavePlanSentence(plans[0])).toBe(
+      '請 4 天特休(2027-06-07、2027-06-08、2027-06-10、2027-06-11),可連休 9 天(2027-06-05 ~ 2027-06-13)。'
+    );
   });
 
   it('缺口超過 3 個工作日時不提案', () => {

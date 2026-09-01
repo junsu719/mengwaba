@@ -1,3 +1,11 @@
-/calendar/*.ics
+/calendar/subscribe.ics
   Content-Type: text/calendar; charset=utf-8
   Content-Disposition: inline
+
+/calendar/2026.ics
+  Content-Type: text/calendar; charset=utf-8
+  Content-Disposition: attachment; filename="mengwaba-holidays-2026.ics"
+
+/calendar/2027.ics
+  Content-Type: text/calendar; charset=utf-8
+  Content-Disposition: attachment; filename="mengwaba-holidays-2027.ics"

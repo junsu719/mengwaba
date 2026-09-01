@@ -1,7 +1,14 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
-import { CALENDAR_YEARS, loadCalendarYear, computeLeavePlans, leavePlanTitle, type CalendarYearData } from '../../../../lib/calendar';
+import {
+  CALENDAR_YEARS,
+  loadCalendarYear,
+  computeLeavePlans,
+  leavePlanTitle,
+  leavePlanSentence,
+  type CalendarYearData,
+} from '../../../../lib/calendar';
 
 export function getStaticPaths() {
   return CALENDAR_YEARS.map((year) => ({
@@ -36,6 +43,9 @@ const jsonLd = [
     以下是{data.year}
     年「只要多請 1~3 個工作日的年假,就能接上國定假日連放更長假期」的拼假機會,依實際日曆逐一算出——只鎖定真正的國定假日(不含補假本身、不含兩個普通週末之間的一般工作週),缺口超過 3 個工作日的不列入(划算程度太低)。
   </p>
+  <p>
+    以下「請幾天特休」是試算需要動用假別的工作日數,不是本站保證的假期天數;實際能否請假、算不算特休,以所屬公司或機關的規定與主管核准為準。
+  </p>
 
   {
     plans.length === 0 ? (
@@ -43,30 +53,14 @@ const jsonLd = [
     ) : (
       <>
         <h2>拼假機會清單</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>攻略</th>
-              <th>連放區間</th>
-              <th>總天數</th>
-              <th>需請假日期</th>
-            </tr>
-          </thead>
-          <tbody>
-            {plans.map((p) => (
-              <tr>
-                <td>{leavePlanTitle(p)}</td>
-                <td>
-                  {p.start} ~ {p.end}
-                </td>
-                <td>{p.totalDays} 天</td>
-                <td>
-                  只要請 {p.leaveDates.length} 天({p.leaveDates.join('、')})
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {
+          plans.map((p) => (
+            <section class="leave-plan">
+              <h3>{leavePlanTitle(p)}</h3>
+              <p class="today-answer">{leavePlanSentence(p)}</p>
+            </section>
+          ))
+        }
       </>
     )
   }
@@ -92,6 +86,12 @@ const jsonLd = [
   </ul>
 
   <style>
+    .leave-plan {
+      margin-bottom: 1.5rem;
+    }
+    .leave-plan h3 {
+      margin-bottom: 0.5rem;
+    }
     .chip-list {
       list-style: none;
       padding: 0;
