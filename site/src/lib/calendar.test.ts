@@ -122,6 +122,27 @@ describe('buildIcsFeed', () => {
     expect((ics.match(/BEGIN:VEVENT/g) ?? []).length).toBe(1);
     expect(ics.includes('\r\n')).toBe(true);
   });
+
+  it('RFC5545 line folding:中文內容超過 75 octets 時摺行,且不切斷多位元組字元', () => {
+    const data = calendarFixture({
+      days: [
+        // 「臺灣光復暨金門古寧頭大捷紀念日」全名 + DESCRIPTION 前綴,實測會超過 75 octets。
+        { d: '2027-10-25', weekday: '一', is_holiday: true, memo: '臺灣光復暨金門古寧頭大捷紀念日' },
+      ],
+    });
+    const ics = buildIcsFeed(data, 'https://mengwaba.com', new Date('2027-01-01T00:00:00Z'));
+    const rawLines = ics.split('\r\n');
+    // 每一條實際輸出行(換行本身不計入)都不得超過 75 octets。
+    for (const line of rawLines) {
+      expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+    }
+    // 摺行的續行以單一空白開頭。
+    const continuationLines = rawLines.filter((l) => l.startsWith(' '));
+    expect(continuationLines.length).toBeGreaterThan(0);
+    // 反摺行(移除 CRLF+空白)後能還原出完整的節日全名,證明沒有切斷任何 UTF-8 字元。
+    const unfolded = ics.replace(/\r\n /g, '');
+    expect(unfolded).toContain('臺灣光復暨金門古寧頭大捷紀念日');
+  });
 });
 
 describe('computeLeavePlans', () => {

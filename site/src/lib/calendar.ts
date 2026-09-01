@@ -214,6 +214,38 @@ function icsEscape(text: string): string {
   return text.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
 }
 
+/**
+ * RFC5545 line folding:內容行(不含換行本身)不得超過 75 octets,超過要在該處插入
+ * CRLF + 一個空白字元續行。中文字全部落在多位元組 UTF-8 範圍(每字 3 octets),
+ * 一行標題/說明很容易就超過限制;有些行事曆用戶端(Outlook、Thunderbird 等)對超長
+ * 未摺行的內容較不寬容,故實作正確摺行,不能只在 Apple/Google 這兩家寬容的用戶端上
+ * 測試就當作沒問題(2026-09-01 版本專屬預覽驗證時發現此缺口,見 DECISIONS.md)。
+ * 摺行點必須落在合法 UTF-8 邊界上,不能把一個多位元組字元從中切開。
+ */
+function foldLine(line: string): string {
+  const bytes = new TextEncoder().encode(line);
+  if (bytes.length <= 75) return line;
+
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+  const chunks: string[] = [];
+  let start = 0;
+  let limit = 75;
+  while (start < bytes.length) {
+    let end = Math.min(start + limit, bytes.length);
+    while (end > start) {
+      try {
+        chunks.push(decoder.decode(bytes.subarray(start, end)));
+        break;
+      } catch {
+        end--;
+      }
+    }
+    start = end;
+    limit = 74; // 續行開頭固定占用 1 個空白,74 + 1 = 75
+  }
+  return chunks.join('\r\n ');
+}
+
 function icsDate(dateStr: string): string {
   return dateStr.replace(/-/g, '');
 }
@@ -257,5 +289,5 @@ export function buildIcsFeed(data: CalendarYearData, siteBase: string, generated
     );
   }
   lines.push('END:VCALENDAR');
-  return lines.join('\r\n') + '\r\n';
+  return lines.map(foldLine).join('\r\n') + '\r\n';
 }
