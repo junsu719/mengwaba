@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../../lib/seo';
+import {
+  CALENDAR_YEARS,
+  loadCalendarYear,
+  longWeekendTitle,
+  longWeekendSlug,
+  notableFestivalChecks,
+  computeLeavePlans,
+  type CalendarYearData,
+} from '../../../lib/calendar';
+import IcsSubscribe from '../../../components/IcsSubscribe.astro';
+
+export function getStaticPaths() {
+  return CALENDAR_YEARS.map((year) => ({
+    params: { year: String(year) },
+    props: { data: loadCalendarYear(year) },
+  }));
+}
+
+const { data } = Astro.props as { data: CalendarYearData };
+const notable = notableFestivalChecks(data);
+const leavePlanCount = computeLeavePlans(data).length;
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '國定假日與連假查詢', url: new URL('/calendar/', Astro.site ?? Astro.url).href },
+    { name: `${data.year} 年`, url: Astro.url.href },
+  ]),
+];
+---
+
+<BaseLayout
+  title={`${data.year} 年國定假日與連假總覽｜悶蛙吧`}
+  description={`${data.year} 年全年放假 ${data.holiday_days} 天,共 ${data.long_weekends.length} 個 3 天以上連假,逐一列出起訖日與天數,並提供 .ics 行事曆訂閱。`}
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / <a href="/calendar/">國定假日與連假查詢</a> / {data.year} 年</nav>
+  <h1>{data.year} 年國定假日與連假總覽</h1>
+  <p>{data.year} 年全年 {data.total_days} 天中,放假 {data.holiday_days} 天,共有 {data.long_weekends.length} 個 3 天以上連假。</p>
+
+  <h2>連假清單</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>連假</th>
+        <th>起訖日</th>
+        <th>天數</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        data.long_weekends.map((w) => (
+          <tr>
+            <td>
+              <a href={`/calendar/${data.year}/${longWeekendSlug(w)}/`}>{longWeekendTitle(w)}</a>
+            </td>
+            <td>
+              {w.start} ~ {w.end}
+            </td>
+            <td>{w.days} 天</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h2>端午/中秋/教師節是否連假</h2>
+  <p class="muted">以下逐年現算,不同年份結果可能不同,不套用其他年份的結論。</p>
+  <ul class="plain">
+    {
+      notable.map((n) => (
+        <li>
+          {n.name}
+          {n.date ? `(${n.date})` : ''}:{n.formsLongWeekend ? '有形成 3 天以上連假' : '未形成 3 天以上連假'}
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    leavePlanCount > 0 && (
+      <>
+        <h2>請假攻略</h2>
+        <p>
+          算出 {leavePlanCount} 個「只要多請 1~3 天年假,就能接上國定假日連放更長假期」的拼假機會:
+          <a href={`/calendar/${data.year}/leave-plan/`}>{data.year} 年請假攻略</a>
+        </p>
+      </>
+    )
+  }
+
+  <h2>行事曆訂閱</h2>
+  <p>內容為當年度國定假日與補假日(不含純週末空白列),訂閱後隔年資料更新會自動同步:</p>
+  <IcsSubscribe year={data.year} />
+
+  <h2>站內連結</h2>
+  <ul class="plain">
+    <li>
+      <a href="/calendar/">國定假日與連假查詢首頁</a>
+    </li>
+  </ul>
+  <h3>其他年度</h3>
+  <ul class="chip-list">
+    {
+      CALENDAR_YEARS.filter((y) => y !== data.year).map((y) => (
+        <li>
+          <a href={`/calendar/${y}/`}>{y} 年</a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <style>
+    .chip-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chip-list li a {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <p slot="footer">
+    資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../lib/seo';
+import { CALENDAR_YEARS, loadCalendarYear } from '../../lib/calendar';
+import IcsSubscribe from '../../components/IcsSubscribe.astro';
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '國定假日與連假查詢', url: Astro.url.href },
+  ]),
+];
+
+const years = CALENDAR_YEARS.map((year) => {
+  const data = loadCalendarYear(year);
+  return { year, holidayDays: data.holiday_days, longWeekendCount: data.long_weekends.length };
+});
+---
+
+<BaseLayout
+  title="國定假日與連假查詢｜行事曆訂閱｜悶蛙吧"
+  description="查詢中華民國政府行政機關辦公日曆表,各年度國定假日、補假日、3 天以上連假的起訖日與天數,並提供 .ics 行事曆訂閱。"
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / 國定假日與連假查詢</nav>
+  <h1>國定假日與連假查詢</h1>
+  <p>
+    資料來源為行政院人事行政總處「政府行政機關辦公日曆表」(政府資料開放平臺 <code>dataset/14718</code>),逐日列出是否放假、補假日,並依實際資料算出每年 3 天以上連假的起訖日與天數——不引用新聞稿摘要數字,一律以本站解析出的清單為準。
+  </p>
+
+  <h2>年度總覽</h2>
+  <ul class="card-grid">
+    {
+      years.map((y) => (
+        <li>
+          <a class="card" href={`/calendar/${y.year}/`}>
+            <strong>{y.year} 年</strong>
+            <div>
+              全年放假 {y.holidayDays} 天・{y.longWeekendCount} 個 3 天以上連假
+            </div>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>行事曆訂閱</h2>
+  <p>內容為當年度國定假日與補假日(不含純週末空白列),訂閱後隔年資料更新會自動同步:</p>
+  {
+    years.map((y) => (
+      <>
+        <h3>{y.year} 年</h3>
+        <IcsSubscribe year={y.year} />
+      </>
+    ))
+  }
+
+  <p slot="footer">
+    資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
+</BaseLayout>

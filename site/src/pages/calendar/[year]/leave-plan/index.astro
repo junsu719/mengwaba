@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../../../lib/seo';
+import { CALENDAR_YEARS, loadCalendarYear, computeLeavePlans, leavePlanTitle, type CalendarYearData } from '../../../../lib/calendar';
+
+export function getStaticPaths() {
+  return CALENDAR_YEARS.map((year) => ({
+    params: { year: String(year) },
+    props: { data: loadCalendarYear(year) },
+  }));
+}
+
+const { data } = Astro.props as { data: CalendarYearData };
+const plans = computeLeavePlans(data);
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '國定假日與連假查詢', url: new URL('/calendar/', Astro.site ?? Astro.url).href },
+    { name: `${data.year} 年`, url: new URL(`/calendar/${data.year}/`, Astro.site ?? Astro.url).href },
+    { name: '請假攻略', url: Astro.url.href },
+  ]),
+];
+---
+
+<BaseLayout
+  title={`${data.year} 年請假攻略｜拼假計算｜悶蛙吧`}
+  description={`${data.year} 年請假攻略:算出只要請 3 天以內的年假,可以搭配國定假日連放到幾天,共 ${plans.length} 個拼假機會。`}
+  jsonLd={jsonLd}
+>
+  <nav>
+    <a href="/">首頁</a> / <a href="/calendar/">國定假日與連假查詢</a> / <a href={`/calendar/${data.year}/`}>{data.year} 年</a> / 請假攻略
+  </nav>
+  <h1>{data.year} 年請假攻略</h1>
+  <p>
+    以下是{data.year}
+    年「只要多請 1~3 個工作日的年假,就能接上國定假日連放更長假期」的拼假機會,依實際日曆逐一算出——只鎖定真正的國定假日(不含補假本身、不含兩個普通週末之間的一般工作週),缺口超過 3 個工作日的不列入(划算程度太低)。
+  </p>
+
+  {
+    plans.length === 0 ? (
+      <p>{data.year} 年目前沒有算出符合條件(缺口 3 個工作日以內、且錨定在真正國定假日上)的拼假機會。</p>
+    ) : (
+      <>
+        <h2>拼假機會清單</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>攻略</th>
+              <th>連放區間</th>
+              <th>總天數</th>
+              <th>需請假日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plans.map((p) => (
+              <tr>
+                <td>{leavePlanTitle(p)}</td>
+                <td>
+                  {p.start} ~ {p.end}
+                </td>
+                <td>{p.totalDays} 天</td>
+                <td>
+                  只要請 {p.leaveDates.length} 天({p.leaveDates.join('、')})
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>
+    )
+  }
+
+  <h2>站內連結</h2>
+  <ul class="plain">
+    <li>
+      <a href={`/calendar/${data.year}/`}>{data.year} 年國定假日與連假總覽</a>
+    </li>
+    <li>
+      <a href="/calendar/">國定假日與連假查詢首頁</a>
+    </li>
+  </ul>
+  <h3>其他年度</h3>
+  <ul class="chip-list">
+    {
+      CALENDAR_YEARS.filter((y) => y !== data.year).map((y) => (
+        <li>
+          <a href={`/calendar/${y}/leave-plan/`}>{y} 年請假攻略</a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <style>
+    .chip-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chip-list li a {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+  </style>
+
+  <p slot="footer">
+    資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,請假規定以所屬公司/機關實際核准為準;實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
+</BaseLayout>

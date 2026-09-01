@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../../../lib/seo';
+import {
+  CALENDAR_YEARS,
+  loadCalendarYear,
+  longWeekendTitle,
+  longWeekendSlug,
+  headlineNames,
+  type CalendarYearData,
+  type LongWeekend,
+} from '../../../../lib/calendar';
+
+export function getStaticPaths() {
+  return CALENDAR_YEARS.flatMap((year) => {
+    const data = loadCalendarYear(year);
+    return data.long_weekends.map((w) => ({
+      params: { year: String(year), slug: longWeekendSlug(w) },
+      props: { data, weekend: w },
+    }));
+  });
+}
+
+const { data, weekend } = Astro.props as { data: CalendarYearData; weekend: LongWeekend };
+const title = longWeekendTitle(weekend);
+const heads = headlineNames(weekend.names);
+
+const days: string[] = [];
+{
+  const start = new Date(`${weekend.start}T00:00:00Z`);
+  for (let i = 0; i < weekend.days; i++) {
+    const d = new Date(start);
+    d.setUTCDate(start.getUTCDate() + i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+}
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '國定假日與連假查詢', url: new URL('/calendar/', Astro.site ?? Astro.url).href },
+    { name: `${data.year} 年`, url: new URL(`/calendar/${data.year}/`, Astro.site ?? Astro.url).href },
+    { name: title, url: Astro.url.href },
+  ]),
+];
+---
+
+<BaseLayout
+  title={`${data.year} ${title}(${weekend.start} ~ ${weekend.end},共 ${weekend.days} 天)｜悶蛙吧`}
+  description={`${data.year} 年${title}為 ${weekend.start} 至 ${weekend.end},共 ${weekend.days} 天。`}
+  jsonLd={jsonLd}
+>
+  <nav>
+    <a href="/">首頁</a> / <a href="/calendar/">國定假日與連假查詢</a> / <a href={`/calendar/${data.year}/`}>{data.year} 年</a> / {title}
+  </nav>
+  <h1>
+    {data.year} {title}
+  </h1>
+  <p class="today-answer">
+    {weekend.start} ~ {weekend.end},共 <strong>{weekend.days} 天</strong>。
+  </p>
+
+  {heads.length > 0 && <p>包含節日:{heads.join('、')}。</p>}
+
+  <h2>逐日明細</h2>
+  <ul class="plain">
+    {days.map((d) => <li>{d}</li>)}
+  </ul>
+
+  <h2>站內連結</h2>
+  <ul class="plain">
+    <li>
+      <a href={`/calendar/${data.year}/`}>{data.year} 年國定假日與連假總覽</a>
+    </li>
+    <li>
+      <a href="/calendar/">國定假日與連假查詢首頁</a>
+    </li>
+    <li>
+      <a href={`/calendar/${data.year}.ics`}>{data.year} 年行事曆訂閱網址(.ics)</a>
+    </li>
+  </ul>
+
+  <p slot="footer">
+    資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
+</BaseLayout>

@@ -1,0 +1,48 @@
+---
+interface Props {
+  year: number;
+}
+const { year } = Astro.props;
+
+// 訂閱而非下載(2026-09-01 拍板,見 DECISIONS.md):Content-Type 是 text/calendar,但單純給一個
+// <a href="...ics">連結會被瀏覽器當成檔案下載,使用者存到 Downloads 資料夾後隔年不會再更新,
+// 沒有回訪價值。改成明確引導「訂閱」流程——webcal:// 連結讓 Apple 行事曆跳出訂閱對話框,
+// Google 日曆網頁版不支援 webcal:// 一鍵訂閱,只能引導使用者手動貼上網址走「透過網址新增」流程。
+const httpsUrl = new URL(`/calendar/${year}.ics`, Astro.site ?? Astro.url).href;
+const webcalUrl = httpsUrl.replace(/^https?:/, 'webcal:');
+---
+
+<div class="ics-subscribe">
+  <p>
+    <a href={webcalUrl}>訂閱到 iPhone / Mac 行事曆</a>
+    ,點選後系統會直接跳出「訂閱行事曆」對話框;之後政府公布新年度資料、本站更新後會自動同步,不需要重新下載。
+  </p>
+  <p>
+    <strong>Google 日曆</strong>:網頁版左側「其他日曆」旁的 <code>+</code> →「透過網址」,貼上以下網址訂閱:
+  </p>
+  <p><code class="ics-url">{httpsUrl}</code></p>
+</div>
+
+<style>
+  .ics-subscribe {
+    background: #f7f7f7;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .ics-subscribe p:first-child {
+    margin-top: 0;
+  }
+  .ics-subscribe p:last-child {
+    margin-bottom: 0;
+  }
+  .ics-url {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow-wrap: break-word;
+    font-size: 0.9rem;
+  }
+</style>
