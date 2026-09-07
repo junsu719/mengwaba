@@ -42,6 +42,14 @@ const jsonLd = [
   <h1>{data.year} 年國定假日與連假總覽</h1>
   <p>{data.year} 年全年 {data.total_days} 天中,放假 {data.holiday_days} 天,共有 {data.long_weekends.length} 個 3 天以上連假。</p>
 
+  {
+    data.year === 2027 && (
+      <p class="muted">
+        部分媒體報導 2027 年有 9 個 3 天以上連假,本站依行政院人事行政總處公告的辦公日曆表逐日計算為 {data.long_weekends.length} 個。差異可能來自元旦跨年假期(2026/12/31–2027/1/3)的併計方式不同。
+      </p>
+    )
+  }
+
   <h2>連假清單</h2>
   <table>
     <thead>

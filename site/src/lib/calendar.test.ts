@@ -8,9 +8,12 @@ import {
   computeLeavePlans,
   leavePlanTitle,
   leavePlanSentence,
+  findNextLongWeekend,
+  daysBetween,
   type CalendarYearData,
   type LongWeekend,
   type CalendarDay,
+  type NextLongWeekendEntry,
 } from './calendar';
 
 function day(d: string, weekday: string, is_holiday: boolean, memo = ''): CalendarDay {
@@ -166,6 +169,48 @@ describe('buildIcsFeed', () => {
     // 反摺行(移除 CRLF+空白)後能還原出完整的節日全名,證明沒有切斷任何 UTF-8 字元。
     const unfolded = ics.replace(/\r\n /g, '');
     expect(unfolded).toContain('臺灣光復暨金門古寧頭大捷紀念日');
+  });
+});
+
+describe('daysBetween', () => {
+  it('計算兩個 YYYY-MM-DD 字串之間的天數(純日期字串一律以 UTC 解讀,結果不受呼叫端時區影響)', () => {
+    expect(daysBetween('2026-09-07', '2026-09-25')).toBe(18);
+    expect(daysBetween('2026-09-25', '2026-09-07')).toBe(-18);
+    expect(daysBetween('2026-09-07', '2026-09-07')).toBe(0);
+  });
+});
+
+describe('findNextLongWeekend', () => {
+  function entry(overrides: Partial<NextLongWeekendEntry>): NextLongWeekendEntry {
+    return { year: 2026, slug: '0925', title: '中秋節連假', start: '2026-09-25', end: '2026-09-28', days: 4, ...overrides };
+  }
+
+  it('找出 end >= today 的第一筆(依起始日排序,不假設輸入已排序)', () => {
+    const entries = [
+      entry({ slug: '1009', title: '國慶日連假', start: '2026-10-09', end: '2026-10-11', days: 3 }),
+      entry({}), // 2026-09-25 ~ 2026-09-28
+    ];
+    expect(findNextLongWeekend(entries, '2026-09-07')).toEqual(entry({}));
+  });
+
+  it('今天正落在連假區間內時,回傳該筆(不會因 start < today 而跳過)', () => {
+    const entries = [entry({})];
+    expect(findNextLongWeekend(entries, '2026-09-27')).toEqual(entry({}));
+  });
+
+  it('當年度已無連假時,正確跨到下一年度的第一個連假', () => {
+    const entries = [
+      entry({}), // 2026-09-25 ~ 2026-09-28
+      entry({ year: 2027, slug: '0101', title: '開國紀念日連假', start: '2027-01-01', end: '2027-01-03', days: 3 }),
+    ];
+    expect(findNextLongWeekend(entries, '2026-12-31')).toEqual(
+      entry({ year: 2027, slug: '0101', title: '開國紀念日連假', start: '2027-01-01', end: '2027-01-03', days: 3 })
+    );
+  });
+
+  it('清單中所有連假皆已結束時回傳 undefined', () => {
+    const entries = [entry({})];
+    expect(findNextLongWeekend(entries, '2027-01-01')).toBeUndefined();
   });
 });
 

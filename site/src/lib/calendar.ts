@@ -100,6 +100,48 @@ export function findLongWeekend(data: CalendarYearData, slug: string): LongWeeke
   return data.long_weekends.find((w) => longWeekendSlug(w) === slug);
 }
 
+export interface NextLongWeekendEntry {
+  year: number;
+  slug: string;
+  title: string;
+  start: string;
+  end: string;
+  days: number;
+}
+
+/** 彙整 CALENDAR_YEARS 所有年度的連假清單,依起始日排序,供入口頁「下一個連假」倒數使用。 */
+export function allLongWeekendEntries(): NextLongWeekendEntry[] {
+  return CALENDAR_YEARS.flatMap((year) => {
+    const data = loadCalendarYear(year);
+    return data.long_weekends.map((w) => ({
+      year,
+      slug: longWeekendSlug(w),
+      title: longWeekendTitle(w),
+      start: w.start,
+      end: w.end,
+      days: w.days,
+    }));
+  }).sort((a, b) => a.start.localeCompare(b.start));
+}
+
+/**
+ * 純函式,不碰時鐘/時區——「今天」一律由呼叫端(client-side script)用 Asia/Taipei 算出再傳入,
+ * 避免邊緣快取造成伺服器端算好的倒數對讀者是錯的日期(垃圾車 pSEO 已踩過這個坑,同一教訓沿用到
+ * 這個工具)。end >= today 的第一筆涵蓋「今天正落在連假中」的情況,不會因此漏掉當次連假。
+ */
+export function findNextLongWeekend(
+  entries: NextLongWeekendEntry[],
+  todayStr: string
+): NextLongWeekendEntry | undefined {
+  return [...entries].sort((a, b) => a.start.localeCompare(b.start)).find((e) => e.end >= todayStr);
+}
+
+/** 兩個 YYYY-MM-DD 字串之間相差幾天(toStr 減 fromStr)。ISO 純日期字串在 JS 中一律以 UTC 午夜
+ * 解讀,故此處計算不受呼叫端所在時區影響,只要傳入的字串本身已經是想要的日曆日期即可。 */
+export function daysBetween(fromStr: string, toStr: string): number {
+  return Math.round((Date.parse(toStr) - Date.parse(fromStr)) / 86_400_000);
+}
+
 // Phase 1 驗收發現(見 DECISIONS.md 2026-09-01):端午/中秋/教師節是否形成連假,兩年結果不同,
 // 不得寫死通用文案。這裡逐年現算,頁面直接用這個結果組句子,不猜測、不套用另一年的結論。
 const NOTABLE_SOLO_HOLIDAYS = ['端午節', '中秋節', '孔子誕辰紀念日/教師節'];

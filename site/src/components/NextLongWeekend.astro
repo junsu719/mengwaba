@@ -1,0 +1,79 @@
+---
+// 下一個連假倒數:純前端計算(2026-09-07 拍板)。頁面本身經邊緣快取,伺服器端算好的倒數
+// 對之後才看到快取版本的訪客會是錯的日期,故只能靠 client script 現算;「今天」一律用
+// Intl 的 Asia/Taipei 時區取得,不用瀏覽器本地時區,避免跨時區訪客看到日期偏移一天。
+// JS 失效、資料異常或算不出下一個連假(不會發生於目前兩年度資料內,但未來資料只到某年度
+// 用盡後仍可能發生)時,整個區塊維持 hidden,不留白畫面或錯誤文字。
+import type { NextLongWeekendEntry } from '../lib/calendar';
+
+interface Props {
+  entries: NextLongWeekendEntry[];
+}
+const { entries } = Astro.props;
+---
+
+<div class="next-holiday" hidden data-entries={JSON.stringify(entries)}>
+  <p class="next-holiday-text"></p>
+</div>
+
+<script>
+  import { findNextLongWeekend, daysBetween } from '../lib/calendar';
+
+  function taipeiToday(): string {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
+  }
+
+  function formatRange(start: string, end: string): string {
+    const md = (d: string) => d.slice(5).replace('-', '/');
+    if (start.slice(0, 4) === end.slice(0, 4)) return `${md(start)}–${md(end)}`;
+    return `${start.replace(/-/g, '/')}–${end.replace(/-/g, '/')}`;
+  }
+
+  document.querySelectorAll<HTMLElement>('.next-holiday').forEach((el) => {
+    try {
+      const raw = el.dataset.entries;
+      if (!raw) return;
+      const entries = JSON.parse(raw);
+      if (!Array.isArray(entries) || entries.length === 0) return;
+
+      const today = taipeiToday();
+      const next = findNextLongWeekend(entries, today);
+      if (!next || typeof next.start !== 'string' || typeof next.end !== 'string') return;
+
+      const daysUntil = daysBetween(today, next.start);
+      const countdown =
+        daysUntil > 0 ? `還有 ${daysUntil} 天` : daysUntil === 0 ? '就是今天' : `已開始,將於 ${next.end} 結束`;
+
+      const p = el.querySelector('.next-holiday-text');
+      if (!p) return;
+      p.replaceChildren();
+      p.append('下一個連假:');
+      const a = document.createElement('a');
+      a.href = `/calendar/${next.year}/${next.slug}/`;
+      a.textContent = next.title;
+      p.append(a, ` ${formatRange(next.start, next.end)}(${next.days} 天),${countdown}`);
+
+      el.hidden = false;
+    } catch {
+      // 資料格式異常或執行期錯誤:維持 hidden,不留下 NaN/錯誤日期。
+    }
+  });
+</script>
+
+<style>
+  .next-holiday {
+    background: #f0f7f2;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0 1.5rem;
+    font-size: 1rem;
+  }
+  .next-holiday-text {
+    margin: 0;
+  }
+  .next-holiday-text :global(a) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+</style>
