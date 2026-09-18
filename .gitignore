@@ -25,3 +25,4 @@ data/raw/*
 !data/raw/calendar/
 .DS_Store
 .claude/settings.local.json
+*:Zone.Identifier
