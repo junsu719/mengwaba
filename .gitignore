@@ -23,6 +23,9 @@ data/raw/*
 # 人工下載,年更新一次且來源站 dgpa.gov.tw robots.txt 禁止非 Google 爬蟲,不做自動化重抓,
 # 版控留存正本,避免遺失須改回人工重新下載。
 !data/raw/calendar/
+# 神明生日基準資料例外:人工核實(多來源交叉比對)的靜態資料,非可重新抓取的來源,
+# 版控留存正本。
+!data/raw/deities/
 .DS_Store
 .claude/settings.local.json
 *:Zone.Identifier
