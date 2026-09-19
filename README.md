@@ -2,7 +2,15 @@
 
 台灣生活工具站 — 目前提供全台四縣市垃圾車清運時間查詢,以及政府行政機關辦公日曆表 / 連假查詢。
 
-🔗 **[mengwaba.com](https://mengwaba.com)**
+🔗 [網站首頁](https://mengwaba.com) ・ 🚛 [垃圾車查詢](https://mengwaba.com/trash/) ・ 📅 [連假查詢](https://mengwaba.com/calendar/)
+
+<p>
+  <img src="docs/screenshots/trash-district-desktop.png" alt="垃圾車清運時間查詢:高雄市左營區行政區頁,顯示里別索引與清運點列表" width="49%">
+  <img src="docs/screenshots/calendar-leave-plan-desktop.png" alt="2026 年請假攻略頁,列出拼假機會與可連休天數" width="49%">
+</p>
+<p>
+  <img src="docs/screenshots/trash-district-mobile.png" alt="垃圾車清運時間查詢頁的手機版畫面" width="30%">
+</p>
 
 ---
 
@@ -47,7 +55,7 @@
 
 ## 授權
 
-程式碼採 [待補:選擇授權條款,例如 MIT];各縣市開放資料版權屬各原始資料提供機關,依「政府資料開放授權條款第 1 版」使用。
+程式碼未附加開源授權條款,保留所有權利(All rights reserved)——repo 公開僅供瀏覽參考,未經同意不得重製、修改或散布程式碼;各縣市開放資料版權屬各原始資料提供機關,依「政府資料開放授權條款第 1 版」使用。
 
 ---
 
