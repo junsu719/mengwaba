@@ -1,0 +1,66 @@
+---
+// 近期神明生日:資料本身(每尊神明每個紀念日 2020-2040 的國曆日期)是 build time 已算好的
+// 靜態資料(不隨「今天」變動),但「哪幾筆算近期」要看訪客當下的日期,故篩選/排序這一步
+// 仍在瀏覽器端做(理由與 NextLongWeekend.astro 相同:避免邊緣快取讓訪客看到過期的「近期」)。
+import type { UpcomingOccasionEntry } from '../lib/deities';
+
+interface Props {
+  entries: UpcomingOccasionEntry[];
+  limit?: number;
+}
+const { entries, limit = 8 } = Astro.props;
+---
+
+<div class="upcoming-deities" data-entries={JSON.stringify(entries)} data-limit={limit}>
+  <ul class="plain" id="upcoming-deities-list"></ul>
+  <p id="upcoming-deities-empty" hidden>近期查無收錄神明的紀念日。</p>
+</div>
+
+<script>
+  import { findUpcomingOccasions, type UpcomingOccasionEntry } from '../lib/deities';
+  import { taipeiToday } from '../lib/lunar-client';
+
+  document.querySelectorAll<HTMLElement>('.upcoming-deities').forEach((el) => {
+    try {
+      const raw = el.dataset.entries;
+      if (!raw) return;
+      const entries: UpcomingOccasionEntry[] = JSON.parse(raw);
+      const limit = Number(el.dataset.limit) || 8;
+      const today = taipeiToday();
+      const upcoming = findUpcomingOccasions(entries, today, limit);
+
+      const list = el.querySelector('#upcoming-deities-list');
+      const empty = el.querySelector('#upcoming-deities-empty') as HTMLElement | null;
+      if (!list) return;
+
+      if (upcoming.length === 0) {
+        if (empty) empty.hidden = false;
+        return;
+      }
+
+      for (const e of upcoming) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `/lunar/deity/${e.deitySlug}/`;
+        a.textContent = `${e.deityTitle}${e.occasionType}`;
+        li.append(a, ` ${e.solarDate}(農曆${e.lunarLabel})`);
+        if (e.dateAdjusted) {
+          const note = document.createElement('span');
+          note.className = 'adjust-note';
+          note.textContent = `(${e.adjustNote ?? '日期已調整'})`;
+          li.append(' ', note);
+        }
+        list.append(li);
+      }
+    } catch {
+      // 資料格式異常時維持空清單,不留下錯誤畫面。
+    }
+  });
+</script>
+
+<style>
+  .adjust-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>

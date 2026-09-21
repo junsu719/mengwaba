@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../lib/seo';
+import { getAllDeities, allOccasionEntries } from '../../lib/deities';
+import TodayLunarCard from '../../components/TodayLunarCard.astro';
+import UpcomingDeityBirthdays from '../../components/UpcomingDeityBirthdays.astro';
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '農民曆查詢', url: Astro.url.href },
+  ]),
+];
+
+const deities = getAllDeities();
+const occasionEntries = allOccasionEntries();
+---
+
+<BaseLayout
+  title="農民曆查詢｜今日農曆、沖煞、宜忌、神明生日｜悶蛙吧"
+  description="查今日農曆日期、日沖生肖、煞方、宜忌,可任選日期查詢;並整理常見神明生日對照國曆日期、農曆生日換算工具。"
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / 農民曆查詢</nav>
+  <h1>農民曆查詢</h1>
+  <p>
+    農曆日期換算依 <a href="https://github.com/6tail/lunar-javascript" rel="nofollow">lunar-javascript</a>(傳統通書查表法)於瀏覽器端即時計算,「今天」以 Asia/Taipei
+    時區為準;也可用下方日期選擇器查任一天。想查連假與國定假日,請見<a href="/calendar/">國定假日與連假查詢</a>。
+  </p>
+
+  <TodayLunarCard />
+
+  <h2>近期神明生日</h2>
+  <UpcomingDeityBirthdays entries={occasionEntries} limit={8} />
+  <p><a href="#deity-list">看全部收錄神明 →</a></p>
+
+  <h2 id="deity-list">神明生日對照表</h2>
+  <p>目前收錄 {deities.length} 尊神明,依農曆月日排序。點入查看未來各年度對應的國曆日期。</p>
+  <ul class="plain">
+    {
+      deities.map((d) => (
+        <li>
+          <a href={`/lunar/deity/${d.slug}/`}>{d.title}</a>
+          {d.occasions.map((o) => `農曆${o.lunar_label}${o.occasion_type}`).join('、')}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>農曆生日換算</h2>
+  <p>
+    想知道自己的農曆生日、或農曆生日對應哪一天國曆日期,請用 <a href="/lunar/birthday-convert/">農曆生日換算工具</a>。
+  </p>
+
+  <p slot="footer">
+    農曆換算依 lunar-javascript(傳統通書查表法)計算,節氣/宜忌/沖煞規則詳見
+    <a href="https://github.com/junsu719/mengwaba" rel="nofollow">本站說明</a>。神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期,詳細查證過程與來源標註見各神明頁面。
+  </p>
+  <p slot="footer">本站為民間非官方服務,農曆/節氣資訊僅供參考;宜忌內容不構成命理建議。</p>
+</BaseLayout>

@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../../lib/seo';
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '農民曆查詢', url: Astro.site ? new URL('/lunar/', Astro.site).href : '/lunar/' },
+    { name: '農曆生日換算', url: Astro.url.href },
+  ]),
+];
+
+const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1);
+const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
+---
+
+<BaseLayout
+  title="農曆生日換算｜國曆農曆互查｜悶蛙吧"
+  description="輸入國曆生日查農曆月日,或輸入農曆生日查未來幾年對應的國曆日期,計算在瀏覽器端即時進行。"
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / <a href="/lunar/">農民曆查詢</a> / 農曆生日換算</nav>
+  <h1>農曆生日換算</h1>
+  <p>換算在瀏覽器端即時計算,不會送出任何資料。</p>
+
+  <h2>國曆生日 → 查農曆</h2>
+  <div class="convert-form">
+    <label for="solar-input">國曆日期</label>
+    <input type="date" id="solar-input" />
+  </div>
+  <p class="today-answer" id="solar-to-lunar-result" hidden></p>
+
+  <h2>農曆生日 → 查國曆(未來 10 年對照)</h2>
+  <div class="convert-form">
+    <label for="lunar-month-input">農曆月</label>
+    <select id="lunar-month-input">
+      {monthOptions.map((m) => <option value={m}>{m} 月</option>)}
+    </select>
+    <label for="lunar-day-input">農曆日</label>
+    <select id="lunar-day-input">
+      {dayOptions.map((d) => <option value={d}>{d} 日</option>)}
+    </select>
+    <label class="leap-checkbox"><input type="checkbox" id="lunar-leap-input" /> 閏月</label>
+    <button type="button" id="lunar-convert-btn">查詢</button>
+  </div>
+  <p class="leap-hint">
+    只有該農曆年份剛好有閏月、且閏的正是您選的月份時才需要勾選;多數年份沒有閏月,不確定的話先不勾。
+  </p>
+  <div id="lunar-to-solar-result"></div>
+
+  <p slot="footer">農曆換算依 lunar-javascript(傳統通書查表法)計算,並非官方系統,僅供參考。</p>
+</BaseLayout>
+
+<script>
+  import { solarToLunar, lunarToSolarRange, taipeiToday } from '../../../lib/lunar-client';
+
+  const solarInput = document.getElementById('solar-input') as HTMLInputElement;
+  const solarResult = document.getElementById('solar-to-lunar-result') as HTMLElement;
+
+  function updateSolarToLunar() {
+    if (!solarInput.value) {
+      solarResult.hidden = true;
+      return;
+    }
+    try {
+      const r = solarToLunar(solarInput.value);
+      const leapLabel = r.isLeapMonth ? '閏' : '';
+      solarResult.textContent = `${solarInput.value} 是農曆${leapLabel}${r.monthLabel}${r.dayLabel}。`;
+      solarResult.hidden = false;
+    } catch {
+      solarResult.hidden = true;
+    }
+  }
+  solarInput.value = taipeiToday();
+  solarInput.addEventListener('change', updateSolarToLunar);
+  updateSolarToLunar();
+
+  const monthInput = document.getElementById('lunar-month-input') as HTMLSelectElement;
+  const dayInput = document.getElementById('lunar-day-input') as HTMLSelectElement;
+  const leapInput = document.getElementById('lunar-leap-input') as HTMLInputElement;
+  const convertBtn = document.getElementById('lunar-convert-btn') as HTMLButtonElement;
+  const resultEl = document.getElementById('lunar-to-solar-result') as HTMLElement;
+
+  convertBtn.addEventListener('click', () => {
+    const month = Number(monthInput.value);
+    const day = Number(dayInput.value);
+    const isLeap = leapInput.checked;
+    const fromYear = Number(taipeiToday().slice(0, 4));
+    const toYear = fromYear + 10;
+
+    const results = lunarToSolarRange(month, day, isLeap, fromYear, toYear);
+    resultEl.replaceChildren();
+
+    const validCount = results.filter((r) => !r.notExist).length;
+    if (validCount === 0) {
+      const p = document.createElement('p');
+      p.textContent = `查無結果:未來 ${fromYear}–${toYear} 年間,沒有任何一年的農曆${isLeap ? '閏' : ''}${month}月${day}日存在(閏月只在特定年份出現,請確認是否選錯)。`;
+      resultEl.append(p);
+      return;
+    }
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>農曆年</th><th>國曆日期</th></tr>';
+    const tbody = document.createElement('tbody');
+    for (const r of results) {
+      const tr = document.createElement('tr');
+      const tdYear = document.createElement('td');
+      tdYear.textContent = `${r.lunarYear} 年`;
+      const tdDate = document.createElement('td');
+      tdDate.textContent = r.notExist ? `該年無此農曆日期(非閏年或非閏月)` : r.solarDate!;
+      tr.append(tdYear, tdDate);
+      tbody.append(tr);
+    }
+    table.append(thead, tbody);
+    resultEl.append(table);
+  });
+</script>
+
+<style>
+  .convert-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  .convert-form select,
+  .convert-form input[type='date'] {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .convert-form button {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .leap-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .leap-hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: -0.5rem;
+  }
+</style>

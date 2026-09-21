@@ -1,0 +1,5163 @@
+[
+  {
+    "deity_name": "清水祖師",
+    "common_name": "祖師公",
+    "slug": "qing-shui-zu-shi",
+    "title": "清水祖師",
+    "body_alt_names": [],
+    "body_note": "民間有時俗稱「祖師公」,但此俗稱也可能指其他祖師公信仰,並非清水祖師專屬稱呼,本站不作為別名使用。",
+    "occasions": [
+      {
+        "lunar_month": 1,
+        "lunar_day": 6,
+        "lunar_label": "一月初六",
+        "occasion_type": "千秋",
+        "honorific_source": "聖誕",
+        "honorific_note": "天后宮千秋表用「佛辰」",
+        "sources": [
+          "https://taiwangods.moi.gov.tw/html/cultural/3_0011.aspx?i=176",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://www.sanxia.ntpc.gov.tw/home.jsp?id=b2ff21fbcb234003"
+        ],
+        "note": "內政部臺灣宗教文化地圖、新北市三峽區公所皆用「聖誕」",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-01-30",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-02-17",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-02-06",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-01-27",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-02-15",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-02-03",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-02-22",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-02-11",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-01-31",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-02-18",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-02-08",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-01-28",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-02-16",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-02-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-02-24",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-02-13",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-02",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-02-20",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-02-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-01-29",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-02-17",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 5,
+        "lunar_day": 6,
+        "lunar_label": "五月初六",
+        "occasion_type": "成道",
+        "honorific_source": "成道",
+        "honorific_note": "維基百科用「得道日」",
+        "sources": [
+          "https://www.buddhamind.com.tw/archives/1773",
+          "https://zh.wikipedia.org/zh-tw/清水祖師",
+          "https://tcmazu.org/pilgrimage-temples/"
+        ],
+        "note": "第二輪新驗證成功(原僅1源);佛祖心雜誌社原文「農曆五月初六清水祖師成道紀念」;三峽長福巖官網兩輪皆連線失敗,非刻意排除",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-06-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-06-15",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-06-04",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-06-23",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-06-11",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-06-01",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-06-20",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-06-10",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-05-29",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-06-17",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-06-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-06-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-06-13",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-06-02",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-06-21",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-06-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-05-31",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-06-19",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-06-08",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-05-28",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-06-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "玉皇上帝",
+    "common_name": "天公",
+    "slug": "tian-gong",
+    "title": "天公(玉皇大帝)",
+    "body_alt_names": [
+      "玉皇大帝",
+      "玉皇上帝"
+    ],
+    "body_note": "本站資料層三源查證用詞為「玉皇上帝」,民間更常見的正式寫法是「玉皇大帝」,通稱「天公」,三種寫法皆指同一神明。",
+    "occasions": [
+      {
+        "lunar_month": 1,
+        "lunar_day": 9,
+        "lunar_label": "一月初九",
+        "occasion_type": "萬壽",
+        "honorific_source": "誕降之辰(俗稱天公生)",
+        "honorific_note": "行天宮用「聖誕」",
+        "sources": [
+          "https://www.tian.org.tw/?act=menuinfo&ml_id=20221129004",
+          "https://www.ht.org.tw/religion321.htm",
+          "https://zh.wikipedia.org/zh-tw/正月初九"
+        ],
+        "note": "主祀廟台南首廟天壇原文引《臺灣通史》:「歲以孟春九日為誕降之辰」,俗稱天公生",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-02",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-02-20",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-02-09",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-01-30",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-02-18",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-02-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-02-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-02-14",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-03",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-02-21",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-02-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-01-31",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-02-19",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-02-08",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-02-27",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-02-16",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-05",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-02-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-02-12",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-01",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-02-20",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "關聖帝君",
+    "common_name": "關公",
+    "slug": "guan-gong",
+    "title": "關公(關聖帝君)",
+    "body_alt_names": [
+      "恩主公"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 1,
+        "lunar_day": 13,
+        "lunar_label": "一月十三",
+        "occasion_type": "飛昇",
+        "honorific_source": "飛昇",
+        "honorific_note": "維基百科用「成道日」,中華日報用「得道飛昇日」",
+        "sources": [
+          "https://zh.wikipedia.org/zh-tw/關羽信仰",
+          "https://www.kwwt.org.tw/?act=menuinfo&ml_id=20210108007&cmd=list",
+          "https://www.cdns.com.tw/articles/1166159"
+        ],
+        "note": "正月十三為飛昇,與六月廿四聖誕不同,不可混用;高雄鳳山赤山文衡殿特例將此日當作「聖誕」而非「飛昇」慶祝,本表依多數廟宇/維基共識分列",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-02-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-02-13",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-02-03",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-02-22",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-02-10",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-03-01",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-02-18",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-07",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-02-25",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-02-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-02-04",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-02-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-02-12",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-03-03",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-02-20",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-09",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-02-27",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-02-16",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-02-24",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 6,
+        "lunar_day": 24,
+        "lunar_label": "六月廿四",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "行天宮用「聖壽」,維基百科用「聖誕」",
+        "sources": [
+          "https://www.ht.org.tw/religion1594.htm",
+          "https://zh.wikipedia.org/zh-tw/關羽信仰",
+          "https://tmach-culture.tainan.gov.tw/templemuseums/templepage.asp?mainid=109A4FC6-C4F9-4C0F-8C64-8AEA5DDFA167"
+        ],
+        "note": "honorific_source 依台南祀典武廟(官方最高位階關廟)用語「聖誕」記錄,不再套用敬稱規則;另有少數廟宇以五月十三(磨刀節)為聖誕,非主流,不與六月廿四混用",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-08-13",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-08-02",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-07-22",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-08-10",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-07-29",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-07-18",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-08-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-07-27",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-08-14",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-08-03",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-07-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-08-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-07-30",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-07-20",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-08-08",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-07-28",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-07-17",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-08-05",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-07-25",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-08-13",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-08-01",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "上元天官大帝",
+    "common_name": null,
+    "slug": "shang-yuan-tian-guan-da-di",
+    "title": "上元天官大帝",
+    "body_alt_names": [
+      "天官大帝"
+    ],
+    "body_note": "與中元地官大帝、下元水官大帝合稱三官大帝,簡稱「天官大帝」時請注意與另外兩位區分。",
+    "occasions": [
+      {
+        "lunar_month": 1,
+        "lunar_day": 15,
+        "lunar_label": "一月十五",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "三源用詞一致",
+        "sources": [
+          "https://www.twsanyuan.com/",
+          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
+          "https://www.ht.org.tw/religion141.htm"
+        ],
+        "note": "與下元水官大帝同頁來源(廟宇同時列出三官大帝聖誕)",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-08",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-02-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-02-15",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-02-05",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-02-24",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-02-12",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-03-03",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-02-20",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-09",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-02-27",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-02-17",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-02-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-02-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-02-14",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-03-05",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-02-22",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-03-01",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-02-18",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-07",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-02-26",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "濟公",
+    "common_name": null,
+    "slug": "ji-gong",
+    "title": "濟公",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 2,
+        "lunar_label": "二月初二",
+        "occasion_type": "佛辰",
+        "honorific_source": "聖誕",
+        "honorific_note": "天后宮千秋表、KidsMedia皆用「佛辰」",
+        "sources": [
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://kidsmedia.com.tw/2025/02/27/",
+          "https://www.yuanbao.org.tw/"
+        ],
+        "note": "主祀廟台中元保宮用「聖誕」;元保宮另載五月十六涅槃日,屬圓寂紀念非誕辰,未收錄",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-24",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-14",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-04",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-02-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-01",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-03-20",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-26",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-03-16",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-05",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-02-22",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-13",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-02",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-03-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-11",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-28",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-03-18",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-07",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-24",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-14",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "福德正神",
+    "common_name": "土地公",
+    "slug": "tu-di-gong",
+    "title": "土地公(福德正神)",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 2,
+        "lunar_label": "二月初二",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "維基百科引《臺灣縣志》古語用「慶壽」;農民曆線上看無明確引用敬稱詞",
+        "sources": [
+          "https://www.hunglodei.tw/mobile/god_1.php",
+          "https://nml.tw/festival/%E7%A6%8F%E5%BE%B7%E6%AD%A3%E7%A5%9E%E5%8D%83%E7%A7%8B",
+          "https://zh.wikipedia.org/zh-tw/福德正神"
+        ],
+        "note": "依使用者裁示以本行(依來源慣用語保留聖誕)為統一基準;另有農曆八月十五得道升天日之說,僅2源提及,未單獨成行",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-24",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-14",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-04",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-02-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-11",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-01",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-03-20",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-26",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-03-16",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-05",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-02-22",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-13",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-02",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-03-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-11",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-28",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-03-18",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-07",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-24",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-14",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "文昌帝君",
+    "common_name": null,
+    "slug": "wen-chang-di-jun",
+    "title": "文昌帝君",
+    "body_alt_names": [
+      "文昌君"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 3,
+        "lunar_label": "二月初三",
+        "occasion_type": "千秋",
+        "honorific_source": "千秋",
+        "honorific_note": "天后宮千秋表用「聖誕」,Yahoo新聞(命理專家撰文)用「誕辰」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://tw.news.yahoo.com/"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-02-25",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-15",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-02-22",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-12",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-02",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-03-21",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-10",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-02-27",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-03-17",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-06",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-02-23",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-14",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-03",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-03-22",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-12",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-02-29",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-03-19",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-08",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-02-25",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-15",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "太上老君",
+    "common_name": "老子",
+    "slug": "tai-shang-lao-jun",
+    "title": "太上老君",
+    "body_alt_names": [
+      "老子"
+    ],
+    "body_note": "道教尊為太上老君的老子,是神格化後的稱呼;「老子」一詞在一般語境也常指道家思想家本人,兩者所指不完全相同。",
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 15,
+        "lunar_label": "二月十五",
+        "occasion_type": "萬壽",
+        "honorific_source": "聖誕",
+        "honorific_note": "行天宮、維基百科皆用「聖誕」,並用「太上道祖」尊稱",
+        "sources": [
+          "https://www.ht.org.tw/religion139.htm",
+          "https://zh.wikipedia.org/zh-tw/太上老君",
+          "https://www.longcheng.org.tw/?act=menuinfo&ml_id=20221121009&cmd=detail&mi_id=20221124024"
+        ],
+        "note": "高雄龍成宮僅記載生平敘事(「殷商時期,老子再度降凡」),未見明確敬稱詞",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-03-08",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-27",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-17",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-03-06",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-24",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-14",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-04-02",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-22",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-03-10",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-03-29",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-18",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-03-07",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-15",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-04-03",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-24",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-03-12",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-03-31",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-20",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-03-09",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-27",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "開漳聖王",
+    "common_name": null,
+    "slug": "kai-zhang-sheng-wang",
+    "title": "開漳聖王",
+    "body_alt_names": [],
+    "body_note": "民間有時俗稱「聖王公」,但此俗稱也用於廣澤尊王等其他神明,容易混淆,本站不作為別名使用。",
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 16,
+        "lunar_label": "二月十六",
+        "occasion_type": "千秋",
+        "honorific_source": "聖誕千秋",
+        "honorific_note": "天后宮千秋表僅用「千秋」,三立新聞用「聖誕」",
+        "sources": [
+          "https://tcmb.culture.tw/zh-tw/detail?id=504299&indexCode=Culture_Media",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://baodao.setn.com/news/1814132"
+        ],
+        "note": "國家文化記憶庫轉載廟方原文用合稱「聖誕千秋」",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-03-09",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-28",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-18",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-03-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-25",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-15",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-04-03",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-23",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-03-11",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-03-30",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-19",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-03-08",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-27",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-16",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-04-04",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-25",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-03-13",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-01",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-21",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-03-10",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "觀世音菩薩",
+    "common_name": "觀音",
+    "slug": "guan-yin",
+    "title": "觀音(觀世音菩薩)",
+    "body_alt_names": [
+      "觀世音"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 19,
+        "lunar_label": "二月十九",
+        "occasion_type": "佛辰",
+        "honorific_source": "聖誕",
+        "honorific_note": "天后宮千秋表用「佛誕」,jendow百科用「誕辰」,佛光山星雲大師全集用「聖誕」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+        ],
+        "note": "與六月十九成道、九月十九出家並列,三個紀念日皆有人祭祀,分列三行",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-03-12",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-03-31",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-21",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-03-10",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-28",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-18",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-04-06",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-03-14",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-04-02",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-22",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-03-11",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-03-30",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-19",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-04-07",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-03-16",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-04",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-03-13",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-03-31",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 6,
+        "lunar_day": 19,
+        "lunar_label": "六月十九",
+        "occasion_type": "成道",
+        "honorific_source": "成道",
+        "honorific_note": "天后宮千秋表用「得道記念」,jendow用「成道」,佛光山全集用「成道日」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+        ],
+        "note": "與二月十九誕辰、九月十九出家並列",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-08-08",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-07-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-07-17",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-08-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-07-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-07-13",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-08-01",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-07-22",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-08-09",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-07-29",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-07-19",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-08-06",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-07-25",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-07-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-08-03",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-07-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-07-12",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-07-31",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-07-20",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-08-08",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-07-27",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 9,
+        "lunar_day": 19,
+        "lunar_label": "九月十九",
+        "occasion_type": "出家",
+        "honorific_source": "出家",
+        "honorific_note": "天后宮千秋表用「出家紀念」,jendow用「出家」,佛光山全集用「出家日」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+        ],
+        "note": "與二月十九誕辰、六月十九成道並列",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-11-04",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-10-24",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-10-14",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-11-02",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-10-21",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-11-08",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-10-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-10-18",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-11-05",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-10-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-10-15",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-11-03",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-10-22",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-10-11",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-10-30",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-10-19",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-11-06",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-10-27",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-10-17",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-11-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-10-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "廣澤尊王",
+    "common_name": null,
+    "slug": "guang-ze-zun-wang",
+    "title": "廣澤尊王",
+    "body_alt_names": [],
+    "body_note": "民間有時俗稱「聖王公」,但此俗稱也用於開漳聖王等其他神明,容易混淆,本站不作為別名使用。",
+    "occasions": [
+      {
+        "lunar_month": 2,
+        "lunar_day": 22,
+        "lunar_label": "二月廿二",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "setn用「誕辰」,台南西羅殿(主祀廟)官網僅敘述誕生故事未用明確敬稱詞",
+        "sources": [
+          "https://xiluo.org.tw/?act=menuinfo&ml_id=20230719001",
+          "https://baodao.setn.com/news/823110",
+          "https://www.nownews.com/news/5626699"
+        ],
+        "note": "重大分歧:setn、nownews兩篇獨立報導皆指出民間另有一說認為二月廿二與八月廿二的誕辰/成道意義互換,此為信仰本身既存的分歧,非查證誤差",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-03-15",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-04-03",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-03-24",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-03-13",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-03-31",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-21",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-04-09",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-03-29",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-03-17",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-04-05",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-03-25",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-03-14",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-04-02",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-03-22",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-04-10",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-03-31",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-03-19",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-03-27",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-03-16",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-04-03",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 8,
+        "lunar_day": 22,
+        "lunar_label": "八月廿二",
+        "occasion_type": "成道",
+        "honorific_source": "千秋",
+        "honorific_note": "setn、nownews將此日描述為「成道」而非使用敬稱詞",
+        "sources": [
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://baodao.setn.com/news/823110",
+          "https://www.nownews.com/news/5626699"
+        ],
+        "note": "同上分歧說明,另有一說八月廿二才是誕辰、二月廿二為成道,兩說並存",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-10-08",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-09-28",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-09-17",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-10-06",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-09-24",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-10-13",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-10-02",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-09-22",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-10-10",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-09-29",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-09-19",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-10-08",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-09-26",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-09-15",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-10-04",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-09-23",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-10-11",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-10-01",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-09-20",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-10-09",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-09-27",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "玄天上帝",
+    "common_name": "上帝公",
+    "slug": "xuan-tian-shang-di",
+    "title": "玄天上帝",
+    "body_alt_names": [],
+    "body_note": "民間有時俗稱「上帝公」,但單獨提及「上帝」容易與其他宗教語境的「上帝」混淆,本站不作為別名使用。",
+    "occasions": [
+      {
+        "lunar_month": 3,
+        "lunar_day": 3,
+        "lunar_label": "三月初三",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "NOWnews用「萬壽日」",
+        "sources": [
+          "https://www.ctwant.com/article/176184/",
+          "https://www.fude.studio/blog/xuantian-shangdi",
+          "https://www.nownews.com/news/5626775"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-03-26",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-04-14",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-04-03",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-04-22",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-04-11",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-03-31",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-04-19",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-04-09",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-03-28",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-04-16",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-04-05",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-03-25",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-04-12",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-04-02",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-04-21",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-04-10",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-03-30",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-18",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-04-07",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-03-27",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-04-13",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "保生大帝",
+    "common_name": "大道公",
+    "slug": "bao-sheng-da-di",
+    "title": "保生大帝",
+    "body_alt_names": [
+      "大道公"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 3,
+        "lunar_day": 15,
+        "lunar_label": "三月十五",
+        "occasion_type": "千秋",
+        "honorific_source": "神誕",
+        "honorific_note": "大龍峒保安宮(主祀廟)、自由時報皆用「神誕日」,天后宮千秋表用「千秋」",
+        "sources": [
+          "https://www.baoan.org.tw/ceremony.php?action=show&id=11&lang=tw",
+          "https://news.ltn.com.tw/news/life/breakingnews/5422132",
+          "https://tcmazu.org/pilgrimage-temples/"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-04-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-04-26",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-04-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-05-04",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-04-23",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-04-12",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-05-01",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-04-21",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-04-09",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-04-28",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-04-17",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-04-06",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-04-24",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-04-14",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-05-03",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-04-22",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-04-11",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-30",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-04-19",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-04-08",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-04-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "財神",
+    "common_name": "武財神/趙公明",
+    "slug": "zhao-gong-ming",
+    "title": "趙公明",
+    "body_alt_names": [
+      "武財神"
+    ],
+    "body_note": "趙公明俗稱「武財神」,農曆三月十五聖誕(見下方紀念日)。民間另有農曆正月初五「迎財神」的習俗,但依主祀廟查證,這是民俗習俗日,並非廟方認定的神明誕辰,與三月十五聖誕性質不同,不宜混為一談。",
+    "occasions": [
+      {
+        "lunar_month": 3,
+        "lunar_day": 15,
+        "lunar_label": "三月十五",
+        "occasion_type": "千秋",
+        "honorific_source": "聖誕千秋",
+        "honorific_note": "維基百科、聯合新聞網皆用「誕辰」",
+        "sources": [
+          "https://www.gtg.org.tw/birthday",
+          "https://zh.wikipedia.org/zh-tw/玄壇真君",
+          "https://udn.com/news/story/7268/8654651"
+        ],
+        "note": "主祀廟台中廣天宮原文合稱「聖誕千秋」;與五路財神/正月初五(見 unverified.csv)為查證後確認性質不同的兩件事,不宜混用",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-04-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-04-26",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-04-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-05-04",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-04-23",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-04-12",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-05-01",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-04-21",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-04-09",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-04-28",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-04-17",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-04-06",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-04-24",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-04-14",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-05-03",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-04-22",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-04-11",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-04-30",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-04-19",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-04-08",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-04-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "註生娘娘",
+    "common_name": null,
+    "slug": "zhu-sheng-niang-niang",
+    "title": "註生娘娘",
+    "body_alt_names": [
+      "註生媽"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 3,
+        "lunar_day": 20,
+        "lunar_label": "三月二十",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "高雄路竹天后宮用「誕辰祭典」",
+        "sources": [
+          "https://jhulian.org.tw/?act=menuinfo&cmd=detail&mi_id=20220413001&ml_id=20211115002",
+          "https://www.ftg.org.tw/autopage_detail/3/72",
+          "https://luzhumazu.org.tw/?act=menuinfo&ml_id=20230902006&cmd=detail&mi_id=20230903002"
+        ],
+        "note": "第二輪新驗證成功(原0個可實際開啟確認的來源);三間廟(新竹竹蓮寺、台北松山奉天宮、高雄路竹天后宮)皆以配祀神身分記載此日期,非單獨主祀廟,但依使用者規則「廟方自己公告的祭典日期」原意仍採用",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-04-12",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-05-01",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-04-20",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-05-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-04-28",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-04-17",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-05-06",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-04-26",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-04-14",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-05-03",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-04-22",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-04-11",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-04-29",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-04-19",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-05-08",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-04-27",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-04-16",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-05-05",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-04-24",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-04-13",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-04-30",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "天上聖母",
+    "common_name": "媽祖",
+    "slug": "ma-zu",
+    "title": "媽祖(天上聖母)",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 3,
+        "lunar_day": 23,
+        "lunar_label": "三月廿三",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "北港朝天宮(主祀廟)僅敘述誕生故事未用明確敬稱詞,新莊善德宮部落格用「誕辰」",
+        "sources": [
+          "https://www.matsu.org.tw/?act=menuinfo&ml_id=20240108003",
+          "https://tw.news.yahoo.com/%E5%AA%BD%E7%A5%96%E7%94%9F%E5%A4%A7%E7%94%B2%E9%8E%AE%E7%80%BE%E5%AE%AE%E8%88%89%E8%A1%8C%E5%AA%BD%E7%A5%96%E7%A5%9D%E5%A3%BD%E7%A7%91%E5%84%80-%E9%99%AA%E7%A5%AD%E4%BF%A1%E7%9C%BE%E5%A6%82%E6%BD%AE-050200772.html",
+          "https://shandegong.pixnet.net/blog/posts/3027313460"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-04-15",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-05-04",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-04-23",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-05-12",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-05-01",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-04-20",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-05-09",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-04-29",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-04-17",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-05-06",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-04-25",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-04-14",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-05-02",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-04-22",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-05-11",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-04-30",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-04-19",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-05-08",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-04-27",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-04-16",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-05-03",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "釋迦牟尼佛",
+    "common_name": "佛祖",
+    "slug": "shi-jia-mou-ni-fo",
+    "title": "釋迦牟尼佛",
+    "body_alt_names": [
+      "佛祖"
+    ],
+    "body_note": "「佛祖」在一般口語中常泛指佛教的「佛」,不一定專指釋迦牟尼佛本尊,本站頁面仍以全名為主。",
+    "occasions": [
+      {
+        "lunar_month": 4,
+        "lunar_day": 8,
+        "lunar_label": "四月初八",
+        "occasion_type": "佛辰",
+        "honorific_source": "聖誕",
+        "honorific_note": "天后宮千秋表用「萬壽」(原文「釋迦佛祖萬壽」),佛光山全集用「佛誕日」(亦稱佛誕節、浴佛節),三源用詞完全不同",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://books.masterhsingyun.org/ArticleDetail/artcle8863"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-04-30",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-05-19",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-05-08",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-05-26",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-05-15",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-05-05",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-05-24",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-05-13",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-05-02",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-05-20",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-05-09",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-05-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-05-16",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-05-06",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-05-25",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-05-15",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-05-03",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-05-22",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-05-11",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-04-30",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-05-18",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      },
+      {
+        "lunar_month": 12,
+        "lunar_day": 8,
+        "lunar_label": "十二月初八",
+        "occasion_type": "成道",
+        "honorific_source": "成道",
+        "honorific_note": "龍山寺原文「釋迦牟尼佛成道」;佛光山分院法會名稱為「佛陀成道日(法寶節)」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/",
+          "https://www.fgs.org.tw/branch/activity_detail?BrID=E30303&LstID=F&ItmID=9&news_no=20231207000009"
+        ],
+        "note": "第二輪新驗證成功(原僅2源缺第3源);已由協調者重新逐字確認龍山寺頁面「十二月初八日 釋迦牟尼佛成道」屬實",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-01-02",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-01-20",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-01-10",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-12-30",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-01-18",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-01-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-01-26",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-01-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-01-04",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-01-22",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-01-11",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-01-01",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-01-20",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-01-08",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-01-27",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-01-16",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-01-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-01-23",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-01-12",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-01-02",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-01-21",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "虎爺",
+    "common_name": null,
+    "slug": "hu-ye",
+    "title": "虎爺",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 6,
+        "lunar_day": 6,
+        "lunar_label": "六月初六",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "新北市石碇區公所僅記載「祭典日期」未用敬稱詞",
+        "sources": [
+          "https://www.shiding.ntpc.gov.tw/home.jsp?id=bcec741659a3253e",
+          "https://www.hsinkangmazu.org.tw/?act=menuinfo&ml_id=20231222001&cmd=detail&mi_id=20231229010",
+          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=288"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-07-26",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-07-15",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-07-04",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-07-23",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-07-11",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-06-30",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-07-19",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-07-09",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-07-27",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-07-16",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-07-06",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-07-24",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-07-12",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-07-02",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-07-21",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-07-10",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-06-29",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-07-18",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-07-07",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-07-26",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-07-14",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "瑤池金母",
+    "common_name": "王母娘娘",
+    "slug": "wang-mu-niang-niang",
+    "title": "王母娘娘(瑤池金母)",
+    "body_alt_names": [
+      "西王母"
+    ],
+    "body_note": "瑤池金母、王母娘娘、西王母為同一神明的不同稱呼(慈惠堂系統稱瑤池金母、勝安宮系統稱王母娘娘),詳見 DECISIONS.md 2026-09-19 查證記錄。",
+    "occasions": [
+      {
+        "lunar_month": 7,
+        "lunar_day": 18,
+        "lunar_label": "七月十八",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "三源用詞一致",
+        "sources": [
+          "https://www.hccc.gov.tw/zh-tw/CulturalHeritage/Detail/146",
+          "https://www.nownews.com/news/5627449",
+          "https://zh.wikipedia.org/zh-tw/西王母"
+        ],
+        "note": "2026-09-19 查證確認與王母娘娘為同一神明的不同稱呼,非重複收錄。1949-1950 年間西王金母信仰在花蓮吉安分為兩系:主祀「瑤池金母」的慈惠堂(規模較大、分堂遍布全台)與主祀「天上王母娘娘」的勝安宮(兩廟原為同一信眾分出,僅一牆之隔),兩系皆奉同一神格,僅稱呼不同。原「王母娘娘」一行已合併於此,王母娘娘列為 common_name。來源:內政部宗教知識+瑤池金母條目(https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=270,「瑤池金母又稱為『王母娘娘』、『金母娘娘』…」)、維基百科花蓮勝安宮條目(https://zh.wikipedia.org/zh-tw/花蓮勝安宮,「勝安宮系統恭稱『天上王母娘娘』,慈惠堂系統則尊稱『瑤池西王金母』」)、中華道教傳媒/Yahoo新聞慈惠堂總堂報導(慈惠堂主祀瑤池金母,俗稱西王母、王母娘娘)。另有農曆三月初三之說,已移入 unverified.csv。",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-09-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-08-25",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-08-15",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-09-02",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-08-21",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-09-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-08-30",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-08-19",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-09-06",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-08-27",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-08-16",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-09-04",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-08-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-08-12",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-08-31",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-08-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-09-08",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-08-28",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-08-18",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-09-06",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-08-25",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "地藏王菩薩",
+    "common_name": null,
+    "slug": "di-zang-wang",
+    "title": "地藏王菩薩",
+    "body_alt_names": [
+      "地藏菩薩",
+      "地藏王"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 7,
+        "lunar_day": 30,
+        "lunar_label": "七月廿九",
+        "occasion_type": "佛辰",
+        "honorific_source": "聖誕",
+        "honorific_note": "天后宮千秋表用「佛誕」,龍山寺與佛光山全集皆用「聖誕」",
+        "sources": [
+          "https://books.masterhsingyun.org/ArticleDetail/artcle8863",
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://tcmazu.org/pilgrimage-temples/"
+        ],
+        "note": "",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-09-16",
+            "weekday": "星期三",
+            "date_adjusted": true,
+            "adjust_note": "2020 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-09-06",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-08-26",
+            "weekday": "星期五",
+            "date_adjusted": true,
+            "adjust_note": "2022 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-09-14",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-09-02",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-09-21",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-09-10",
+            "weekday": "星期四",
+            "date_adjusted": true,
+            "adjust_note": "2026 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-08-31",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-09-18",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-09-07",
+            "weekday": "星期五",
+            "date_adjusted": true,
+            "adjust_note": "2029 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-08-28",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-09-16",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-09-04",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-08-24",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-09-12",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-09-01",
+            "weekday": "星期六",
+            "date_adjusted": true,
+            "adjust_note": "2035 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-09-19",
+            "weekday": "星期五",
+            "date_adjusted": true,
+            "adjust_note": "2036 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-09-09",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-08-29",
+            "weekday": "星期日",
+            "date_adjusted": true,
+            "adjust_note": "2038 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-09-17",
+            "weekday": "星期六",
+            "date_adjusted": true,
+            "adjust_note": "2039 年農曆7月僅 29 日,以7月廿九為準"
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-09-05",
+            "weekday": "星期三",
+            "date_adjusted": true,
+            "adjust_note": "2040 年農曆7月僅 29 日,以7月廿九為準"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "月下老人",
+    "common_name": "月老",
+    "slug": "yue-lao",
+    "title": "月老(月下老人)",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 8,
+        "lunar_day": 15,
+        "lunar_label": "八月十五",
+        "occasion_type": "千秋",
+        "honorific_source": "千秋",
+        "honorific_note": "台灣好廟網、松山霞海城隍廟皆用「聖誕」",
+        "sources": [
+          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+          "https://temples.tw/celebration",
+          "https://www.citygod.org.tw/"
+        ],
+        "note": "與中秋節同日",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-10-01",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-09-21",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-09-10",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-09-29",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-09-17",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-10-06",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-09-25",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-09-15",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-10-03",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-09-22",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-09-12",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-10-01",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-09-19",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-09-08",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-09-27",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-09-16",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-10-04",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-09-24",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-09-13",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-10-02",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-09-20",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "九天玄女",
+    "common_name": null,
+    "slug": "jiu-tian-xuan-nv",
+    "title": "九天玄女",
+    "body_alt_names": [],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 8,
+        "lunar_day": 18,
+        "lunar_label": "八月十八",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕千秋",
+        "honorific_note": "蕃新聞報導(引華山無極玄明宮輔玄觀)用「生日」,維基百科用「聖誕」",
+        "sources": [
+          "https://www.ld4m.org.tw/九天玄女✨聖誕千秋祝壽大典-2/",
+          "https://n.yam.com/Article/20240918799828",
+          "https://zh.wikipedia.org/zh-tw/九天玄女"
+        ],
+        "note": "第二輪新驗證成功(原僅1源);主祀廟桃園龍德宮原文合稱「聖誕千秋」",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-10-04",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-09-24",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-09-13",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-10-02",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-09-20",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-10-09",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-09-28",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-09-18",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-10-06",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-09-25",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-09-15",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-10-04",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-09-22",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-09-11",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-09-30",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-09-19",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-10-07",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-09-27",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-09-16",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-10-05",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-09-23",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "中壇元帥",
+    "common_name": "三太子",
+    "slug": "san-tai-zi",
+    "title": "三太子(哪吒)",
+    "body_alt_names": [
+      "哪吒",
+      "中壇元帥"
+    ],
+    "body_note": null,
+    "occasions": [
+      {
+        "lunar_month": 9,
+        "lunar_day": 9,
+        "lunar_label": "九月初九",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕千秋",
+        "honorific_note": "維基百科用口語「生日」,農民曆線上看用「聖誕」",
+        "sources": [
+          "https://www.taizih.org.tw/?act=menuinfo&ml_id=20240807011",
+          "https://zh.wikipedia.org/zh-tw/中壇元帥",
+          "https://nml.tw/festival/%E4%B8%AD%E5%A3%87%E5%85%83%E5%B8%A5%E8%81%96%E8%AA%95"
+        ],
+        "note": "主祀廟新營太子宮(全國中壇元帥總廟)原文合稱「聖誕千秋」;另維基百科提及五月十八成道日,僅單一來源,未單獨成行",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-10-25",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-10-14",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-10-04",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-10-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-10-11",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-10-29",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-10-18",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-10-08",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-10-26",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-10-16",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-10-05",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-10-24",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-10-12",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-10-01",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-10-20",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-10-09",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-10-27",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-10-17",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-10-07",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-10-26",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-10-14",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "deity_name": "下元水官大帝",
+    "common_name": null,
+    "slug": "xia-yuan-shui-guan-da-di",
+    "title": "下元水官大帝",
+    "body_alt_names": [
+      "水官大帝"
+    ],
+    "body_note": "與上元天官大帝、中元地官大帝合稱三官大帝,簡稱「水官大帝」時請注意與另外兩位區分。",
+    "occasions": [
+      {
+        "lunar_month": 10,
+        "lunar_day": 15,
+        "lunar_label": "十月十五",
+        "occasion_type": "聖誕",
+        "honorific_source": "聖誕",
+        "honorific_note": "三源用詞一致",
+        "sources": [
+          "https://www.twsanyuan.com/",
+          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
+          "https://www.ht.org.tw/religion141.htm"
+        ],
+        "note": "與上元天官大帝同頁來源",
+        "dates": [
+          {
+            "solar_year": 2020,
+            "solar_date": "2020-11-29",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2021,
+            "solar_date": "2021-11-19",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2022,
+            "solar_date": "2022-11-08",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2023,
+            "solar_date": "2023-11-27",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2024,
+            "solar_date": "2024-11-15",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2025,
+            "solar_date": "2025-12-04",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2026,
+            "solar_date": "2026-11-23",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2027,
+            "solar_date": "2027-11-12",
+            "weekday": "星期五",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2028,
+            "solar_date": "2028-11-30",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2029,
+            "solar_date": "2029-11-20",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2030,
+            "solar_date": "2030-11-10",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2031,
+            "solar_date": "2031-11-29",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2032,
+            "solar_date": "2032-11-17",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2033,
+            "solar_date": "2033-11-06",
+            "weekday": "星期日",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2034,
+            "solar_date": "2034-11-25",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2035,
+            "solar_date": "2035-11-14",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2036,
+            "solar_date": "2036-12-02",
+            "weekday": "星期二",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2037,
+            "solar_date": "2037-11-21",
+            "weekday": "星期六",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2038,
+            "solar_date": "2038-11-11",
+            "weekday": "星期四",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2039,
+            "solar_date": "2039-11-30",
+            "weekday": "星期三",
+            "date_adjusted": false,
+            "adjust_note": null
+          },
+          {
+            "solar_year": 2040,
+            "solar_date": "2040-11-19",
+            "weekday": "星期一",
+            "date_adjusted": false,
+            "adjust_note": null
+          }
+        ]
+      }
+    ]
+  }
+]

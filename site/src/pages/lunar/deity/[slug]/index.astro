@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../../../../lib/seo';
+import { getAllDeities, getDeityBySlug } from '../../../../lib/deities';
+
+export function getStaticPaths() {
+  return getAllDeities().map((d) => ({ params: { slug: d.slug } }));
+}
+
+const { slug } = Astro.params;
+const deity = getDeityBySlug(slug!);
+if (!deity) return Astro.redirect('/404', 404);
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '農民曆查詢', url: Astro.site ? new URL('/lunar/', Astro.site).href : '/lunar/' },
+    { name: deity.title, url: Astro.url.href },
+  ]),
+];
+
+const occasionNames = deity.occasions.map((o) => o.occasion_type).join('、');
+const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040),資料經三方獨立來源交叉查證。`;
+---
+
+<BaseLayout title={`${deity.title}生日是農曆幾號?｜國曆日期對照｜悶蛙吧`} description={description} jsonLd={jsonLd}>
+  <nav><a href="/">首頁</a> / <a href="/lunar/">農民曆查詢</a> / {deity.title}</nav>
+  <h1>{deity.title}</h1>
+
+  {deity.body_alt_names.length > 0 && <p class="alt-names">亦稱:{deity.body_alt_names.join('、')}</p>}
+  {deity.body_note && <p class="deity-note">{deity.body_note}</p>}
+
+  {
+    deity.occasions.map((occ) => (
+      <section class="occasion" data-dates={JSON.stringify(occ.dates)}>
+        <h2>
+          農曆{occ.lunar_label}・{occ.occasion_type}
+        </h2>
+        <p class="honorific">
+          {occ.honorific_source && <>常見稱「{occ.honorific_source}」。</>}
+          {occ.honorific_note}
+        </p>
+        {occ.note && <p class="occasion-extra-note">{occ.note}</p>}
+
+        <p class="next-occurrence" hidden />
+
+        <details>
+          <summary>展開 2020–2040 各年度國曆日期</summary>
+          <table>
+            <thead>
+              <tr>
+                <th>西元年</th>
+                <th>國曆日期</th>
+                <th>星期</th>
+              </tr>
+            </thead>
+            <tbody>
+              {occ.dates.map((d) => (
+                <tr>
+                  <td>{d.solar_year}</td>
+                  <td>{d.solar_date}</td>
+                  <td>
+                    {d.weekday}
+                    {d.date_adjusted && <span class="adjust-badge" title={d.adjust_note ?? ''}>*</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {occ.dates.some((d) => d.date_adjusted) && (
+            <p class="adjust-legend">* {occ.dates.find((d) => d.date_adjusted)?.adjust_note}</p>
+          )}
+        </details>
+
+        {occ.sources.length > 0 && (
+          <p class="sources">
+            查證來源:
+            {occ.sources.map((s, i) => (
+              <>
+                {i > 0 && '、'}
+                <a href={s} rel="nofollow noopener" target="_blank">
+                  來源{i + 1}
+                </a>
+              </>
+            ))}
+          </p>
+        )}
+      </section>
+    ))
+  }
+
+  <p slot="footer">
+    神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期;查證過程、收錄判準與說法分歧的處理原則詳見本站
+    <a href="https://github.com/junsu719/mengwaba" rel="nofollow">開發紀錄</a>。國曆日期由農曆逐年換算,已通過內部驗證,惟命理內容各家民俗版本可能有差異,僅供參考。
+  </p>
+</BaseLayout>
+
+<script>
+  interface DeityDate {
+    solar_year: number;
+    solar_date: string;
+    weekday: string;
+    date_adjusted: boolean;
+    adjust_note: string | null;
+  }
+
+  function taipeiToday(): string {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
+  }
+
+  const today = taipeiToday();
+  document.querySelectorAll<HTMLElement>('.occasion').forEach((section) => {
+    try {
+      const raw = section.dataset.dates;
+      if (!raw) return;
+      const dates: DeityDate[] = JSON.parse(raw);
+      const next = [...dates].sort((a, b) => a.solar_date.localeCompare(b.solar_date)).find((d) => d.solar_date >= today);
+      const el = section.querySelector('.next-occurrence') as HTMLElement | null;
+      if (!el) return;
+      if (next) {
+        el.textContent = `下一次:${next.solar_date}(${next.weekday})`;
+      } else {
+        el.textContent = '本站資料範圍(2020–2040)內已無未來日期。';
+      }
+      el.hidden = false;
+    } catch {
+      // 維持 hidden,不顯示錯誤或空白計算結果。
+    }
+  });
+</script>
+
+<style>
+  .alt-names {
+    color: var(--muted);
+  }
+  .deity-note {
+    background: #f7f7f7;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+  }
+  .occasion {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 1.5rem;
+  }
+  .honorific,
+  .occasion-extra-note {
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .next-occurrence {
+    font-weight: 600;
+    background: #f0f7f2;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: inline-block;
+  }
+  .adjust-badge {
+    color: var(--accent);
+    cursor: help;
+  }
+  .adjust-legend {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .sources {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

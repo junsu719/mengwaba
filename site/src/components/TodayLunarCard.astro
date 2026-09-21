@@ -1,0 +1,148 @@
+---
+// 今日農曆/沖煞/宜忌/節氣:純前端計算(2026-09-21 拍板,見 CLAUDE.md 農民曆工具範圍文件與
+// DECISIONS.md 2026-09-21 條目)。原因與 NextLongWeekend.astro 相同:頁面經邊緣快取,
+// 伺服器端算好的「今天」對之後才看到快取版本的訪客會是錯的日期,必須靠 client script 現算。
+// 「今天」一律用 Intl 的 Asia/Taipei 時區取得,不用瀏覽器本地時區。
+// 也支援日期選擇器(見 #lunar-date-picker)查任一天,查詢邏輯與「今天」共用同一支函式,
+// 差別只在傳入的日期字串來源。
+---
+
+<div class="today-lunar">
+  <div class="date-picker-row">
+    <label for="lunar-date-picker">查詢日期:</label>
+    <input type="date" id="lunar-date-picker" />
+    <button type="button" id="lunar-date-today">回到今天</button>
+  </div>
+
+  <div id="lunar-result" hidden>
+    <p class="today-answer" id="lunar-headline"></p>
+
+    <dl class="lunar-facts">
+      <div><dt>日沖生肖</dt><dd id="lunar-chong"></dd></div>
+      <div><dt>煞方</dt><dd id="lunar-sha"></dd></div>
+    </dl>
+
+    <h3>宜</h3>
+    <p id="lunar-yi" class="tag-list"></p>
+    <h3>忌</h3>
+    <p id="lunar-ji" class="tag-list"></p>
+    <p class="yiji-disclaimer">
+      宜忌依傳統曆法規則推算,僅供參考。各家農民曆版本不同,結果可能有差異;結婚、入宅、開工等重要日子,建議另請專業擇日老師確認。
+    </p>
+
+    <details>
+      <summary>吉神凶煞(進階)</summary>
+      <p><strong>吉神:</strong><span id="lunar-jishen"></span></p>
+      <p><strong>凶煞:</strong><span id="lunar-xiongsha"></span></p>
+    </details>
+
+    <p class="jieqi-line" id="lunar-jieqi"></p>
+  </div>
+  <p id="lunar-error" hidden>此瀏覽器無法計算農曆資料,請確認 JavaScript 已啟用。</p>
+</div>
+
+<script>
+  import { computeDayLunar, taipeiToday } from '../lib/lunar-client';
+
+  function render(dateStr: string) {
+    const result = document.getElementById('lunar-result')!;
+    const errorEl = document.getElementById('lunar-error')!;
+    try {
+      const info = computeDayLunar(dateStr);
+      const leapLabel = info.isLeapMonth ? '閏' : '';
+
+      document.getElementById('lunar-headline')!.textContent =
+        `${info.solarDate} 農曆${info.lunarYearGanZhi}年${leapLabel}${info.lunarMonthLabel}${info.lunarDayLabel}(${info.dayGanZhi}日)`;
+      document.getElementById('lunar-chong')!.textContent = `${info.chongGanZhi}${info.chongZodiac}`;
+      document.getElementById('lunar-sha')!.textContent = info.shaDirection;
+      document.getElementById('lunar-yi')!.textContent = info.yi.join('、');
+      document.getElementById('lunar-ji')!.textContent = info.ji.join('、');
+      document.getElementById('lunar-jishen')!.textContent = info.jiShen.join('、');
+      document.getElementById('lunar-xiongsha')!.textContent = info.xiongSha.join('、');
+
+      const jieqiEl = document.getElementById('lunar-jieqi')!;
+      if (info.jieQiToday) {
+        jieqiEl.textContent = `今天正是節氣「${info.jieQiToday}」。`;
+      } else {
+        jieqiEl.textContent = `節氣:${info.prevJie.name}(${info.prevJie.date})已過,下一個節氣是${info.nextJie.name}(${info.nextJie.date})。`;
+      }
+
+      result.hidden = false;
+      errorEl.hidden = true;
+    } catch {
+      result.hidden = true;
+      errorEl.hidden = false;
+    }
+  }
+
+  const picker = document.getElementById('lunar-date-picker') as HTMLInputElement | null;
+  const todayBtn = document.getElementById('lunar-date-today');
+
+  const today = taipeiToday();
+  if (picker) {
+    picker.value = today;
+    picker.addEventListener('change', () => {
+      if (picker.value) render(picker.value);
+    });
+  }
+  todayBtn?.addEventListener('click', () => {
+    if (picker) picker.value = today;
+    render(today);
+  });
+
+  render(today);
+</script>
+
+<style>
+  .date-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .date-picker-row input[type='date'] {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .date-picker-row button {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .lunar-facts {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1rem 0;
+  }
+  .lunar-facts > div {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .lunar-facts dt {
+    color: var(--muted);
+  }
+  .lunar-facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .tag-list {
+    line-height: 1.9;
+  }
+  .yiji-disclaimer {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: #f7f7f7;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    margin-top: 0.25rem;
+  }
+  .jieqi-line {
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+</style>
