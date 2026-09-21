@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { breadcrumbJsonLd } from '../../lib/seo';
 import { getAllDeities, allOccasionEntries } from '../../lib/deities';
+import { toFolkMonthLabel } from '../../lib/lunar-format';
 import TodayLunarCard from '../../components/TodayLunarCard.astro';
 import UpcomingDeityBirthdays from '../../components/UpcomingDeityBirthdays.astro';
 
@@ -41,7 +42,7 @@ const occasionEntries = allOccasionEntries();
       deities.map((d) => (
         <li>
           <a href={`/lunar/deity/${d.slug}/`}>{d.title}</a>
-          {d.occasions.map((o) => `農曆${o.lunar_label}${o.occasion_type}`).join('、')}
+          {d.occasions.map((o) => `農曆${toFolkMonthLabel(o.lunar_label)}${o.occasion_type}`).join('、')}
         </li>
       ))
     }
@@ -54,7 +55,7 @@ const occasionEntries = allOccasionEntries();
 
   <p slot="footer">
     農曆換算依 lunar-javascript(傳統通書查表法)計算,節氣/宜忌/沖煞規則詳見
-    <a href="https://github.com/junsu719/mengwaba" rel="nofollow">本站說明</a>。神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期,詳細查證過程與來源標註見各神明頁面。
+    <a href="/lunar/about/">資料來源與查證說明</a>。神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期,詳細查證方式與各筆來源標註見各神明頁面。
   </p>
   <p slot="footer">本站為民間非官方服務,農曆/節氣資訊僅供參考;宜忌內容不構成命理建議。</p>
 </BaseLayout>

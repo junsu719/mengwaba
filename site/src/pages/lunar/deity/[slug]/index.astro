@@ -2,6 +2,7 @@
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
 import { getAllDeities, getDeityBySlug } from '../../../../lib/deities';
+import { toFolkMonthLabel } from '../../../../lib/lunar-format';
 
 export function getStaticPaths() {
   return getAllDeities().map((d) => ({ params: { slug: d.slug } }));
@@ -34,12 +35,9 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
     deity.occasions.map((occ) => (
       <section class="occasion" data-dates={JSON.stringify(occ.dates)}>
         <h2>
-          農曆{occ.lunar_label}・{occ.occasion_type}
+          農曆{toFolkMonthLabel(occ.lunar_label)}・{occ.occasion_type}
         </h2>
-        <p class="honorific">
-          {occ.honorific_source && <>常見稱「{occ.honorific_source}」。</>}
-          {occ.honorific_note}
-        </p>
+        {occ.honorific_source && <p class="honorific">常見稱「{occ.honorific_source}」。</p>}
         {occ.note && <p class="occasion-extra-note">{occ.note}</p>}
 
         <p class="next-occurrence" hidden />
@@ -78,8 +76,8 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
             {occ.sources.map((s, i) => (
               <>
                 {i > 0 && '、'}
-                <a href={s} rel="nofollow noopener" target="_blank">
-                  來源{i + 1}
+                <a href={s.url} rel="nofollow noopener" target="_blank">
+                  {s.name}
                 </a>
               </>
             ))}
@@ -90,8 +88,8 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
   }
 
   <p slot="footer">
-    神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期;查證過程、收錄判準與說法分歧的處理原則詳見本站
-    <a href="https://github.com/junsu719/mengwaba" rel="nofollow">開發紀錄</a>。國曆日期由農曆逐年換算,已通過內部驗證,惟命理內容各家民俗版本可能有差異,僅供參考。
+    神明生日資料經三方獨立來源交叉查證,僅收錄查有共識的日期;查證方式詳見
+    <a href="/lunar/about/">資料來源與查證說明</a>。命理內容各家民俗版本可能有差異,僅供參考。
   </p>
 </BaseLayout>
 

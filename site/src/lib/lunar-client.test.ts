@@ -39,6 +39,13 @@ describe('solarToLunar', () => {
     expect(r.day).toBe(11);
     expect(r.isLeapMonth).toBe(false);
   });
+
+  it('農曆十二月的月份標籤依民間慣例顯示為「臘月」', () => {
+    // 2025-01-01 為農曆甲辰年臘月初二(見 DECISIONS.md 2026-09-21 條目的 lunar_python 驗證輸出)
+    const r = solarToLunar('2025-01-01');
+    expect(r.month).toBe(12);
+    expect(r.monthLabel).toBe('臘月');
+  });
 });
 
 describe('lunarToSolarRange', () => {

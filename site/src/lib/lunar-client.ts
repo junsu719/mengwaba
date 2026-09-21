@@ -33,6 +33,13 @@ export interface DayLunarInfo {
 
 const CHONG_DESC_RE = /\((.*)\)(.+)/;
 
+/** lunar-javascript 對農曆 1/11/12 月已回傳民間慣用名(正/冬/腊),其餘月份為數字(二~十);
+ * 12 個月份文字裡只有「腊」是簡體字,轉繁體後就是「臘月」,不需要額外做「一月轉正月」這種
+ * 代換,沿用既有的 toTraditional() 查表機制即可。 */
+function monthLabel(lunar: { getMonthInChinese(): string }): string {
+  return toTraditional(lunar.getMonthInChinese()) + '月';
+}
+
 /** dateStr 格式 YYYY-MM-DD,呼叫端一律先用 Asia/Taipei 時區算出這個字串再傳入
  * (見 taipeiToday()),本函式本身不碰時鐘、不做時區轉換,避免「今天」的定義分散在多處。 */
 export function computeDayLunar(dateStr: string): DayLunarInfo {
@@ -50,7 +57,7 @@ export function computeDayLunar(dateStr: string): DayLunarInfo {
   return {
     solarDate: dateStr,
     lunarYearGanZhi: lunar.getYearInGanZhi(),
-    lunarMonthLabel: lunar.getMonthInChinese() + '月',
+    lunarMonthLabel: monthLabel(lunar),
     lunarDayLabel: lunar.getDayInChinese(),
     isLeapMonth: lunar.getMonth() < 0,
     zodiac: toTraditional(lunar.getYearShengXiao()),
@@ -73,7 +80,7 @@ export function solarToLunar(dateStr: string): { monthLabel: string; dayLabel: s
   const [y, m, d] = dateStr.split('-').map(Number);
   const lunar = Solar.fromYmd(y, m, d).getLunar();
   return {
-    monthLabel: lunar.getMonthInChinese() + '月',
+    monthLabel: monthLabel(lunar),
     dayLabel: lunar.getDayInChinese(),
     isLeapMonth: lunar.getMonth() < 0,
     month: Math.abs(lunar.getMonth()),

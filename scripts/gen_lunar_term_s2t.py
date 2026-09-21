@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 
 import zhconv
+from lunar_python import Lunar
 from lunar_python.util.LunarUtil import LunarUtil
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -32,17 +33,30 @@ JIEQI_SIMPLIFIED = [
 ]
 
 
+def month_names_in_chinese() -> list[str]:
+    """`Lunar.getMonthInChinese()` 對農曆 1-12 月回傳的原始字串(2026-09-21 發現:1/11/12 月
+    分別回傳「正/冬/腊」,不是「一/十一/十二」,只有「腊」是簡體字,需要轉「臘」;其餘 11 個
+    月份文字簡繁同形。這裡直接向函式庫本身取值,不用人工列出清單去猜,避免猜錯或漏掉未來
+    版本變動。"""
+    names = []
+    for m in range(1, 13):
+        lunar = Lunar.fromYmd(2026, m, 5)
+        names.append(lunar.getMonthInChinese())
+    return names
+
+
 def main():
     yi_ji = LunarUtil.__dict__["_LunarUtil__YI_JI"]
     shen_sha = LunarUtil.__dict__["_LunarUtil__SHEN_SHA"]
+    months = month_names_in_chinese()
 
-    all_terms = list(dict.fromkeys([*yi_ji, *shen_sha, *ZODIAC_SIMPLIFIED, *JIEQI_SIMPLIFIED]))
+    all_terms = list(dict.fromkeys([*yi_ji, *shen_sha, *ZODIAC_SIMPLIFIED, *JIEQI_SIMPLIFIED, *months]))
     merged = {t: zhconv.convert(t, "zh-tw") for t in all_terms}
     changed = {k: v for k, v in merged.items() if k != v}
 
     lines = [
         "// 自動產生,請勿手動編輯。重新產生:`python3 scripts/gen_lunar_term_s2t.py`(見該檔開頭說明)。",
-        f"// 涵蓋 lunar-javascript 內建的簡體宜忌/吉神凶煞/生肖/節氣詞彙(共 {len(all_terms)} 詞,"
+        f"// 涵蓋 lunar-javascript 內建的簡體宜忌/吉神凶煞/生肖/節氣/農曆月份詞彙(共 {len(all_terms)} 詞,"
         f"其中 {len(changed)} 詞簡繁不同),並非泛用簡繁字元轉換器。詳見 DECISIONS.md 2026-09-21 條目。",
         "export const LUNAR_TERM_S2T: Record<string, string> = {",
     ]

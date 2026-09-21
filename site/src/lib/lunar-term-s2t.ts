@@ -1,5 +1,5 @@
 // 自動產生,請勿手動編輯。重新產生:`python3 scripts/gen_lunar_term_s2t.py`(見該檔開頭說明)。
-// 涵蓋 lunar-javascript 內建的簡體宜忌/吉神凶煞/生肖/節氣詞彙(共 328 詞,其中 164 詞簡繁不同),並非泛用簡繁字元轉換器。詳見 DECISIONS.md 2026-09-21 條目。
+// 涵蓋 lunar-javascript 內建的簡體宜忌/吉神凶煞/生肖/節氣/農曆月份詞彙(共 340 詞,其中 165 詞簡繁不同),並非泛用簡繁字元轉換器。詳見 DECISIONS.md 2026-09-21 條目。
 export const LUNAR_TERM_S2T: Record<string, string> = {
   "七鸟": "七鳥",
   "三丧": "三喪",
@@ -119,6 +119,7 @@ export const LUNAR_TERM_S2T: Record<string, string> = {
   "绝阴": "絕陰",
   "续世": "續世",
   "置产": "置產",
+  "腊": "臘",
   "芒种": "芒種",
   "行丧": "行喪",
   "补垣": "補垣",

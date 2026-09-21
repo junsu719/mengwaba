@@ -13,13 +13,21 @@
         "lunar_label": "一月初六",
         "occasion_type": "千秋",
         "honorific_source": "聖誕",
-        "honorific_note": "天后宮千秋表用「佛辰」",
         "sources": [
-          "https://taiwangods.moi.gov.tw/html/cultural/3_0011.aspx?i=176",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://www.sanxia.ntpc.gov.tw/home.jsp?id=b2ff21fbcb234003"
+          {
+            "url": "https://taiwangods.moi.gov.tw/html/cultural/3_0011.aspx?i=176",
+            "name": "全國宗教資訊網(內政部)"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://www.sanxia.ntpc.gov.tw/home.jsp?id=b2ff21fbcb234003",
+            "name": "新北市三峽區公所"
+          }
         ],
-        "note": "內政部臺灣宗教文化地圖、新北市三峽區公所皆用「聖誕」",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -176,13 +184,21 @@
         "lunar_label": "五月初六",
         "occasion_type": "成道",
         "honorific_source": "成道",
-        "honorific_note": "維基百科用「得道日」",
         "sources": [
-          "https://www.buddhamind.com.tw/archives/1773",
-          "https://zh.wikipedia.org/zh-tw/清水祖師",
-          "https://tcmazu.org/pilgrimage-temples/"
+          {
+            "url": "https://www.buddhamind.com.tw/archives/1773",
+            "name": "佛祖心雜誌社"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/清水祖師",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          }
         ],
-        "note": "第二輪新驗證成功(原僅1源);佛祖心雜誌社原文「農曆五月初六清水祖師成道紀念」;三峽長福巖官網兩輪皆連線失敗,非刻意排除",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -344,7 +360,7 @@
       "玉皇大帝",
       "玉皇上帝"
     ],
-    "body_note": "本站資料層三源查證用詞為「玉皇上帝」,民間更常見的正式寫法是「玉皇大帝」,通稱「天公」,三種寫法皆指同一神明。",
+    "body_note": "民間更常見的正式寫法是「玉皇大帝」,通稱「天公」,兩種寫法皆指同一神明。",
     "occasions": [
       {
         "lunar_month": 1,
@@ -352,13 +368,21 @@
         "lunar_label": "一月初九",
         "occasion_type": "萬壽",
         "honorific_source": "誕降之辰(俗稱天公生)",
-        "honorific_note": "行天宮用「聖誕」",
         "sources": [
-          "https://www.tian.org.tw/?act=menuinfo&ml_id=20221129004",
-          "https://www.ht.org.tw/religion321.htm",
-          "https://zh.wikipedia.org/zh-tw/正月初九"
+          {
+            "url": "https://www.tian.org.tw/?act=menuinfo&ml_id=20221129004",
+            "name": "台灣首廟天壇"
+          },
+          {
+            "url": "https://www.ht.org.tw/religion321.htm",
+            "name": "行天宮"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/正月初九",
+            "name": "維基百科"
+          }
         ],
-        "note": "主祀廟台南首廟天壇原文引《臺灣通史》:「歲以孟春九日為誕降之辰」,俗稱天公生",
+        "note": "俗稱「天公生」;主祀廟台南天壇引《臺灣通史》記載「歲以孟春九日為誕降之辰」。",
         "dates": [
           {
             "solar_year": 2020,
@@ -527,13 +551,21 @@
         "lunar_label": "一月十三",
         "occasion_type": "飛昇",
         "honorific_source": "飛昇",
-        "honorific_note": "維基百科用「成道日」,中華日報用「得道飛昇日」",
         "sources": [
-          "https://zh.wikipedia.org/zh-tw/關羽信仰",
-          "https://www.kwwt.org.tw/?act=menuinfo&ml_id=20210108007&cmd=list",
-          "https://www.cdns.com.tw/articles/1166159"
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/關羽信仰",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://www.kwwt.org.tw/?act=menuinfo&ml_id=20210108007&cmd=list",
+            "name": "文武聖殿"
+          },
+          {
+            "url": "https://www.cdns.com.tw/articles/1166159",
+            "name": "中華日報"
+          }
         ],
-        "note": "正月十三為飛昇,與六月廿四聖誕不同,不可混用;高雄鳳山赤山文衡殿特例將此日當作「聖誕」而非「飛昇」慶祝,本表依多數廟宇/維基共識分列",
+        "note": "正月十三是關聖帝君飛昇紀念日,與六月廿四聖誕是不同的兩個日子;少數廟宇(如高雄鳳山赤山文衡殿)會把這天當成聖誕慶祝,屬少數特例。",
         "dates": [
           {
             "solar_year": 2020,
@@ -690,13 +722,21 @@
         "lunar_label": "六月廿四",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "行天宮用「聖壽」,維基百科用「聖誕」",
         "sources": [
-          "https://www.ht.org.tw/religion1594.htm",
-          "https://zh.wikipedia.org/zh-tw/關羽信仰",
-          "https://tmach-culture.tainan.gov.tw/templemuseums/templepage.asp?mainid=109A4FC6-C4F9-4C0F-8C64-8AEA5DDFA167"
+          {
+            "url": "https://www.ht.org.tw/religion1594.htm",
+            "name": "行天宮"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/關羽信仰",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://tmach-culture.tainan.gov.tw/templemuseums/templepage.asp?mainid=109A4FC6-C4F9-4C0F-8C64-8AEA5DDFA167",
+            "name": "臺南市宮廟博物館"
+          }
         ],
-        "note": "honorific_source 依台南祀典武廟(官方最高位階關廟)用語「聖誕」記錄,不再套用敬稱規則;另有少數廟宇以五月十三(磨刀節)為聖誕,非主流,不與六月廿四混用",
+        "note": "民間另有五月十三「磨刀節」之說,但非主流說法,與六月廿四聖誕是不同的兩件事,不宜混用。",
         "dates": [
           {
             "solar_year": 2020,
@@ -865,13 +905,21 @@
         "lunar_label": "一月十五",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "三源用詞一致",
         "sources": [
-          "https://www.twsanyuan.com/",
-          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
-          "https://www.ht.org.tw/religion141.htm"
+          {
+            "url": "https://www.twsanyuan.com/",
+            "name": "台中太平三元宮"
+          },
+          {
+            "url": "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
+            "name": "內政部宗教知識+"
+          },
+          {
+            "url": "https://www.ht.org.tw/religion141.htm",
+            "name": "行天宮"
+          }
         ],
-        "note": "與下元水官大帝同頁來源(廟宇同時列出三官大帝聖誕)",
+        "note": "與中元地官大帝、下元水官大帝合稱三官大帝,廟宇通常一併奉祀、一併記載聖誕日期。",
         "dates": [
           {
             "solar_year": 2020,
@@ -1038,13 +1086,21 @@
         "lunar_label": "二月初二",
         "occasion_type": "佛辰",
         "honorific_source": "聖誕",
-        "honorific_note": "天后宮千秋表、KidsMedia皆用「佛辰」",
         "sources": [
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://kidsmedia.com.tw/2025/02/27/",
-          "https://www.yuanbao.org.tw/"
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://kidsmedia.com.tw/2025/02/27/",
+            "name": "KidsMedia"
+          },
+          {
+            "url": "https://www.yuanbao.org.tw/",
+            "name": "臺中元保宮"
+          }
         ],
-        "note": "主祀廟台中元保宮用「聖誕」;元保宮另載五月十六涅槃日,屬圓寂紀念非誕辰,未收錄",
+        "note": "主祀廟台中元保宮另記載五月十六涅槃紀念日,因性質與誕辰不同,本站未收錄。",
         "dates": [
           {
             "solar_year": 2020,
@@ -1211,13 +1267,21 @@
         "lunar_label": "二月初二",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "維基百科引《臺灣縣志》古語用「慶壽」;農民曆線上看無明確引用敬稱詞",
         "sources": [
-          "https://www.hunglodei.tw/mobile/god_1.php",
-          "https://nml.tw/festival/%E7%A6%8F%E5%BE%B7%E6%AD%A3%E7%A5%9E%E5%8D%83%E7%A7%8B",
-          "https://zh.wikipedia.org/zh-tw/福德正神"
+          {
+            "url": "https://www.hunglodei.tw/mobile/god_1.php",
+            "name": "烘爐地南山福德宮"
+          },
+          {
+            "url": "https://nml.tw/festival/%E7%A6%8F%E5%BE%B7%E6%AD%A3%E7%A5%9E%E5%8D%83%E7%A7%8B",
+            "name": "農民曆線上看"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/福德正神",
+            "name": "維基百科"
+          }
         ],
-        "note": "依使用者裁示以本行(依來源慣用語保留聖誕)為統一基準;另有農曆八月十五得道升天日之說,僅2源提及,未單獨成行",
+        "note": "民間另有農曆八月十五得道升天之說,但可查證的來源不足,本站未單獨收錄。",
         "dates": [
           {
             "solar_year": 2020,
@@ -1386,13 +1450,21 @@
         "lunar_label": "二月初三",
         "occasion_type": "千秋",
         "honorific_source": "千秋",
-        "honorific_note": "天后宮千秋表用「聖誕」,Yahoo新聞(命理專家撰文)用「誕辰」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://tw.news.yahoo.com/"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://tw.news.yahoo.com/",
+            "name": "Yahoo新聞"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -1561,13 +1633,21 @@
         "lunar_label": "二月十五",
         "occasion_type": "萬壽",
         "honorific_source": "聖誕",
-        "honorific_note": "行天宮、維基百科皆用「聖誕」,並用「太上道祖」尊稱",
         "sources": [
-          "https://www.ht.org.tw/religion139.htm",
-          "https://zh.wikipedia.org/zh-tw/太上老君",
-          "https://www.longcheng.org.tw/?act=menuinfo&ml_id=20221121009&cmd=detail&mi_id=20221124024"
+          {
+            "url": "https://www.ht.org.tw/religion139.htm",
+            "name": "行天宮"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/太上老君",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://www.longcheng.org.tw/?act=menuinfo&ml_id=20221121009&cmd=detail&mi_id=20221124024",
+            "name": "五甲龍成宮"
+          }
         ],
-        "note": "高雄龍成宮僅記載生平敘事(「殷商時期,老子再度降凡」),未見明確敬稱詞",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -1734,13 +1814,21 @@
         "lunar_label": "二月十六",
         "occasion_type": "千秋",
         "honorific_source": "聖誕千秋",
-        "honorific_note": "天后宮千秋表僅用「千秋」,三立新聞用「聖誕」",
         "sources": [
-          "https://tcmb.culture.tw/zh-tw/detail?id=504299&indexCode=Culture_Media",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://baodao.setn.com/news/1814132"
+          {
+            "url": "https://tcmb.culture.tw/zh-tw/detail?id=504299&indexCode=Culture_Media",
+            "name": "國家文化記憶庫"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://baodao.setn.com/news/1814132",
+            "name": "三立新聞網-寶島神很大"
+          }
         ],
-        "note": "國家文化記憶庫轉載廟方原文用合稱「聖誕千秋」",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -1909,13 +1997,21 @@
         "lunar_label": "二月十九",
         "occasion_type": "佛辰",
         "honorific_source": "聖誕",
-        "honorific_note": "天后宮千秋表用「佛誕」,jendow百科用「誕辰」,佛光山星雲大師全集用「聖誕」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://www.jendow.com.tw/wiki/觀音菩薩生日",
+            "name": "百科知識中文網"
+          }
         ],
-        "note": "與六月十九成道、九月十九出家並列,三個紀念日皆有人祭祀,分列三行",
+        "note": "觀世音菩薩另有六月十九成道紀念日、九月十九出家紀念日,民間皆有人祭祀,本站分開列出三個日子。",
         "dates": [
           {
             "solar_year": 2020,
@@ -2072,13 +2168,21 @@
         "lunar_label": "六月十九",
         "occasion_type": "成道",
         "honorific_source": "成道",
-        "honorific_note": "天后宮千秋表用「得道記念」,jendow用「成道」,佛光山全集用「成道日」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://www.jendow.com.tw/wiki/觀音菩薩生日",
+            "name": "百科知識中文網"
+          }
         ],
-        "note": "與二月十九誕辰、九月十九出家並列",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -2235,13 +2339,21 @@
         "lunar_label": "九月十九",
         "occasion_type": "出家",
         "honorific_source": "出家",
-        "honorific_note": "天后宮千秋表用「出家紀念」,jendow用「出家」,佛光山全集用「出家日」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://www.jendow.com.tw/wiki/觀音菩薩生日"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://www.jendow.com.tw/wiki/觀音菩薩生日",
+            "name": "百科知識中文網"
+          }
         ],
-        "note": "與二月十九誕辰、六月十九成道並列",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -2408,13 +2520,21 @@
         "lunar_label": "二月廿二",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "setn用「誕辰」,台南西羅殿(主祀廟)官網僅敘述誕生故事未用明確敬稱詞",
         "sources": [
-          "https://xiluo.org.tw/?act=menuinfo&ml_id=20230719001",
-          "https://baodao.setn.com/news/823110",
-          "https://www.nownews.com/news/5626699"
+          {
+            "url": "https://xiluo.org.tw/?act=menuinfo&ml_id=20230719001",
+            "name": "台南西羅殿"
+          },
+          {
+            "url": "https://baodao.setn.com/news/823110",
+            "name": "三立新聞網-寶島神很大"
+          },
+          {
+            "url": "https://www.nownews.com/news/5626699",
+            "name": "NOWnews今日新聞"
+          }
         ],
-        "note": "重大分歧:setn、nownews兩篇獨立報導皆指出民間另有一說認為二月廿二與八月廿二的誕辰/成道意義互換,此為信仰本身既存的分歧,非查證誤差",
+        "note": "民間另有一說認為二月廿二與八月廿二的意義互換(即二月廿二為成道、八月廿二才是誕辰),兩種說法並存,並非本站查證疏漏。",
         "dates": [
           {
             "solar_year": 2020,
@@ -2571,13 +2691,21 @@
         "lunar_label": "八月廿二",
         "occasion_type": "成道",
         "honorific_source": "千秋",
-        "honorific_note": "setn、nownews將此日描述為「成道」而非使用敬稱詞",
         "sources": [
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://baodao.setn.com/news/823110",
-          "https://www.nownews.com/news/5626699"
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://baodao.setn.com/news/823110",
+            "name": "三立新聞網-寶島神很大"
+          },
+          {
+            "url": "https://www.nownews.com/news/5626699",
+            "name": "NOWnews今日新聞"
+          }
         ],
-        "note": "同上分歧說明,另有一說八月廿二才是誕辰、二月廿二為成道,兩說並存",
+        "note": "民間另有一說認為八月廿二與二月廿二的意義互換(即八月廿二為誕辰、二月廿二才是成道),兩種說法並存,並非本站查證疏漏。",
         "dates": [
           {
             "solar_year": 2020,
@@ -2744,13 +2872,21 @@
         "lunar_label": "三月初三",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "NOWnews用「萬壽日」",
         "sources": [
-          "https://www.ctwant.com/article/176184/",
-          "https://www.fude.studio/blog/xuantian-shangdi",
-          "https://www.nownews.com/news/5626775"
+          {
+            "url": "https://www.ctwant.com/article/176184/",
+            "name": "CTWANT"
+          },
+          {
+            "url": "https://www.fude.studio/blog/xuantian-shangdi",
+            "name": "拜拜日曆"
+          },
+          {
+            "url": "https://www.nownews.com/news/5626775",
+            "name": "NOWnews今日新聞"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -2919,13 +3055,21 @@
         "lunar_label": "三月十五",
         "occasion_type": "千秋",
         "honorific_source": "神誕",
-        "honorific_note": "大龍峒保安宮(主祀廟)、自由時報皆用「神誕日」,天后宮千秋表用「千秋」",
         "sources": [
-          "https://www.baoan.org.tw/ceremony.php?action=show&id=11&lang=tw",
-          "https://news.ltn.com.tw/news/life/breakingnews/5422132",
-          "https://tcmazu.org/pilgrimage-temples/"
+          {
+            "url": "https://www.baoan.org.tw/ceremony.php?action=show&id=11&lang=tw",
+            "name": "大龍峒保安宮"
+          },
+          {
+            "url": "https://news.ltn.com.tw/news/life/breakingnews/5422132",
+            "name": "自由時報電子報"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -3094,13 +3238,21 @@
         "lunar_label": "三月十五",
         "occasion_type": "千秋",
         "honorific_source": "聖誕千秋",
-        "honorific_note": "維基百科、聯合新聞網皆用「誕辰」",
         "sources": [
-          "https://www.gtg.org.tw/birthday",
-          "https://zh.wikipedia.org/zh-tw/玄壇真君",
-          "https://udn.com/news/story/7268/8654651"
+          {
+            "url": "https://www.gtg.org.tw/birthday",
+            "name": "台中廣天宮"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/玄壇真君",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://udn.com/news/story/7268/8654651",
+            "name": "聯合新聞網"
+          }
         ],
-        "note": "主祀廟台中廣天宮原文合稱「聖誕千秋」;與五路財神/正月初五(見 unverified.csv)為查證後確認性質不同的兩件事,不宜混用",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -3269,13 +3421,21 @@
         "lunar_label": "三月二十",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "高雄路竹天后宮用「誕辰祭典」",
         "sources": [
-          "https://jhulian.org.tw/?act=menuinfo&cmd=detail&mi_id=20220413001&ml_id=20211115002",
-          "https://www.ftg.org.tw/autopage_detail/3/72",
-          "https://luzhumazu.org.tw/?act=menuinfo&ml_id=20230902006&cmd=detail&mi_id=20230903002"
+          {
+            "url": "https://jhulian.org.tw/?act=menuinfo&cmd=detail&mi_id=20220413001&ml_id=20211115002",
+            "name": "新竹竹蓮寺"
+          },
+          {
+            "url": "https://www.ftg.org.tw/autopage_detail/3/72",
+            "name": "松山奉天宮"
+          },
+          {
+            "url": "https://luzhumazu.org.tw/?act=menuinfo&ml_id=20230902006&cmd=detail&mi_id=20230903002",
+            "name": "高雄路竹天后宮"
+          }
         ],
-        "note": "第二輪新驗證成功(原0個可實際開啟確認的來源);三間廟(新竹竹蓮寺、台北松山奉天宮、高雄路竹天后宮)皆以配祀神身分記載此日期,非單獨主祀廟,但依使用者規則「廟方自己公告的祭典日期」原意仍採用",
+        "note": "新竹竹蓮寺、台北松山奉天宮、高雄路竹天后宮皆有奉祀註生娘娘並記載此日期(註生娘娘在這三間廟皆為配祀神,非主祀神)。",
         "dates": [
           {
             "solar_year": 2020,
@@ -3442,13 +3602,21 @@
         "lunar_label": "三月廿三",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "北港朝天宮(主祀廟)僅敘述誕生故事未用明確敬稱詞,新莊善德宮部落格用「誕辰」",
         "sources": [
-          "https://www.matsu.org.tw/?act=menuinfo&ml_id=20240108003",
-          "https://tw.news.yahoo.com/%E5%AA%BD%E7%A5%96%E7%94%9F%E5%A4%A7%E7%94%B2%E9%8E%AE%E7%80%BE%E5%AE%AE%E8%88%89%E8%A1%8C%E5%AA%BD%E7%A5%96%E7%A5%9D%E5%A3%BD%E7%A7%91%E5%84%80-%E9%99%AA%E7%A5%AD%E4%BF%A1%E7%9C%BE%E5%A6%82%E6%BD%AE-050200772.html",
-          "https://shandegong.pixnet.net/blog/posts/3027313460"
+          {
+            "url": "https://www.matsu.org.tw/?act=menuinfo&ml_id=20240108003",
+            "name": "北港朝天宮"
+          },
+          {
+            "url": "https://tw.news.yahoo.com/%E5%AA%BD%E7%A5%96%E7%94%9F%E5%A4%A7%E7%94%B2%E9%8E%AE%E7%80%BE%E5%AE%AE%E8%88%89%E8%A1%8C%E5%AA%BD%E7%A5%96%E7%A5%9D%E5%A3%BD%E7%A7%91%E5%84%80-%E9%99%AA%E7%A5%AD%E4%BF%A1%E7%9C%BE%E5%A6%82%E6%BD%AE-050200772.html",
+            "name": "Yahoo新聞"
+          },
+          {
+            "url": "https://shandegong.pixnet.net/blog/posts/3027313460",
+            "name": "新莊善德宮"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -3617,13 +3785,21 @@
         "lunar_label": "四月初八",
         "occasion_type": "佛辰",
         "honorific_source": "聖誕",
-        "honorific_note": "天后宮千秋表用「萬壽」(原文「釋迦佛祖萬壽」),佛光山全集用「佛誕日」(亦稱佛誕節、浴佛節),三源用詞完全不同",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://books.masterhsingyun.org/ArticleDetail/artcle8863"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://books.masterhsingyun.org/ArticleDetail/artcle8863",
+            "name": "星雲大師全集"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -3780,13 +3956,21 @@
         "lunar_label": "十二月初八",
         "occasion_type": "成道",
         "honorific_source": "成道",
-        "honorific_note": "龍山寺原文「釋迦牟尼佛成道」;佛光山分院法會名稱為「佛陀成道日(法寶節)」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/",
-          "https://www.fgs.org.tw/branch/activity_detail?BrID=E30303&LstID=F&ItmID=9&news_no=20231207000009"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          },
+          {
+            "url": "https://www.fgs.org.tw/branch/activity_detail?BrID=E30303&LstID=F&ItmID=9&news_no=20231207000009",
+            "name": "佛光山"
+          }
         ],
-        "note": "第二輪新驗證成功(原僅2源缺第3源);已由協調者重新逐字確認龍山寺頁面「十二月初八日 釋迦牟尼佛成道」屬實",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -3953,13 +4137,21 @@
         "lunar_label": "六月初六",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "新北市石碇區公所僅記載「祭典日期」未用敬稱詞",
         "sources": [
-          "https://www.shiding.ntpc.gov.tw/home.jsp?id=bcec741659a3253e",
-          "https://www.hsinkangmazu.org.tw/?act=menuinfo&ml_id=20231222001&cmd=detail&mi_id=20231229010",
-          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=288"
+          {
+            "url": "https://www.shiding.ntpc.gov.tw/home.jsp?id=bcec741659a3253e",
+            "name": "新北市石碇區公所"
+          },
+          {
+            "url": "https://www.hsinkangmazu.org.tw/?act=menuinfo&ml_id=20231222001&cmd=detail&mi_id=20231229010",
+            "name": "新港奉天宮"
+          },
+          {
+            "url": "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=288",
+            "name": "內政部宗教知識+"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -4120,7 +4312,7 @@
     "body_alt_names": [
       "西王母"
     ],
-    "body_note": "瑤池金母、王母娘娘、西王母為同一神明的不同稱呼(慈惠堂系統稱瑤池金母、勝安宮系統稱王母娘娘),詳見 DECISIONS.md 2026-09-19 查證記錄。",
+    "body_note": "瑤池金母、王母娘娘、西王母為同一神明的不同稱呼(慈惠堂系統稱瑤池金母、勝安宮系統稱王母娘娘,兩系統同奉一神,僅稱呼不同)。",
     "occasions": [
       {
         "lunar_month": 7,
@@ -4128,13 +4320,21 @@
         "lunar_label": "七月十八",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "三源用詞一致",
         "sources": [
-          "https://www.hccc.gov.tw/zh-tw/CulturalHeritage/Detail/146",
-          "https://www.nownews.com/news/5627449",
-          "https://zh.wikipedia.org/zh-tw/西王母"
+          {
+            "url": "https://www.hccc.gov.tw/zh-tw/CulturalHeritage/Detail/146",
+            "name": "花蓮縣文化局"
+          },
+          {
+            "url": "https://www.nownews.com/news/5627449",
+            "name": "NOWnews今日新聞"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/西王母",
+            "name": "維基百科"
+          }
         ],
-        "note": "2026-09-19 查證確認與王母娘娘為同一神明的不同稱呼,非重複收錄。1949-1950 年間西王金母信仰在花蓮吉安分為兩系:主祀「瑤池金母」的慈惠堂(規模較大、分堂遍布全台)與主祀「天上王母娘娘」的勝安宮(兩廟原為同一信眾分出,僅一牆之隔),兩系皆奉同一神格,僅稱呼不同。原「王母娘娘」一行已合併於此,王母娘娘列為 common_name。來源:內政部宗教知識+瑤池金母條目(https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=270,「瑤池金母又稱為『王母娘娘』、『金母娘娘』…」)、維基百科花蓮勝安宮條目(https://zh.wikipedia.org/zh-tw/花蓮勝安宮,「勝安宮系統恭稱『天上王母娘娘』,慈惠堂系統則尊稱『瑤池西王金母』」)、中華道教傳媒/Yahoo新聞慈惠堂總堂報導(慈惠堂主祀瑤池金母,俗稱西王母、王母娘娘)。另有農曆三月初三之說,已移入 unverified.csv。",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -4304,13 +4504,21 @@
         "lunar_label": "七月廿九",
         "occasion_type": "佛辰",
         "honorific_source": "聖誕",
-        "honorific_note": "天后宮千秋表用「佛誕」,龍山寺與佛光山全集皆用「聖誕」",
         "sources": [
-          "https://books.masterhsingyun.org/ArticleDetail/artcle8863",
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://tcmazu.org/pilgrimage-temples/"
+          {
+            "url": "https://books.masterhsingyun.org/ArticleDetail/artcle8863",
+            "name": "星雲大師全集"
+          },
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://tcmazu.org/pilgrimage-temples/",
+            "name": "台中天后宮"
+          }
         ],
-        "note": "",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -4477,13 +4685,21 @@
         "lunar_label": "八月十五",
         "occasion_type": "千秋",
         "honorific_source": "千秋",
-        "honorific_note": "台灣好廟網、松山霞海城隍廟皆用「聖誕」",
         "sources": [
-          "https://www.lungshan.org.tw/tw/02_3_birthday.php",
-          "https://temples.tw/celebration",
-          "https://www.citygod.org.tw/"
+          {
+            "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
+            "name": "艋舺龍山寺"
+          },
+          {
+            "url": "https://temples.tw/celebration",
+            "name": "台灣好廟網"
+          },
+          {
+            "url": "https://www.citygod.org.tw/",
+            "name": "松山霞海城隍廟"
+          }
         ],
-        "note": "與中秋節同日",
+        "note": "與中秋節同一天。",
         "dates": [
           {
             "solar_year": 2020,
@@ -4650,13 +4866,21 @@
         "lunar_label": "八月十八",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕千秋",
-        "honorific_note": "蕃新聞報導(引華山無極玄明宮輔玄觀)用「生日」,維基百科用「聖誕」",
         "sources": [
-          "https://www.ld4m.org.tw/九天玄女✨聖誕千秋祝壽大典-2/",
-          "https://n.yam.com/Article/20240918799828",
-          "https://zh.wikipedia.org/zh-tw/九天玄女"
+          {
+            "url": "https://www.ld4m.org.tw/九天玄女✨聖誕千秋祝壽大典-2/",
+            "name": "桃園龍德宮"
+          },
+          {
+            "url": "https://n.yam.com/Article/20240918799828",
+            "name": "蕃新聞"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/九天玄女",
+            "name": "維基百科"
+          }
         ],
-        "note": "第二輪新驗證成功(原僅1源);主祀廟桃園龍德宮原文合稱「聖誕千秋」",
+        "note": null,
         "dates": [
           {
             "solar_year": 2020,
@@ -4826,13 +5050,21 @@
         "lunar_label": "九月初九",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕千秋",
-        "honorific_note": "維基百科用口語「生日」,農民曆線上看用「聖誕」",
         "sources": [
-          "https://www.taizih.org.tw/?act=menuinfo&ml_id=20240807011",
-          "https://zh.wikipedia.org/zh-tw/中壇元帥",
-          "https://nml.tw/festival/%E4%B8%AD%E5%A3%87%E5%85%83%E5%B8%A5%E8%81%96%E8%AA%95"
+          {
+            "url": "https://www.taizih.org.tw/?act=menuinfo&ml_id=20240807011",
+            "name": "新營太子宮"
+          },
+          {
+            "url": "https://zh.wikipedia.org/zh-tw/中壇元帥",
+            "name": "維基百科"
+          },
+          {
+            "url": "https://nml.tw/festival/%E4%B8%AD%E5%A3%87%E5%85%83%E5%B8%A5%E8%81%96%E8%AA%95",
+            "name": "農民曆線上看"
+          }
         ],
-        "note": "主祀廟新營太子宮(全國中壇元帥總廟)原文合稱「聖誕千秋」;另維基百科提及五月十八成道日,僅單一來源,未單獨成行",
+        "note": "另有農曆五月十八成道之說,但可查證的來源不足,本站未單獨收錄。",
         "dates": [
           {
             "solar_year": 2020,
@@ -5001,13 +5233,21 @@
         "lunar_label": "十月十五",
         "occasion_type": "聖誕",
         "honorific_source": "聖誕",
-        "honorific_note": "三源用詞一致",
         "sources": [
-          "https://www.twsanyuan.com/",
-          "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
-          "https://www.ht.org.tw/religion141.htm"
+          {
+            "url": "https://www.twsanyuan.com/",
+            "name": "台中太平三元宮"
+          },
+          {
+            "url": "https://religion.moi.gov.tw/Knowledge/Content?ci=2&cid=233",
+            "name": "內政部宗教知識+"
+          },
+          {
+            "url": "https://www.ht.org.tw/religion141.htm",
+            "name": "行天宮"
+          }
         ],
-        "note": "與上元天官大帝同頁來源",
+        "note": "與上元天官大帝、中元地官大帝合稱三官大帝,廟宇通常一併奉祀、一併記載聖誕日期。",
         "dates": [
           {
             "solar_year": 2020,

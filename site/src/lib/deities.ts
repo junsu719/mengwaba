@@ -5,6 +5,8 @@
 // v1 範圍僅 24 尊三源一致神明(deity_birthdays.csv 主表);unverified.csv 的候選(開臺聖王、
 // 臨水夫人)留待第二批,本模組不處理。
 
+import { toFolkMonthLabel } from './lunar-format';
+
 export interface DeityDate {
   solar_year: number;
   solar_date: string;
@@ -13,15 +15,21 @@ export interface DeityDate {
   adjust_note: string | null;
 }
 
+export interface DeitySource {
+  url: string;
+  name: string;
+}
+
 export interface DeityOccasion {
   lunar_month: number;
   lunar_day: number;
   lunar_label: string;
   occasion_type: string;
   honorific_source: string;
-  honorific_note: string;
-  sources: string[];
-  note: string;
+  sources: DeitySource[];
+  /** 讀者導向的補充說明(scripts/build_deity_pages_data.py 的 OCCASION_NOTE_OVERRIDE),
+   * 大多數紀念日沒有額外說明,為 null。 */
+  note: string | null;
   dates: DeityDate[];
 }
 
@@ -74,7 +82,7 @@ export function allOccasionEntries(): UpcomingOccasionEntry[] {
         deitySlug: deity.slug,
         deityTitle: deity.title,
         occasionType: occ.occasion_type,
-        lunarLabel: occ.lunar_label,
+        lunarLabel: toFolkMonthLabel(occ.lunar_label),
         solarDate: d.solar_date,
         dateAdjusted: d.date_adjusted,
         adjustNote: d.adjust_note,

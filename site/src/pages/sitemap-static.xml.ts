@@ -34,6 +34,7 @@ export const GET: APIRoute = ({ site }) => {
     `${base}/calendar/`,
     ...calendarUrls,
     `${base}/lunar/`,
+    `${base}/lunar/about/`,
     `${base}/lunar/birthday-convert/`,
     ...deityUrls,
   ];

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { breadcrumbJsonLd } from '../../../lib/seo';
+import { folkMonthLabelFromNumber } from '../../../lib/lunar-format';
 
 const jsonLd = [
   breadcrumbJsonLd([
@@ -34,7 +35,7 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
   <div class="convert-form">
     <label for="lunar-month-input">農曆月</label>
     <select id="lunar-month-input">
-      {monthOptions.map((m) => <option value={m}>{m} 月</option>)}
+      {monthOptions.map((m) => <option value={m}>{folkMonthLabelFromNumber(m)}</option>)}
     </select>
     <label for="lunar-day-input">農曆日</label>
     <select id="lunar-day-input">
@@ -53,6 +54,7 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
 
 <script>
   import { solarToLunar, lunarToSolarRange, taipeiToday } from '../../../lib/lunar-client';
+  import { folkMonthLabelFromNumber } from '../../../lib/lunar-format';
 
   const solarInput = document.getElementById('solar-input') as HTMLInputElement;
   const solarResult = document.getElementById('solar-to-lunar-result') as HTMLElement;
@@ -94,7 +96,7 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
     const validCount = results.filter((r) => !r.notExist).length;
     if (validCount === 0) {
       const p = document.createElement('p');
-      p.textContent = `查無結果:未來 ${fromYear}–${toYear} 年間,沒有任何一年的農曆${isLeap ? '閏' : ''}${month}月${day}日存在(閏月只在特定年份出現,請確認是否選錯)。`;
+      p.textContent = `查無結果:未來 ${fromYear}–${toYear} 年間,沒有任何一年的農曆${isLeap ? '閏' : ''}${folkMonthLabelFromNumber(month)}${day}日存在(閏月只在特定年份出現,請確認是否選錯)。`;
       resultEl.append(p);
       return;
     }
