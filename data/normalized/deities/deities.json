@@ -183,7 +183,7 @@
         "lunar_day": 6,
         "lunar_label": "五月初六",
         "occasion_type": "成道",
-        "honorific_source": "成道",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.buddhamind.com.tw/archives/1773",
@@ -550,7 +550,7 @@
         "lunar_day": 13,
         "lunar_label": "一月十三",
         "occasion_type": "飛昇",
-        "honorific_source": "飛昇",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://zh.wikipedia.org/zh-tw/關羽信仰",
@@ -721,7 +721,7 @@
         "lunar_day": 24,
         "lunar_label": "六月廿四",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.ht.org.tw/religion1594.htm",
@@ -904,7 +904,7 @@
         "lunar_day": 15,
         "lunar_label": "一月十五",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.twsanyuan.com/",
@@ -1266,7 +1266,7 @@
         "lunar_day": 2,
         "lunar_label": "二月初二",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.hunglodei.tw/mobile/god_1.php",
@@ -1449,7 +1449,7 @@
         "lunar_day": 3,
         "lunar_label": "二月初三",
         "occasion_type": "千秋",
-        "honorific_source": "千秋",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
@@ -2167,7 +2167,7 @@
         "lunar_day": 19,
         "lunar_label": "六月十九",
         "occasion_type": "成道",
-        "honorific_source": "成道",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
@@ -2338,7 +2338,7 @@
         "lunar_day": 19,
         "lunar_label": "九月十九",
         "occasion_type": "出家",
-        "honorific_source": "出家",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
@@ -2519,7 +2519,7 @@
         "lunar_day": 22,
         "lunar_label": "二月廿二",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://xiluo.org.tw/?act=menuinfo&ml_id=20230719001",
@@ -2871,7 +2871,7 @@
         "lunar_day": 3,
         "lunar_label": "三月初三",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.ctwant.com/article/176184/",
@@ -3420,7 +3420,7 @@
         "lunar_day": 20,
         "lunar_label": "三月二十",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://jhulian.org.tw/?act=menuinfo&cmd=detail&mi_id=20220413001&ml_id=20211115002",
@@ -3601,7 +3601,7 @@
         "lunar_day": 23,
         "lunar_label": "三月廿三",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.matsu.org.tw/?act=menuinfo&ml_id=20240108003",
@@ -3955,7 +3955,7 @@
         "lunar_day": 8,
         "lunar_label": "十二月初八",
         "occasion_type": "成道",
-        "honorific_source": "成道",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
@@ -4136,7 +4136,7 @@
         "lunar_day": 6,
         "lunar_label": "六月初六",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.shiding.ntpc.gov.tw/home.jsp?id=bcec741659a3253e",
@@ -4319,7 +4319,7 @@
         "lunar_day": 18,
         "lunar_label": "七月十八",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.hccc.gov.tw/zh-tw/CulturalHeritage/Detail/146",
@@ -4684,7 +4684,7 @@
         "lunar_day": 15,
         "lunar_label": "八月十五",
         "occasion_type": "千秋",
-        "honorific_source": "千秋",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php",
@@ -5232,7 +5232,7 @@
         "lunar_day": 15,
         "lunar_label": "十月十五",
         "occasion_type": "聖誕",
-        "honorific_source": "聖誕",
+        "honorific_source": null,
         "sources": [
           {
             "url": "https://www.twsanyuan.com/",

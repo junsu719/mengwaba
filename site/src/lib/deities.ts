@@ -25,7 +25,8 @@ export interface DeityOccasion {
   lunar_day: number;
   lunar_label: string;
   occasion_type: string;
-  honorific_source: string;
+  /** occasion_type 與敬稱完全同義時(如「聖誕」對「聖誕」)為 null,不提供新資訊時不顯示。 */
+  honorific_source: string | null;
   sources: DeitySource[];
   /** 讀者導向的補充說明(scripts/build_deity_pages_data.py 的 OCCASION_NOTE_OVERRIDE),
    * 大多數紀念日沒有額外說明,為 null。 */

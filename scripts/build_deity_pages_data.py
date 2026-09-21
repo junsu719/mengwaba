@@ -309,13 +309,18 @@ def main():
             occ_dates_sorted = sorted(occ_dates, key=lambda r: r["solar_date"])
             note_key = (deity_name, occ["lunar_month"], occ["lunar_day"], occ["occasion_type"])
             source_urls = [occ[k] for k in ("source_1", "source_2", "source_3") if occ.get(k)]
+            # honorific_source 跟 occasion_type 完全一樣時(如媽祖「聖誕」/「聖誕」),頁面上
+            # h2 已經顯示 occasion_type,再講一次「常見稱『聖誕』」沒有提供任何新資訊,不顯示
+            # (2026-09-21 Jun 手機預覽抓出)。兩者不同時(如玉皇上帝 occasion_type=萬壽、
+            # honorific_source=誕降之辰(俗稱天公生))才顯示,因為這時候是真的多一則資訊。
+            honorific_display = occ["honorific_source"] if occ["honorific_source"] != occ["occasion_type"] else None
             occ_list.append(
                 {
                     "lunar_month": int(occ["lunar_month"]),
                     "lunar_day": int(occ["lunar_day"]),
                     "lunar_label": occ_dates_sorted[0]["lunar_label"],
                     "occasion_type": occ["occasion_type"],
-                    "honorific_source": occ["honorific_source"],
+                    "honorific_source": honorific_display,
                     "sources": [{"url": u, "name": source_name(u)} for u in source_urls],
                     "note": OCCASION_NOTE_OVERRIDE.get(note_key),
                     "dates": [
