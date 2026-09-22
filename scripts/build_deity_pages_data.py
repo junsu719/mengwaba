@@ -21,6 +21,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent.parent
 BIRTHDAYS_CSV = ROOT / "data/raw/deities/deity_birthdays.csv"
 DATES_CSV = ROOT / "data/processed/deities/deity_dates_2020_2040.csv"
+MONTH_INDEX_CSV = ROOT / "data/processed/deities/deity_by_lunar_month.csv"
 OUT_PATH = ROOT / "data/normalized/deities/deities.json"
 
 # deity_name -> 顯示中繼資料(2026-09-21 Jun 逐項拍板,不得自行更動;新增神明須另外走
@@ -248,6 +249,26 @@ OCCASION_NOTE_OVERRIDE: dict[tuple[str, str, str, str], str | None] = {
 }
 
 
+# 農曆三十日替代規則(該年該農曆月僅 29 天時改用廿九日)的個別查證依據
+# (2026-09-22 查證,見 DECISIONS.md 同日條目)。v1 僅地藏王菩薩(七月三十)受此規則影響。
+# 逐一查證三個既有來源:艋舺龍山寺聖誕千秋表原文為「七月(廿九)卅日 地藏王菩薩聖誕」,即該廟
+# 自己的固定對照表已將廿九、三十兩種寫法並列(以 curl 取得原始 HTML 逐字確認,見
+# data/raw/deities/README.md 或 DECISIONS.md 2026-09-22 條目);另兩個來源(星雲大師全集、
+# 台中天后宮)僅固定寫「三十日」,未提及小月處理方式,不構成第二個獨立佐證。如實只採計這一筆
+# 依據,不誇大為「多方一致」。任何新增神明若同樣受此規則影響,須另外查證後才能加入本表;查不到
+# 依據的組合會被下方自我檢查擋下(直接中止,不會靜默套用規則)。
+THIRTY_DAY_RULE_SOURCE: dict[tuple[str, int, int], dict] = {
+    ("地藏王菩薩", 7, 30): {
+        "note": (
+            "地藏王菩薩佛辰原訂農曆七月三十日。艋舺龍山寺聖誕千秋表原文記載「七月(廿九)卅日」,"
+            "即該廟自己的對照表已將廿九、三十兩種寫法並列;本站依此慣例,若當年農曆七月僅 29 天,"
+            "以廿九日為準(下表標記 * 的年份)。"
+        ),
+        "source": {"name": "艋舺龍山寺", "url": "https://www.lungshan.org.tw/tw/02_3_birthday.php"},
+    },
+}
+
+
 def load_birthdays():
     with open(BIRTHDAYS_CSV, encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -258,6 +279,16 @@ def load_dates():
         return list(csv.DictReader(f))
 
 
+def load_month_index_labels() -> dict[tuple[int, int], str]:
+    """讀 deity_by_lunar_month.csv,取得每個(月,日)的「原始」農曆標籤(不受三十日替代規則
+    影響——該檔案只收錄真實存在的月日組合,例如 7/30 只會取自實際有三十日的年份),用來取代
+    先前誤用「occ_dates_sorted[0]」當標籤來源的做法(該做法會在排序後第一個年份剛好是替代年份
+    時,把「七月三十」誤標成「七月廿九」,2026-09-22 由 Jun 在預覽版實測抓出)。"""
+    with open(MONTH_INDEX_CSV, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    return {(int(r["lunar_month"]), int(r["lunar_day"])): r["lunar_label"] for r in rows}
+
+
 def occasion_key(row):
     return (row["deity_name"], row["lunar_month"], row["lunar_day"], row["occasion_type"])
 
@@ -265,6 +296,7 @@ def occasion_key(row):
 def main():
     birthdays = load_birthdays()
     dates = load_dates()
+    month_index_labels = load_month_index_labels()
 
     # 自我檢查:DEITY_META 必須恰好覆蓋主表全部 deity_name,一個不多一個不少
     csv_names = {r["deity_name"] for r in birthdays}
@@ -288,6 +320,12 @@ def main():
     stale_override_keys = set(OCCASION_NOTE_OVERRIDE.keys()) - real_keys
     if stale_override_keys:
         raise SystemExit(f"OCCASION_NOTE_OVERRIDE 有對不到主表任何紀念日的 key,中止:{stale_override_keys}")
+
+    # 自我檢查:THIRTY_DAY_RULE_SOURCE 的 key 必須都能對到主表真實存在的紀念日
+    real_keys_30 = {(r["deity_name"], int(r["lunar_month"]), int(r["lunar_day"])) for r in birthdays}
+    stale_30_keys = set(THIRTY_DAY_RULE_SOURCE.keys()) - real_keys_30
+    if stale_30_keys:
+        raise SystemExit(f"THIRTY_DAY_RULE_SOURCE 有對不到主表任何紀念日的 key,中止:{stale_30_keys}")
 
     dates_by_occasion = defaultdict(list)
     for row in dates:
@@ -314,15 +352,29 @@ def main():
             # (2026-09-21 Jun 手機預覽抓出)。兩者不同時(如玉皇上帝 occasion_type=萬壽、
             # honorific_source=誕降之辰(俗稱天公生))才顯示,因為這時候是真的多一則資訊。
             honorific_display = occ["honorific_source"] if occ["honorific_source"] != occ["occasion_type"] else None
+            month_day_key = (int(occ["lunar_month"]), int(occ["lunar_day"]))
+            if month_day_key not in month_index_labels:
+                raise SystemExit(f"{deity_name} {occ['lunar_month']}/{occ['lunar_day']} 在 deity_by_lunar_month.csv 查無標籤,中止。")
+            # 自我檢查:任何有年份因「小月改廿九」被替代的紀念日,都必須在 THIRTY_DAY_RULE_SOURCE
+            # 查得到查證依據,否則中止——不自動套用未經查證的規則(2026-09-22 Jun 拍板的兩條路
+            # 之一:找不到依據就不能保留自動代換規則)。
+            has_thirty_day_adjustment = any(d["date_adjusted"] == "true" for d in occ_dates_sorted)
+            thirty_day_key = (deity_name, int(occ["lunar_month"]), int(occ["lunar_day"]))
+            if has_thirty_day_adjustment and thirty_day_key not in THIRTY_DAY_RULE_SOURCE:
+                raise SystemExit(
+                    f"{deity_name} {occ['lunar_month']}/{occ['lunar_day']} 有年份因小月改用廿九日,"
+                    f"但 THIRTY_DAY_RULE_SOURCE 未提供查證依據,中止。"
+                )
             occ_list.append(
                 {
                     "lunar_month": int(occ["lunar_month"]),
                     "lunar_day": int(occ["lunar_day"]),
-                    "lunar_label": occ_dates_sorted[0]["lunar_label"],
+                    "lunar_label": month_index_labels[month_day_key],
                     "occasion_type": occ["occasion_type"],
                     "honorific_source": honorific_display,
                     "sources": [{"url": u, "name": source_name(u)} for u in source_urls],
                     "note": OCCASION_NOTE_OVERRIDE.get(note_key),
+                    "thirty_day_substitution": THIRTY_DAY_RULE_SOURCE.get(thirty_day_key) if has_thirty_day_adjustment else None,
                     "dates": [
                         {
                             "solar_year": int(d["solar_year"]),

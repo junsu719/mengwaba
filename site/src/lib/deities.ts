@@ -20,6 +20,12 @@ export interface DeitySource {
   name: string;
 }
 
+export interface ThirtyDaySubstitution {
+  /** 讀者向說明:原訂三十日、遇小月改廿九日的規則與依據。 */
+  note: string;
+  source: DeitySource;
+}
+
 export interface DeityOccasion {
   lunar_month: number;
   lunar_day: number;
@@ -31,6 +37,9 @@ export interface DeityOccasion {
   /** 讀者導向的補充說明(scripts/build_deity_pages_data.py 的 OCCASION_NOTE_OVERRIDE),
    * 大多數紀念日沒有額外說明,為 null。 */
   note: string | null;
+  /** 紀念日訂在農曆三十日、且 2020-2040 範圍內有年份因小月被改用廿九日時才非 null,
+   * 附查證依據(scripts/build_deity_pages_data.py 的 THIRTY_DAY_RULE_SOURCE)。 */
+  thirty_day_substitution: ThirtyDaySubstitution | null;
   dates: DeityDate[];
 }
 

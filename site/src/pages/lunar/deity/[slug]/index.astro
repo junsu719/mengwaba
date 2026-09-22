@@ -65,8 +65,18 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
               ))}
             </tbody>
           </table>
-          {occ.dates.some((d) => d.date_adjusted) && (
-            <p class="adjust-legend">* {occ.dates.find((d) => d.date_adjusted)?.adjust_note}</p>
+          {occ.thirty_day_substitution && (
+            <p class="adjust-legend">
+              * {occ.thirty_day_substitution.note}標記年份:
+              {occ.dates
+                .filter((d) => d.date_adjusted)
+                .map((d) => d.solar_year)
+                .join('、')}
+              年。依據:
+              <a href={occ.thirty_day_substitution.source.url} rel="nofollow noopener" target="_blank">
+                {occ.thirty_day_substitution.source.name}
+              </a>
+            </p>
           )}
         </details>
 
@@ -116,7 +126,9 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
       const el = section.querySelector('.next-occurrence') as HTMLElement | null;
       if (!el) return;
       if (next) {
-        el.textContent = `下一次:${next.solar_date}(${next.weekday})`;
+        el.textContent = next.date_adjusted
+          ? `下一次:${next.solar_date}(${next.weekday},${next.adjust_note ?? '日期已調整'})`
+          : `下一次:${next.solar_date}(${next.weekday})`;
       } else {
         el.textContent = '本站資料範圍(2020–2040)內已無未來日期。';
       }
