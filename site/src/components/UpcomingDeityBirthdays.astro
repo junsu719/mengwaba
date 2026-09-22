@@ -18,7 +18,7 @@ const { entries, limit = 8 } = Astro.props;
 
 <script>
   import { findUpcomingOccasions, type UpcomingOccasionEntry } from '../lib/deities';
-  import { taipeiToday } from '../lib/lunar-client';
+  import { taipeiToday } from '../lib/datetime';
 
   document.querySelectorAll<HTMLElement>('.upcoming-deities').forEach((el) => {
     try {

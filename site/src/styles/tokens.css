@@ -1,0 +1,99 @@
+/**
+ * MENGWABA Design Tokens — Phase 2(2026-09-22)
+ *
+ * 依 docs/MENGWABA_REDESIGN.md §3/§4/§8/§30/§31 與 docs/mengwaba-cis-addendum.md v2 §0
+ * 建立,本檔案只定義變數,刻意不 import 進任何 layout / page / component——Jun 明確要求
+ * 「Phase 2 只建立,不套用到任何頁面」,現有頁面(BaseLayout.astro 的 --fg/--bg/--accent/
+ * --muted/--border 五個變數)在這個 Phase 完全不受影響,套用是後面 Phase(元件/首頁/垃圾車頁)
+ * 才要做的事,屆時才決定如何從現有五個變數過渡到這裡。
+ *
+ * 命名採語意化(--color-background / --color-surface / --color-text,而非
+ * --color-warm-white / --color-ink)是為了幫 §30 的 Dark Mode 預留——本檔案目前只寫 light
+ * 模式的值,深色模式的對應值待該功能真的排進 Phase 才補,語意化命名讓屆時只需新增一組
+ * `@media (prefers-color-scheme: dark)` 覆寫,不必重新命名整批變數。
+ */
+
+:root {
+  /* ── Brand Primary(§3.1)────────────────────────────────────────── */
+  /* docs/MENGWABA_REDESIGN.md §3.1 指定的品牌綠,非螢光綠;與現有站上已經在用的
+     --accent(#1b7a43,較深較穩重)是兩個不同的綠——是否/何時切換由後續 Phase 決定,
+     這裡先如實記錄規格值,不預先套用。 */
+  --color-brand: #78b82a;
+
+  /* ── Base Colors(§3.2)─────────────────────────────────────────── */
+  --color-ink: #202522;
+  --color-warm-white: #f7f5ef;
+  --color-soft-gray: #e6e4dc;
+  --color-white: #ffffff;
+
+  /* ── 語意化 token(給元件/頁面實際引用,§30 Dark Mode 預留用這組名字)──── */
+  --color-background: var(--color-warm-white); /* §3.2:建議用 Warm White 當主要頁面背景,不要整站純白 */
+  --color-surface: var(--color-white); /* 卡片、輸入框等「浮起」在背景之上的容器 */
+  --color-text: var(--color-ink);
+  --color-primary: var(--color-brand);
+  --color-border: var(--color-soft-gray);
+  --color-accent: var(--color-brand); /* 未指定工具 accent 時的預設值(例如品牌層級 CTA) */
+
+  /* ── 各工具專屬 accent color(v2 addendum §0 要求:三個工具各自指定,取代
+     原規格 §4 舉例的假想工具清單)──────────────────────────────────── */
+  /* 垃圾車:沿用品牌綠本身,不另外分裂出第二種綠,對應原規格 §4「Trash → Green」的舉例。 */
+  --color-accent-trash: var(--color-brand);
+  /* 行事曆/連假:藍——時間、行事曆類介面的常見慣例色,且與垃圾車綠、農民曆紫皆可明顯區分。 */
+  --color-accent-calendar: #3b6ea5;
+  /* 農民曆:紫——刻意不選紅／金,避免不小心帶出補充規格 §L.5 明講要避免的「紅金傳統風格」;
+     紫在原規格 §4 舉例清單中本來對應到假想的 Weather 工具,這裡挪用給農民曆。 */
+  --color-accent-lunar: #7a5ea8;
+
+  /* 注意(§4):accent color 只能用在 icon / status / CTA / highlight / 小型裝飾元素,
+     不可讓整個工具頁看起來像完全不同的網站——大面積背景、版型仍必須共用同一套
+     MENGWABA Design System。 */
+
+  /* ── Border Radius(§8.1)──────────────────────────────────────────── */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* ── Spacing(§31)─────────────────────────────────────────────────── */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* ── Typography(§5)───────────────────────────────────────────────── */
+  /* 這裡只記錄「目標」字體堆疊,尚未實際載入任何 web font——目前站上完全沒有 <link>/
+     @font-face,Noto Sans TC 只在使用者系統本身有安裝時生效(見 Phase 1 Audit 發現)。
+     §E/補充規格 §E 明確警告字重檔案是最大效能風險,是否要真的載入、用子集化或
+     font-display: swap,由實際套用 Phase 決定,不在這裡預先下載任何字體檔案。 */
+  --font-zh: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'PingFang TC', sans-serif;
+  --font-en: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* ── Shadows(§35 Phase 2 清單要求,§2 品牌調性避免大量玻璃感/漸層,陰影需維持克制)──── */
+  --shadow-sm: 0 1px 2px rgba(32, 37, 34, 0.06);
+  --shadow-md: 0 4px 12px rgba(32, 37, 34, 0.08);
+  --shadow-lg: 0 8px 24px rgba(32, 37, 34, 0.1);
+
+  /* ── Motion(§28:僅微互動,150–250ms)───────────────────────────────── */
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --motion-slow: 250ms;
+}
+
+/**
+ * ── Breakpoints(§22/§36)──────────────────────────────────────────────
+ * CSS 自訂屬性無法直接用在 @media 條件式裡(var() 不能出現在 media query 的
+ * prelude,這是標準 CSS 本身的限制,不是本專案的疏漏),所以下面不是可執行的
+ * token,是唯一的數字來源紀錄——之後元件寫 @media (min-width: ...) 時,數值必須
+ * 從這裡複製,不要自己另外發明一組斷點。若未來真的需要 var() 可用的斷點(例如
+ * 搭配 container query 或引入 PostCSS custom-media),屆時再評估,現在不為此
+ * 新增任何建置工具鏈依賴。
+ *
+ *   sm  : 375px
+ *   md  : 390px
+ *   lg  : 430px
+ *   tablet : 768px
+ *   desktop: 1024px
+ *   wide   : 1440px
+ */

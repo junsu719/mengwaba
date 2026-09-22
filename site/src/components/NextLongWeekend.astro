@@ -18,10 +18,7 @@ const { entries } = Astro.props;
 
 <script>
   import { findNextLongWeekend, daysBetween } from '../lib/calendar';
-
-  function taipeiToday(): string {
-    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
-  }
+  import { taipeiToday } from '../lib/datetime';
 
   function formatRange(start: string, end: string): string {
     const md = (d: string) => d.slice(5).replace('-', '/');

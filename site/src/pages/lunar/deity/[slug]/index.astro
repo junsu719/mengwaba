@@ -104,16 +104,14 @@ const description = `${deity.title}${occasionNames}對照國曆日期(2020-2040)
 </BaseLayout>
 
 <script>
+  import { taipeiToday } from '../../../../lib/datetime';
+
   interface DeityDate {
     solar_year: number;
     solar_date: string;
     weekday: string;
     date_adjusted: boolean;
     adjust_note: string | null;
-  }
-
-  function taipeiToday(): string {
-    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
   }
 
   const today = taipeiToday();

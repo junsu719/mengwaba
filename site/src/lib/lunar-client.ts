@@ -41,7 +41,7 @@ function monthLabel(lunar: { getMonthInChinese(): string }): string {
 }
 
 /** dateStr 格式 YYYY-MM-DD,呼叫端一律先用 Asia/Taipei 時區算出這個字串再傳入
- * (見 taipeiToday()),本函式本身不碰時鐘、不做時區轉換,避免「今天」的定義分散在多處。 */
+ * (見 ./datetime 的 taipeiToday()),本函式本身不碰時鐘、不做時區轉換,避免「今天」的定義分散在多處。 */
 export function computeDayLunar(dateStr: string): DayLunarInfo {
   const [y, m, d] = dateStr.split('-').map(Number);
   const solar = Solar.fromYmd(y, m, d);
@@ -120,6 +120,3 @@ export function lunarToSolarRange(
   return results;
 }
 
-export function taipeiToday(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
-}

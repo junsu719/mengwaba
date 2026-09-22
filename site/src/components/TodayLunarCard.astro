@@ -42,7 +42,8 @@
 </div>
 
 <script>
-  import { computeDayLunar, taipeiToday } from '../lib/lunar-client';
+  import { computeDayLunar } from '../lib/lunar-client';
+  import { taipeiToday } from '../lib/datetime';
 
   function render(dateStr: string) {
     const result = document.getElementById('lunar-result')!;

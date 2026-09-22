@@ -53,7 +53,8 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
 </BaseLayout>
 
 <script>
-  import { solarToLunar, lunarToSolarRange, taipeiToday } from '../../../lib/lunar-client';
+  import { solarToLunar, lunarToSolarRange } from '../../../lib/lunar-client';
+  import { taipeiToday } from '../../../lib/datetime';
   import { folkMonthLabelFromNumber } from '../../../lib/lunar-format';
 
   const solarInput = document.getElementById('solar-input') as HTMLInputElement;
