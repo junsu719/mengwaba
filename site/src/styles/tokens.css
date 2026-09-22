@@ -14,13 +14,19 @@
  */
 
 :root {
-  /* ── Brand Primary(§3.1)────────────────────────────────────────── */
-  /* docs/MENGWABA_REDESIGN.md §3.1 指定的品牌綠,非螢光綠;與現有站上已經在用的
-     --accent(#1b7a43,較深較穩重)是兩個不同的綠——是否/何時切換由後續 Phase 決定,
-     這裡先如實記錄規格值,不預先套用。 */
-  --color-brand: #78b82a;
+  /* ── Brand Green:門面色/文字色分工(2026-09-22 Jun 拍板,見 DECISIONS.md)──────
+     #78B82A(§3.1 規格值)對白底僅 2.42:1,對 --color-background(暖白)僅 2.22:1,
+     未達 WCAG AA 對「文字」要求的 4.5:1、也未達「非文字 UI 元件/圖形」要求的 3:1
+     ——不得單獨作為文字、連結、或「僅靠自己傳達必要資訊的小型圖示」的顏色。
+     深綠 #1b7a43(沿用站上既有 --accent)對白底 5.37:1、對暖白 4.92:1,兩者皆通過
+     AA,文字與連結一律用這個。 */
+  --color-brand-face: #78b82a; /* 門面色:Logo、按鈕底色(必須配深色文字)、大色塊裝飾、非必要的裝飾性大圖示 */
+  --color-brand-text: #1b7a43; /* 文字色:內文強調、連結、小型且承載必要資訊的圖示 */
 
   /* ── Base Colors(§3.2)─────────────────────────────────────────── */
+  /* 排除組合(Phase 3 驗證後禁用,不得在任何元件使用):文字綠 --color-brand-text 疊在
+     --color-soft-gray 底色上僅 4.22:1,未達一般文字 4.5:1 門檻——soft-gray 背景上的
+     小型文字一律用 --color-ink,不可用 --color-brand-text。 */
   --color-ink: #202522;
   --color-warm-white: #f7f5ef;
   --color-soft-gray: #e6e4dc;
@@ -30,18 +36,29 @@
   --color-background: var(--color-warm-white); /* §3.2:建議用 Warm White 當主要頁面背景,不要整站純白 */
   --color-surface: var(--color-white); /* 卡片、輸入框等「浮起」在背景之上的容器 */
   --color-text: var(--color-ink);
-  --color-primary: var(--color-brand);
+  --color-muted: #5b5b5b; /* 次要文字(如停用狀態、輔助說明);對白底 6.79:1、對暖白 6.23:1,皆通過 AA */
   --color-border: var(--color-soft-gray);
-  --color-accent: var(--color-brand); /* 未指定工具 accent 時的預設值(例如品牌層級 CTA) */
+  --color-link: var(--color-brand-text); /* 連結、內文強調色——一律用文字綠,不用門面綠 */
+
+  /* Status Card 用的淺色底(§9):極淺綠色調,不是純白也不是門面綠本身,ink 文字對它
+     14.05:1、文字綠對它 4.85:1,兩者皆可安全疊字。 */
+  --color-status-success-bg: #eef6e6;
+
+  /* 按鈕「品牌綠底」變體專用:底色用門面綠,文字必須用深色(ink),不可用白字
+     (白字對門面綠僅 2.42:1,見上方說明);ink 對門面綠實測 6.44:1,通過 AA。 */
+  --color-button-face-bg: var(--color-brand-face);
+  --color-button-face-text: var(--color-ink);
 
   /* ── 各工具專屬 accent color(v2 addendum §0 要求:三個工具各自指定,取代
-     原規格 §4 舉例的假想工具清單)──────────────────────────────────── */
-  /* 垃圾車:沿用品牌綠本身,不另外分裂出第二種綠,對應原規格 §4「Trash → Green」的舉例。 */
-  --color-accent-trash: var(--color-brand);
-  /* 行事曆/連假:藍——時間、行事曆類介面的常見慣例色,且與垃圾車綠、農民曆紫皆可明顯區分。 */
+     原規格 §4 舉例的假想工具清單;逐一驗證對比度,結果見後方 Phase 3 元件盤點)──── */
+  /* 垃圾車:用文字綠(不是門面綠)——accent 依 §4 定義會被用在 icon/status 這類小尺寸、
+     且常常單獨承載資訊的地方,門面綠在這些用途下對比不足,必須用文字綠。 */
+  --color-accent-trash: var(--color-brand-text);
+  /* 行事曆/連假:藍,對白底 5.30:1、白字對這個藍底 5.30:1(對比是對稱的),兩種方向都
+     通過 AA,不需要像品牌綠一樣拆成門面/文字兩個值。 */
   --color-accent-calendar: #3b6ea5;
-  /* 農民曆:紫——刻意不選紅／金,避免不小心帶出補充規格 §L.5 明講要避免的「紅金傳統風格」;
-     紫在原規格 §4 舉例清單中本來對應到假想的 Weather 工具,這裡挪用給農民曆。 */
+  /* 農民曆:紫,對白底 5.26:1、白字對這個紫底 5.26:1,同樣兩種方向都通過 AA;刻意不選
+     紅／金,避免不小心帶出補充規格 §L.5 明講要避免的「紅金傳統風格」。 */
   --color-accent-lunar: #7a5ea8;
 
   /* 注意(§4):accent color 只能用在 icon / status / CTA / highlight / 小型裝飾元素,

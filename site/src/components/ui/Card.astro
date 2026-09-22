@@ -1,0 +1,72 @@
+---
+import '../../styles/tokens.css';
+
+// MENGWABA Design System — Card(規格 §9:Standard / Featured / Status / Tool)。
+// Phase 3 元件庫,尚未套用到任何現有頁面。
+//
+// 對比度(2026-09-22 驗證):
+//   standard / tool  ink / surface 白       = 15.57:1 ── 通過 AA
+//   featured         ink / surface 白       = 15.57:1(內文同 standard,差異只在
+//                    上方一條 --color-brand-face 裝飾色帶,純裝飾用途,不承載必要
+//                    資訊,不受文字對比門檻限制;卡片是否為 featured 一律由標題文字
+//                    /位置本身表達,不單靠這條色帶顏色傳達)
+//   status(success) ink / --color-status-success-bg = 14.05:1 ── 通過 AA
+type Variant = 'standard' | 'featured' | 'status' | 'tool';
+
+interface Props {
+  variant?: Variant;
+  href?: string;
+  /** 僅 variant="status" 使用,決定底色;目前只定義 success,其餘狀態沿用 standard 白底 + 文字說明。 */
+  status?: 'success' | 'neutral';
+}
+
+const { variant = 'standard', href, status = 'neutral' } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag class={`ui-card ui-card--${variant}`} data-status={variant === 'status' ? status : undefined} href={href}>
+  <slot />
+</Tag>
+
+<style>
+  .ui-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    color: var(--color-ink);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition:
+      box-shadow var(--motion-base) ease,
+      transform var(--motion-base) ease;
+  }
+  a.ui-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  a.ui-card:focus-visible {
+    outline: 2px solid var(--color-brand-text);
+    outline-offset: 2px;
+  }
+
+  .ui-card--featured {
+    border-top: 3px solid var(--color-brand-face);
+    box-shadow: var(--shadow-md);
+  }
+
+  .ui-card--status[data-status='success'] {
+    background: var(--color-status-success-bg);
+    border-color: var(--color-brand-face);
+  }
+  .ui-card--status[data-status='neutral'] {
+    background: var(--color-surface);
+  }
+
+  .ui-card--tool {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+</style>

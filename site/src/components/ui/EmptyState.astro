@@ -1,0 +1,43 @@
+---
+import '../../styles/tokens.css';
+import FrogMark from './FrogMark.astro';
+
+// MENGWABA Design System — EmptyState / ErrorState(規格 §7)。Phase 3 元件庫,尚未套用到
+// 任何現有頁面——既有的 NotFoundContent.astro(404 頁)之後在 Phase 6/7 套用視覺時,可以
+// 改用這個元件包住原本的內容(SearchBox、行政區/城市連結不變),不是重寫那些功能。
+// 文案固定用規格原文;文字色 ink 對 surface/background 皆 >14:1,通過 AA。
+type Variant = 'empty' | 'error' | 'updated';
+
+interface Props {
+  variant?: Variant;
+}
+
+const { variant = 'empty' } = Astro.props;
+const COPY: Record<Variant, string> = {
+  empty: '蛙蛙也找不到這個地方。',
+  error: '糟糕,蛙蛙迷路了。',
+  updated: '蛙蛙確認過了。',
+};
+---
+
+<div class="ui-empty-state">
+  <FrogMark size={40} />
+  <p>{COPY[variant]}</p>
+  <slot />
+</div>
+
+<style>
+  .ui-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-ink);
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+  }
+  .ui-empty-state p {
+    margin: 0;
+    font-weight: 600;
+  }
+</style>

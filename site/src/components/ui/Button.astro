@@ -1,0 +1,96 @@
+---
+import '../../styles/tokens.css';
+
+// MENGWABA Design System — Button(規格 §10)。Phase 3 元件庫,尚未套用到任何現有頁面。
+// import tokens.css 是元件自己的相依性宣告(讓元件不管被放進哪個頁面都能正確拿到變數),
+// 不代表 tokens.css 現在被套用在任何現有頁面——這個元件本身也還沒被任何頁面引用。
+//
+// 對比度(2026-09-22 驗證,見 DECISIONS.md):
+//   primary   ink(#202522)/ brand-face(#78B82A) = 6.44:1  ── 通過 AA
+//   secondary ink(#202522)/ soft-gray(#E6E4DC)  = 12.23:1 ── 通過 AA
+//   ghost     brand-text(#1b7a43)/ 透明(視同底層背景,通常是 warm-white 4.92:1 或
+//             surface 白 5.37:1)                          ── 通過 AA
+// primary 變體故意不用白字——白字疊在 brand-face 上只有 2.42:1,未達門檻,見
+// tokens.css 開頭的說明,不得改動這個配色決定。
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  'aria-label'?: string;
+}
+
+const { variant = 'primary', href, type = 'button', disabled = false, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class={`ui-button ui-button--${variant}`}
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  aria-disabled={disabled ? 'true' : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .ui-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    min-height: 44px;
+    padding: 0 var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    font-family: var(--font-zh);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--motion-base) ease,
+      border-color var(--motion-base) ease,
+      transform var(--motion-fast) ease;
+  }
+  .ui-button:active {
+    transform: translateY(1px);
+  }
+  .ui-button[disabled],
+  .ui-button[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .ui-button:focus-visible {
+    outline: 2px solid var(--color-brand-text);
+    outline-offset: 2px;
+  }
+
+  .ui-button--primary {
+    background: var(--color-button-face-bg);
+    color: var(--color-button-face-text);
+  }
+  .ui-button--primary:hover {
+    background: color-mix(in srgb, var(--color-button-face-bg) 88%, black);
+  }
+
+  .ui-button--secondary {
+    background: var(--color-soft-gray);
+    color: var(--color-ink);
+  }
+  .ui-button--secondary:hover {
+    background: color-mix(in srgb, var(--color-soft-gray) 85%, black);
+  }
+
+  .ui-button--ghost {
+    background: transparent;
+    color: var(--color-brand-text);
+    border-color: var(--color-border);
+  }
+  .ui-button--ghost:hover {
+    background: var(--color-soft-gray);
+  }
+</style>

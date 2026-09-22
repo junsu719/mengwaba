@@ -1,0 +1,25 @@
+---
+import '../../styles/tokens.css';
+import FrogMark from './FrogMark.astro';
+
+// MENGWABA Design System — LoadingState(規格 §7)。Phase 3 元件庫,尚未套用到任何現有頁面。
+// 文案固定用規格原文,不自行改寫;文字色 ink 對 surface/background 皆 >14:1,通過 AA。
+---
+
+<div class="ui-loading-state" role="status">
+  <FrogMark size={28} />
+  <p>蛙蛙正在幫你找資料……</p>
+</div>
+
+<style>
+  .ui-loading-state {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-ink);
+    padding: var(--spacing-md) 0;
+  }
+  .ui-loading-state p {
+    margin: 0;
+  }
+</style>

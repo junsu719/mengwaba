@@ -1,0 +1,33 @@
+---
+// MENGWABA Design System — FrogMark(規格 §6/§7:抽象青蛙識別,小尺寸、幾何、不要
+// 卡通插畫)。Phase 3 元件庫,尚未套用到任何現有頁面。
+//
+// 這是第一版、純幾何線稿的佔位圖形(兩個眼睛圓圈 + 一條笑臉弧線,組成極簡的蛙臉輪廓),
+// 不是正式 Logo 設計稿——§6 要求的完整 Logo 系統(可當 favicon/app icon、可與 wordmark
+// 組合)是視覺設計工作,超出目前用程式碼合理產出的範圍,需要真正的設計輸出或 Jun 提供
+// 的圖檔才能定案。這個元件先滿足 §7「蛙蛙只在 loading/empty/error/data-updated 等小尺寸
+// 情境出現」的技術需求(LoadingState/EmptyState 元件內嵌使用),用 currentColor 繼承外層
+// 文字顏色,不內建任何顏色,呼叫端決定顏色時仍要遵守 tokens.css 的對比度規則。
+interface Props {
+  size?: number;
+  'aria-hidden'?: boolean | 'true' | 'false';
+}
+
+const { size = 32, ...rest } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 32 32"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  aria-hidden="true"
+  {...rest}
+>
+  <circle cx="10" cy="12" r="2.25" />
+  <circle cx="22" cy="12" r="2.25" />
+  <path d="M9 20c2.5 2.5 11.5 2.5 14 0" />
+</svg>

@@ -1,0 +1,77 @@
+---
+import '../../styles/tokens.css';
+
+// MENGWABA Design System — IconButton(規格 §10:搜尋、定位、分享等)。
+// Phase 3 元件庫,尚未套用到任何現有頁面。
+//
+// 對比度規則(2026-09-22 驗證):icon 本身是圖形化的 UI 元件,WCAG 1.4.11 對「傳達必要
+// 資訊的圖形」要求 3:1——預設一律用 ink(對白底 15.57:1、對 surface 白同值)當圖示顏色,
+// 不提供把圖示顏色換成 --color-brand-face 的選項,因為門面綠對白底僅 2.42:1、對暖白
+// 2.22:1,兩者都不到 3:1。若真的需要強調色,只能傳入文字安全色(--color-brand-text /
+// --color-accent-calendar / --color-accent-lunar),不接受任意顏色字串,避免誤用門面色。
+type SafeAccent = 'ink' | 'brand-text' | 'accent-calendar' | 'accent-lunar';
+
+interface Props {
+  label: string; // 必填,不可省略——icon-only 按鈕沒有文字標籤時,螢幕閱讀器只能靠這個
+  accent?: SafeAccent;
+  href?: string;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+}
+
+const { label, accent = 'ink', href, type = 'button', disabled = false } = Astro.props;
+const Tag = href ? 'a' : 'button';
+const colorVar =
+  accent === 'ink'
+    ? 'var(--color-ink)'
+    : accent === 'brand-text'
+      ? 'var(--color-brand-text)'
+      : accent === 'accent-calendar'
+        ? 'var(--color-accent-calendar)'
+        : 'var(--color-accent-lunar)';
+---
+
+<Tag
+  class="ui-icon-button"
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  aria-label={label}
+  style={`color: ${colorVar}`}
+>
+  <slot />
+</Tag>
+
+<style>
+  .ui-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color var(--motion-base) ease;
+  }
+  .ui-icon-button:hover {
+    background: var(--color-soft-gray);
+  }
+  .ui-icon-button:focus-visible {
+    outline: 2px solid var(--color-brand-text);
+    outline-offset: 2px;
+  }
+  .ui-icon-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .ui-icon-button :global(svg) {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.75;
+  }
+</style>

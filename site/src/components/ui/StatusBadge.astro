@@ -1,0 +1,54 @@
+---
+import '../../styles/tokens.css';
+
+// MENGWABA Design System — StatusBadge(規格 §9/§29)。
+// Phase 3 元件庫,尚未套用到任何現有頁面。
+//
+// §29 明講不能只靠顏色(例如單獨一個綠色圓點)傳達「今天有收運」這類資訊——本元件
+// label 為必填,永遠是「圓點 + 文字」,拿掉圓點文字仍完整可讀,圓點本身純粹是輔助強化。
+// 對比度(2026-09-22 驗證):文字一律用 ink(對白底/暖白皆 >14:1);圓點用
+// --color-brand-text(對白底 5.37:1)或 --color-muted(對白底 6.79:1),兩者皆通過
+// UI 元件的 3:1 門檻,但即使圓點對比不足也不影響資訊傳達,因為文字才是必要資訊來源。
+type Tone = 'success' | 'neutral' | 'unknown';
+
+interface Props {
+  tone?: Tone;
+  label: string;
+}
+
+const { tone = 'neutral', label } = Astro.props;
+---
+
+<span class={`ui-status-badge ui-status-badge--${tone}`}>
+  <span class="ui-status-dot" aria-hidden="true"></span>
+  {label}
+</span>
+
+<style>
+  .ui-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .ui-status-dot {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ui-status-badge--success .ui-status-dot {
+    background: var(--color-brand-text);
+  }
+  .ui-status-badge--neutral .ui-status-dot {
+    background: var(--color-muted);
+  }
+  .ui-status-badge--unknown .ui-status-dot {
+    background: var(--color-muted);
+  }
+  .ui-status-badge--unknown {
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+</style>
