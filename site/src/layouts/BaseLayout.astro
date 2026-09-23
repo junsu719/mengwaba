@@ -1,4 +1,7 @@
 ---
+import '../styles/tokens.css';
+import FrogMark from '../components/ui/FrogMark.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -6,6 +9,17 @@ interface Props {
 }
 
 const { title, description, jsonLd = [] } = Astro.props;
+
+// 2026-09-23 頁首/頁尾套新版(DECISIONS.md 同日條目):全站只有這一個 BaseLayout,
+// 垃圾車頁面也共用同一個檔案,沒有獨立 layout 可以只套用到首頁/行事曆/農民曆——
+// 經 Jun 拍板,頁首/頁尾套用到全站(垃圾車頁面的頁首外觀也會一起換新),但垃圾車頁面
+// 的頁面主體(<slot /> 裡的內容)這一輪完全不動。body/main 既有的 --fg/--bg/--accent/
+// --muted/--border 五個變數與其樣式規則刻意不改動、不刪除,確保垃圾車頁面主體視覺不受影響。
+//
+// 全站導覽只連到「已經上線」的三個工具(§F:改版不得新增頁面、不得連到不存在的功能),
+// 不放「生活工具」「關於悶蛙吧」這類目前並不存在的頁面連結。搜尋:目前沒有跨工具的
+// 全站搜尋後端(垃圾車的 SearchBox 是單一城市範圍的清運點搜尋,不是全站搜尋),依規格
+// §25「先設計 UI,但不要製作假的搜尋功能」,頁首這一輪不放搜尋框/搜尋圖示。
 ---
 
 <!doctype html>
@@ -16,21 +30,36 @@ const { title, description, jsonLd = [] } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={Astro.url.href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#1b7a43" />
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">悶蛙吧 MengWaBa</a>
+      <div class="site-header-inner">
+        <a class="brand" href="/">
+          <FrogMark size={32} class="brand-mark" />
+          <span class="brand-word">悶蛙吧</span>
+        </a>
+        <nav class="site-nav" aria-label="主要導覽">
+          <a href="/trash/">垃圾車</a>
+          <a href="/calendar/">行事曆</a>
+          <a href="/lunar/">農民曆</a>
+        </nav>
+      </div>
     </header>
     <main>
       <slot />
     </main>
     <footer class="site-footer">
-      <slot name="footer">
-        <p>資料來源:各縣市政府資料開放平台,依「政府資料開放授權條款第1版」提供,各頁面詳細來源請見頁面內標註。</p>
-        <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
-      </slot>
+      <div class="site-footer-inner">
+        <slot name="footer">
+          <p>資料來源:各縣市政府資料開放平台,依「政府資料開放授權條款第1版」提供,各頁面詳細來源請見頁面內標註。</p>
+          <p>本站為民間非官方服務,實際清運時間如有變動,請以清潔隊公告為準。</p>
+        </slot>
+      </div>
     </footer>
     <style>
       :root {
@@ -51,15 +80,57 @@ const { title, description, jsonLd = [] } = Astro.props;
         background: var(--bg);
         line-height: 1.7;
       }
+      /* ── 頁首/頁尾(2026-09-23 套用 tokens.css,見上方註解與 DECISIONS.md)────────── */
       .site-header {
-        padding: 1rem;
-        border-bottom: 1px solid var(--border);
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .site-header-inner {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: var(--spacing-sm) var(--spacing-md);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-md);
       }
       .brand {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--accent);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
         text-decoration: none;
+      }
+      .brand-mark {
+        color: var(--color-brand-face);
+        flex-shrink: 0;
+      }
+      .brand-word {
+        font-weight: 700;
+        font-size: 1.15rem;
+        font-family: var(--font-zh);
+        color: var(--color-brand-text);
+      }
+      .site-nav {
+        display: none;
+        align-items: center;
+        gap: var(--spacing-xs);
+      }
+      .site-nav a {
+        color: var(--color-ink);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.55rem var(--spacing-sm);
+        border-radius: var(--radius-sm);
+        transition: background-color var(--motion-base) ease;
+      }
+      .site-nav a:hover {
+        background: var(--color-soft-gray);
+      }
+      @media (min-width: 768px) {
+        .site-nav {
+          display: flex;
+        }
       }
       main {
         max-width: 720px;
@@ -67,12 +138,15 @@ const { title, description, jsonLd = [] } = Astro.props;
         padding: 1rem 1rem 3rem;
       }
       .site-footer {
-        border-top: 1px solid var(--border);
-        padding: 1.5rem 1rem;
-        font-size: 0.85rem;
-        color: var(--muted);
+        background: var(--color-soft-gray);
+        border-top: 1px solid var(--color-border);
+      }
+      .site-footer-inner {
         max-width: 720px;
         margin: 0 auto;
+        padding: var(--spacing-lg) var(--spacing-md);
+        font-size: 0.85rem;
+        color: var(--color-muted);
       }
       a {
         color: var(--accent);

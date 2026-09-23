@@ -5,6 +5,7 @@
 // JS 失效、資料異常或算不出下一個連假(不會發生於目前兩年度資料內,但未來資料只到某年度
 // 用盡後仍可能發生)時,整個區塊維持 hidden,不留白畫面或錯誤文字。
 import type { NextLongWeekendEntry } from '../lib/calendar';
+import Card from './ui/Card.astro';
 
 interface Props {
   entries: NextLongWeekendEntry[];
@@ -12,9 +13,9 @@ interface Props {
 const { entries } = Astro.props;
 ---
 
-<div class="next-holiday" hidden data-entries={JSON.stringify(entries)}>
+<Card variant="featured" id="next-holiday" hidden data-entries={JSON.stringify(entries)}>
   <p class="next-holiday-text"></p>
-</div>
+</Card>
 
 <script>
   import { findNextLongWeekend, daysBetween } from '../lib/calendar';
@@ -26,7 +27,7 @@ const { entries } = Astro.props;
     return `${start.replace(/-/g, '/')}–${end.replace(/-/g, '/')}`;
   }
 
-  document.querySelectorAll<HTMLElement>('.next-holiday').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('#next-holiday').forEach((el) => {
     try {
       const raw = el.dataset.entries;
       if (!raw) return;
@@ -58,19 +59,15 @@ const { entries } = Astro.props;
 </script>
 
 <style>
-  .next-holiday {
-    background: #f0f7f2;
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    margin: 1rem 0 1.5rem;
+  :global(#next-holiday) {
+    margin: var(--spacing-md) 0 var(--spacing-lg);
     font-size: 1rem;
   }
   .next-holiday-text {
     margin: 0;
   }
   .next-holiday-text :global(a) {
-    color: var(--accent);
+    color: var(--color-accent-calendar);
     font-weight: 600;
   }
 </style>

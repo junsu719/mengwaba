@@ -3,6 +3,7 @@
 // 靜態資料(不隨「今天」變動),但「哪幾筆算近期」要看訪客當下的日期,故篩選/排序這一步
 // 仍在瀏覽器端做(理由與 NextLongWeekend.astro 相同:避免邊緣快取讓訪客看到過期的「近期」)。
 import type { UpcomingOccasionEntry } from '../lib/deities';
+import Card from './ui/Card.astro';
 
 interface Props {
   entries: UpcomingOccasionEntry[];
@@ -11,16 +12,16 @@ interface Props {
 const { entries, limit = 8 } = Astro.props;
 ---
 
-<div class="upcoming-deities" data-entries={JSON.stringify(entries)} data-limit={limit}>
+<Card variant="standard" id="upcoming-deities" data-entries={JSON.stringify(entries)} data-limit={limit}>
   <ul class="plain" id="upcoming-deities-list"></ul>
   <p id="upcoming-deities-empty" hidden>近期查無收錄神明的紀念日。</p>
-</div>
+</Card>
 
 <script>
   import { findUpcomingOccasions, type UpcomingOccasionEntry } from '../lib/deities';
   import { taipeiToday } from '../lib/datetime';
 
-  document.querySelectorAll<HTMLElement>('.upcoming-deities').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('#upcoming-deities').forEach((el) => {
     try {
       const raw = el.dataset.entries;
       if (!raw) return;
@@ -59,8 +60,11 @@ const { entries, limit = 8 } = Astro.props;
 </script>
 
 <style>
+  :global(#upcoming-deities) {
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+  }
   .adjust-note {
-    color: var(--muted);
+    color: var(--color-muted);
     font-size: 0.85rem;
   }
 </style>

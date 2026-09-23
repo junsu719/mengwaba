@@ -1,4 +1,6 @@
 ---
+import '../styles/tokens.css';
+
 interface Props {
   year: number;
 }
@@ -15,10 +17,10 @@ const { year } = Astro.props;
 <style>
   .ics-download {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: var(--accent);
+    padding: 0.6rem 1.1rem;
+    background: var(--color-accent-calendar);
     color: #fff;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     text-decoration: none;
     font-weight: 600;
   }

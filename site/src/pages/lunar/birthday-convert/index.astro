@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/ui/Card.astro';
+import Button from '../../../components/ui/Button.astro';
 import { breadcrumbJsonLd } from '../../../lib/seo';
 import { folkMonthLabelFromNumber } from '../../../lib/lunar-format';
 
@@ -29,7 +31,9 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
     <label for="solar-input">國曆日期</label>
     <input type="date" id="solar-input" />
   </div>
-  <p class="today-answer" id="solar-to-lunar-result" hidden></p>
+  <Card variant="featured" id="solar-to-lunar-result-card" hidden>
+    <p class="today-answer" id="solar-to-lunar-result"></p>
+  </Card>
 
   <h2>農曆生日 → 查國曆(未來 10 年對照)</h2>
   <div class="convert-form">
@@ -42,7 +46,7 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
       {dayOptions.map((d) => <option value={d}>{d} 日</option>)}
     </select>
     <label class="leap-checkbox"><input type="checkbox" id="lunar-leap-input" /> 閏月</label>
-    <button type="button" id="lunar-convert-btn">查詢</button>
+    <Button type="button" id="lunar-convert-btn">查詢</Button>
   </div>
   <p class="leap-hint">
     只有該農曆年份剛好有閏月、且閏的正是您選的月份時才需要勾選;多數年份沒有閏月,不確定的話先不勾。
@@ -59,19 +63,20 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
 
   const solarInput = document.getElementById('solar-input') as HTMLInputElement;
   const solarResult = document.getElementById('solar-to-lunar-result') as HTMLElement;
+  const solarResultCard = document.getElementById('solar-to-lunar-result-card') as HTMLElement;
 
   function updateSolarToLunar() {
     if (!solarInput.value) {
-      solarResult.hidden = true;
+      solarResultCard.hidden = true;
       return;
     }
     try {
       const r = solarToLunar(solarInput.value);
       const leapLabel = r.isLeapMonth ? '閏' : '';
       solarResult.textContent = `${solarInput.value} 是農曆${leapLabel}${r.monthLabel}${r.dayLabel}。`;
-      solarResult.hidden = false;
+      solarResultCard.hidden = false;
     } catch {
-      solarResult.hidden = true;
+      solarResultCard.hidden = true;
     }
   }
   solarInput.value = taipeiToday();
@@ -121,6 +126,26 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
 </script>
 
 <style>
+  :global(#solar-to-lunar-result-card) {
+    margin: var(--spacing-sm) 0 var(--spacing-lg);
+  }
+  #solar-to-lunar-result {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  #lunar-to-solar-result :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    margin-top: var(--spacing-sm);
+  }
+  #lunar-to-solar-result :global(th),
+  #lunar-to-solar-result :global(td) {
+    text-align: left;
+    padding: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
   .convert-form {
     display: flex;
     align-items: center;
@@ -131,17 +156,9 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
   .convert-form select,
   .convert-form input[type='date'] {
     padding: 0.35rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     font-size: 1rem;
-  }
-  .convert-form button {
-    padding: 0.4rem 0.9rem;
-    border: 1px solid var(--accent);
-    background: var(--accent);
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
   }
   .leap-checkbox {
     display: flex;
@@ -150,7 +167,7 @@ const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1);
   }
   .leap-hint {
     font-size: 0.85rem;
-    color: var(--muted);
+    color: var(--color-muted);
     margin-top: -0.5rem;
   }
 </style>

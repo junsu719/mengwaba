@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/ui/Card.astro';
 import { breadcrumbJsonLd } from '../lib/seo';
 
 const jsonLd = [breadcrumbJsonLd([{ name: '首頁', url: Astro.url.href }])];
@@ -37,30 +38,31 @@ const tools = [
   description="悶蛙吧整理台灣人日常會用到的查詢與試算工具,目前提供全台垃圾車清運時間查詢、國定假日與連假查詢、農民曆查詢,更多生活工具陸續上線。"
   jsonLd={jsonLd}
 >
-  <h1>悶蛙吧 MengWaBa</h1>
-  <p>整理台灣人日常會用到的查詢與試算工具,免費使用,持續擴充中。</p>
+  <section class="hero">
+    <h1>悶蛙吧</h1>
+    <p class="tagline">台灣人的生活小工具箱</p>
+    <p class="hero-copy">生活有點麻煩,來悶蛙吧。</p>
+  </section>
 
   <h2>目前提供的工具</h2>
-  <ul class="card-grid">
+  <ul class="tool-grid">
     {
-      tools.map((tool) =>
-        tool.status === 'live' ? (
-          <li>
-            <a class="card" href={tool.href!}>
-              <strong>{tool.name}</strong>
-              <div>{tool.description}</div>
-            </a>
-          </li>
-        ) : (
-          <li>
-            <div class="card card-disabled">
-              <strong>{tool.name}</strong>
-              <div>{tool.description}</div>
-              <div class="badge">籌備中</div>
-            </div>
-          </li>
-        )
-      )
+      tools.map((tool) => (
+        <li>
+          {tool.status === 'live' ? (
+            <Card variant="tool" href={tool.href!}>
+              <strong class="tool-name">{tool.name}</strong>
+              <p class="tool-desc">{tool.description}</p>
+            </Card>
+          ) : (
+            <Card variant="tool">
+              <strong class="tool-name tool-name--disabled">{tool.name}</strong>
+              <p class="tool-desc">{tool.description}</p>
+              <span class="badge">籌備中</span>
+            </Card>
+          )}
+        </li>
+      ))
     }
   </ul>
 
@@ -68,20 +70,59 @@ const tools = [
 </BaseLayout>
 
 <style>
-  .card-disabled {
-    background: #f7f7f7;
-    border-style: dashed;
+  .hero {
+    padding: var(--spacing-xl) 0 var(--spacing-lg);
   }
-  .card-disabled strong {
-    color: var(--muted);
+  .hero h1 {
+    margin: 0 0 var(--spacing-xs);
+    font-size: 2rem;
+    color: var(--color-brand-text);
+  }
+  .tagline {
+    margin: 0 0 var(--spacing-sm);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .hero-copy {
+    margin: 0;
+    color: var(--color-muted);
+  }
+  .tool-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--spacing-lg);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+  }
+  .tool-grid > li {
+    display: flex;
+  }
+  .tool-grid > li > :global(.ui-card) {
+    flex: 1;
+  }
+  .tool-name {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--color-ink);
+  }
+  .tool-name--disabled {
+    color: var(--color-muted);
+  }
+  .tool-desc {
+    margin: var(--spacing-xs) 0 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
   }
   .badge {
     display: inline-block;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-sm);
     font-size: 0.75rem;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    font-weight: 600;
+    color: var(--color-muted);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
-    padding: 0.1rem 0.6rem;
+    padding: 0.15rem 0.65rem;
   }
 </style>

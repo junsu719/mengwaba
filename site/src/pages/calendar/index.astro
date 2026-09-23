@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
 import { breadcrumbJsonLd } from '../../lib/seo';
 import { CALENDAR_YEARS, loadCalendarYear, computeLeavePlans, allLongWeekendEntries } from '../../lib/calendar';
 import IcsDownload from '../../components/IcsDownload.astro';
@@ -40,38 +42,35 @@ const nextLongWeekendEntries = allLongWeekendEntries();
 
   {
     years.some((y) => y.leavePlanCount > 0) && (
-      <section class="leave-plan-promo">
+      <Card variant="featured">
         <h2>拼假攻略:算出最省假期的排法</h2>
         <p>
           只要多請 1~3 天特休、接上國定假日,就能換到更長的連假——本站逐年把每個機會算好,列出要請哪幾天、能連休到幾天,不用自己對照日曆排列組合。
         </p>
-        <ul class="card-grid">
+        <div class="leave-plan-links">
           {years
             .filter((y) => y.leavePlanCount > 0)
             .map((y) => (
-              <li>
-                <a class="card leave-plan-card" href={`/calendar/${y.year}/leave-plan/`}>
-                  <strong>{y.year} 年請假攻略</strong>
-                  <div>{y.leavePlanCount} 個拼假機會</div>
-                </a>
-              </li>
+              <Button variant="secondary" href={`/calendar/${y.year}/leave-plan/`}>
+                {y.year} 年請假攻略({y.leavePlanCount} 個機會)
+              </Button>
             ))}
-        </ul>
-      </section>
+        </div>
+      </Card>
     )
   }
 
   <h2>年度總覽</h2>
-  <ul class="card-grid">
+  <ul class="tool-grid">
     {
       years.map((y) => (
         <li>
-          <a class="card" href={`/calendar/${y.year}/`}>
+          <Card variant="standard" href={`/calendar/${y.year}/`}>
             <strong>{y.year} 年</strong>
-            <div>
+            <div class="tool-desc">
               全年放假 {y.holidayDays} 天・{y.longWeekendCount} 個 3 天以上連假
             </div>
-          </a>
+          </Card>
         </li>
       ))
     }
@@ -88,19 +87,27 @@ const nextLongWeekendEntries = allLongWeekendEntries();
   <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
 
   <style>
-    .leave-plan-promo {
-      background: #f0f7f2;
-      border: 2px solid var(--accent);
-      border-radius: 10px;
-      padding: 1rem 1.25rem 1.25rem;
-      margin: 1.5rem 0;
+    :global(.ui-card--featured) {
+      margin: var(--spacing-md) 0 var(--spacing-lg);
     }
-    .leave-plan-promo h2 {
-      margin-top: 0;
+    .leave-plan-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
     }
-    .leave-plan-card {
-      background: #fff;
-      border-color: var(--accent);
+    .tool-grid {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+    }
+    .tool-desc {
+      color: var(--color-muted);
+      font-size: 0.9rem;
+      margin-top: var(--spacing-xs);
     }
   </style>
 </BaseLayout>

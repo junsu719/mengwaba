@@ -3,6 +3,8 @@
 // 永久寫進自己的日曆,對還沒有外部連結、沒有信任基礎的新網域而言心理成本太高;下載是零信任
 // 成本的主要動作,訂閱留給已經信任本站的人。指向跨年度合併檔(subscribe.ics.ts)而不是單一
 // 年度檔——單一年度檔訂閱起來名不副實,隔年加新年度資料不會自動出現在訂閱者的行事曆裡。
+import '../styles/tokens.css';
+
 const httpsUrl = new URL('/calendar/subscribe.ics', Astro.site ?? Astro.url).href;
 const webcalUrl = httpsUrl.replace(/^https?:/, 'webcal:');
 ---
@@ -21,9 +23,10 @@ const webcalUrl = httpsUrl.replace(/^https?:/, 'webcal:');
 
 <style>
   .ics-subscribe {
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 0.75rem 1rem;
+    margin-top: var(--spacing-sm);
   }
   .ics-subscribe summary {
     cursor: pointer;
@@ -35,9 +38,9 @@ const webcalUrl = httpsUrl.replace(/^https?:/, 'webcal:');
   .ics-url {
     display: block;
     padding: 0.4rem 0.6rem;
-    background: #f7f7f7;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    background: var(--color-soft-gray);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     overflow-wrap: break-word;
     font-size: 0.9rem;
   }

@@ -18,13 +18,21 @@ interface Props {
   href?: string;
   /** 僅 variant="status" 使用,決定底色;目前只定義 success,其餘狀態沿用 standard 白底 + 文字說明。 */
   status?: 'success' | 'neutral';
+  /** 其餘原生屬性(id、hidden 等)透傳到根元素,供呼叫端搭配 client script 直接操作顯示狀態。 */
+  id?: string;
+  hidden?: boolean;
 }
 
-const { variant = 'standard', href, status = 'neutral' } = Astro.props;
+const { variant = 'standard', href, status = 'neutral', ...rest } = Astro.props;
 const Tag = href ? 'a' : 'div';
 ---
 
-<Tag class={`ui-card ui-card--${variant}`} data-status={variant === 'status' ? status : undefined} href={href}>
+<Tag
+  class={`ui-card ui-card--${variant}`}
+  data-status={variant === 'status' ? status : undefined}
+  href={href}
+  {...rest}
+>
   <slot />
 </Tag>
 

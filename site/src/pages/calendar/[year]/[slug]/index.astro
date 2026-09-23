@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Card from '../../../../components/ui/Card.astro';
 import { breadcrumbJsonLd } from '../../../../lib/seo';
 import {
   CALENDAR_YEARS,
@@ -56,11 +57,12 @@ const jsonLd = [
   <h1>
     {data.year} {title}
   </h1>
-  <p class="today-answer">
-    {weekend.start} ~ {weekend.end},共 <strong>{weekend.days} 天</strong>。
-  </p>
-
-  {heads.length > 0 && <p>包含節日:{heads.join('、')}。</p>}
+  <Card variant="featured">
+    <p class="today-answer">
+      {weekend.start} ~ {weekend.end},共 <strong>{weekend.days} 天</strong>。
+    </p>
+    {heads.length > 0 && <p class="heads-line">包含節日:{heads.join('、')}。</p>}
+  </Card>
 
   <h2>逐日明細</h2>
   <ul class="plain">
@@ -86,4 +88,29 @@ const jsonLd = [
     資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
   </p>
   <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以行政院人事行政總處公告為準。</p>
+
+  <style>
+    :global(.ui-card--featured) {
+      margin: var(--spacing-md) 0 var(--spacing-lg);
+    }
+    .today-answer {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+    .heads-line {
+      margin: var(--spacing-xs) 0 0;
+      color: var(--color-muted);
+    }
+    ul.plain {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.plain li {
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+  </style>
 </BaseLayout>
