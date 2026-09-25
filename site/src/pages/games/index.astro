@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/ui/Card.astro';
+import { breadcrumbJsonLd } from '../../lib/seo';
+import { GAMES } from '../../lib/games';
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '小遊戲', url: Astro.url.href },
+  ]),
+];
+---
+
+<BaseLayout
+  title="小遊戲｜悶蛙吧"
+  description="悶蛙吧的免費瀏覽器小遊戲專區,免安裝、免帳號直接玩,陸續新增更多遊戲。"
+  jsonLd={jsonLd}
+>
+  <nav><a href="/">首頁</a> / 小遊戲</nav>
+  <h1>小遊戲</h1>
+  <p>免安裝、免帳號,點進去直接玩。</p>
+
+  <ul class="tool-grid">
+    {
+      GAMES.map((game) => (
+        <li>
+          {game.status === 'live' ? (
+            <Card variant="tool" href={`/games/${game.slug}/`}>
+              <strong class="tool-name">{game.name}</strong>
+              <p class="tool-desc">{game.description}</p>
+            </Card>
+          ) : (
+            <Card variant="tool">
+              <strong class="tool-name tool-name--disabled">{game.name}</strong>
+              <p class="tool-desc">{game.description}</p>
+              <span class="badge">籌備中</span>
+            </Card>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <p slot="footer">遊戲頁面為獨立靜態內容,與站內垃圾車、行事曆、農民曆等查詢工具的資料來源與更新流程無關。</p>
+</BaseLayout>
+
+<style>
+  .tool-grid {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+  }
+  .tool-grid > li {
+    display: flex;
+  }
+  .tool-grid > li > :global(.ui-card) {
+    flex: 1;
+  }
+  .tool-name {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--color-ink);
+  }
+  .tool-name--disabled {
+    color: var(--color-muted);
+  }
+  .tool-desc {
+    margin: var(--spacing-xs) 0 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+  .badge {
+    display: inline-block;
+    margin-top: var(--spacing-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+  }
+</style>
