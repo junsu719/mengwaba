@@ -22,7 +22,6 @@ import {
 } from '../../../../lib/data-d1';
 import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/seo';
 import {
-  todaySummarySentence,
   introSentence,
   buildFaq,
   scheduleTimeText,
@@ -30,6 +29,7 @@ import {
   officialQuerySystem,
 } from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
+import TodayCard from '../../../../components/TodayCard.astro';
 import NotFoundContent from '../../../../components/NotFoundContent.astro';
 
 // 2026-08-25 D1 額度優化(見 DECISIONS.md):本頁原本借用行政區頁的「整區」查詢(loadDistrictFromD1)
@@ -137,7 +137,7 @@ const jsonLd =
 
         <h1>{point.point_name}垃圾車時間</h1>
 
-        <p class="today-answer">{todaySummarySentence(point)}</p>
+        <TodayCard point={point} />
 
         <p>{introSentence(point)}</p>
 

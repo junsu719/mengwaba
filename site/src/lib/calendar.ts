@@ -125,6 +125,19 @@ export function allLongWeekendEntries(): NextLongWeekendEntry[] {
 }
 
 /**
+ * 國定假日與補假日的日期(YYYY-MM-DD)清單:is_holiday 且 memo 非空(一般週六日 memo 為空,不算)。
+ * 供清運點頁「今天」卡片判斷「今天是否為國定假日」——垃圾車班表是每週固定班表,不知道國定假日。
+ * 只用既有 build 時行事曆資料;包含「小年夜」(memo 非空,屬春節連假期間,保守起見一併視為需提醒)。
+ */
+export function nationalHolidayDates(): string[] {
+  return CALENDAR_YEARS.flatMap((year) =>
+    loadCalendarYear(year)
+      .days.filter((d) => d.is_holiday && d.memo)
+      .map((d) => d.d)
+  );
+}
+
+/**
  * 純函式,不碰時鐘/時區——「今天」一律由呼叫端(client-side script)用 Asia/Taipei 算出再傳入,
  * 避免邊緣快取造成伺服器端算好的倒數對讀者是錯的日期(垃圾車 pSEO 已踩過這個坑,同一教訓沿用到
  * 這個工具)。end >= today 的第一筆涵蓋「今天正落在連假中」的情況,不會因此漏掉當次連假。

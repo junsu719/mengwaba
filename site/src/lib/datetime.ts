@@ -13,3 +13,15 @@
 export function taipeiToday(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
 }
+
+/**
+ * 由 taipeiToday() 產生的 YYYY-MM-DD 推導星期(1=週一…7=週日,與 data.ts 的 weekday 慣例一致)。
+ * 純日期字串一律以 UTC 午夜解讀,不受執行環境時區影響;格式不合回傳 null,呼叫端不得渲染。
+ */
+export function taipeiWeekday(dateStr: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+  const t = Date.parse(dateStr);
+  if (Number.isNaN(t)) return null;
+  const day = new Date(t).getUTCDay();
+  return day === 0 ? 7 : day;
+}

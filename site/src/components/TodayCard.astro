@@ -1,0 +1,133 @@
+---
+// 清運點頁「今天」卡片(2026-09-30,見 DECISIONS.md)。三行:今天的垃圾車/資源回收(/廚餘)、
+// 下一個連假、今天農曆。「今天」一律由前端用 Asia/Taipei 算(頁面可能被快取,伺服器端算的
+// 今天對之後才看到的訪客是錯的);伺服器端只預先算好週一~週日 7 份文案,前端挑一份。
+// JS 失效或任一行算不出時,該行維持 hidden、整張卡片不顯示,不留空白/NaN/undefined。
+import type { CollectionPoint } from '../lib/data';
+import { officialQuerySystem } from '../lib/content';
+import { hasUnknownWeekday, todayCardDays, todayCardHolidayFirst } from '../lib/today-card';
+import { allLongWeekendEntries, nationalHolidayDates } from '../lib/calendar';
+import Card from './ui/Card.astro';
+
+interface Props {
+  point: CollectionPoint;
+}
+const { point } = Astro.props;
+const days = todayCardDays(point);
+const query = hasUnknownWeekday(point) ? officialQuerySystem(point) : null;
+---
+
+<Card id="today-card" hidden data-query-url={query?.url} data-days={JSON.stringify(days)} data-holiday-first={JSON.stringify(todayCardHolidayFirst(point))} data-holidays={JSON.stringify(nationalHolidayDates())} data-entries={JSON.stringify(allLongWeekendEntries())}>
+  <h2 class="today-card-title">今天</h2>
+  <div class="today-row" data-row="trash" hidden>
+    <div class="today-trash-lines"></div>
+  </div>
+  <p class="today-row" data-row="holiday" hidden><a href="/calendar/"></a></p>
+  <p class="today-row" data-row="lunar" hidden><a href="/lunar/"></a></p>
+</Card>
+
+<script>
+  import { taipeiToday, taipeiWeekday } from '../lib/datetime';
+  import { lunarLine, nextHolidayLine, pickTodayLines } from '../lib/today-card-client';
+
+  function parse(raw: string | undefined): unknown {
+    try {
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  const card = document.getElementById('today-card');
+  if (card) {
+    const today = taipeiToday();
+    const row = (name: string) => card.querySelector<HTMLElement>(`[data-row="${name}"]`);
+    let shown = 0;
+
+    // 每一行各自 try/catch:一行出錯不影響其他行。
+    try {
+      const weekday = taipeiWeekday(today);
+      const lines = pickTodayLines(
+        parse(card.dataset.days) as Record<string, unknown> | null,
+        parse(card.dataset.holidayFirst) as Record<string, unknown> | null,
+        parse(card.dataset.holidays),
+        today,
+        weekday
+      );
+      const el = row('trash');
+      const box = el?.querySelector('.today-trash-lines');
+      if (el && box && lines) {
+        const queryUrl = card.dataset.queryUrl;
+        box.replaceChildren(
+          ...lines.map((l, i) => {
+            const p = document.createElement('p');
+            p.textContent = l;
+            if (i === 0) {
+              p.className = 'today-answer';
+              // 星期未知的點:「前往查詢」接在第一句句尾(既有免責連結,見 officialQuerySystem)
+              if (queryUrl) {
+                const a = document.createElement('a');
+                a.href = queryUrl;
+                a.rel = 'noopener';
+                a.target = '_blank';
+                a.textContent = '前往查詢';
+                p.append(' ', a);
+              }
+            }
+            return p;
+          })
+        );
+        el.hidden = false;
+        shown++;
+      }
+    } catch {}
+
+    const setLink = (name: string, text: string | null) => {
+      try {
+        const el = row(name);
+        const a = el?.querySelector('a');
+        if (!el || !a || !text) return;
+        a.textContent = text;
+        el.hidden = false;
+        shown++;
+      } catch {}
+    };
+    try {
+      setLink('holiday', nextHolidayLine(parse(card.dataset.entries), today));
+    } catch {}
+    try {
+      setLink('lunar', lunarLine(today));
+    } catch {}
+
+    if (shown > 0) card.hidden = false;
+  }
+</script>
+
+<style>
+  :global(#today-card) {
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+  }
+  .today-card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+  }
+  .today-row {
+    margin: 0 0 0.5rem;
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+  }
+  .today-row:last-child {
+    margin-bottom: 0;
+  }
+  .today-row :global(p) {
+    margin: 0 0 0.35rem;
+  }
+  .today-row :global(.today-answer) {
+    font-weight: 600;
+  }
+  .today-row :global(a) {
+    color: var(--color-brand-text);
+    font-weight: 600;
+  }
+</style>
