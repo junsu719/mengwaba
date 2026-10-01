@@ -19,6 +19,8 @@ const { indexUrl, placeholder = '輸入路名、里名或清運點名稱搜尋�
 </div>
 
 <script>
+  import { searchPoints } from '../lib/search-match';
+
   const RESULT_LIMIT = 20;
   const SCAN_LIMIT = 300;
   const DEBOUNCE_MS = 150;
@@ -70,24 +72,7 @@ const { indexUrl, placeholder = '輸入路名、里名或清運點名稱搜尋�
         const data = await loadIndex();
         if (seq !== requestSeq) return; // 使用者已繼續輸入,捨棄過期結果
 
-        const needle = q.toLowerCase();
-        const matches = [];
-        for (const [cityIdx, districtIdx, name, village, pointSlug] of data.points) {
-          const city = data.cities[cityIdx];
-          const district = data.districts[districtIdx];
-          const haystack = `${name}${village ?? ''}${district.n}`.toLowerCase();
-          const score = haystack.indexOf(needle);
-          if (score === -1) continue;
-          matches.push({
-            name,
-            sub: village ? `${district.n}・${village}` : district.n,
-            href: `/trash/${city.s}/${district.s}/${pointSlug}/`,
-            score,
-          });
-          if (matches.length >= SCAN_LIMIT) break;
-        }
-        matches.sort((a, b) => a.score - b.score);
-        render(matches.slice(0, RESULT_LIMIT));
+        render(searchPoints(data, q, RESULT_LIMIT, SCAN_LIMIT));
       }, DEBOUNCE_MS);
     });
 
