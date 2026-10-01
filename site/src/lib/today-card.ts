@@ -61,3 +61,12 @@ export function todayCardHolidayFirst(point: CollectionPoint): Record<number, st
   for (let w = 1; w <= 7; w++) if (todayScheduleEntry(point, w)) out[w] = HOLIDAY_FIRST_LINE;
   return out;
 }
+
+/** 首頁「我家清運點」端點的回傳內容:前端只需要這些就能用與今天卡片相同的規則挑第一行。 */
+export interface HomePointToday {
+  name: string;
+  url: string;
+  days: Record<number, string[]>;
+  holidayFirst: Record<number, string>;
+  queryUrl: string | null;
+}

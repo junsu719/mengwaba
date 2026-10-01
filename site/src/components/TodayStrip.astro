@@ -2,19 +2,38 @@
 // 首頁「今天」資訊列(2026-10-01):日期星期、農曆、下一個連假。沿用清運點頁今天卡片的
 // 共用函式(today-card-client / datetime),不碰垃圾車資料。「今天」一律前端以 Asia/Taipei 現算;
 // 任一段算不出就省略該段,全部算不出整條維持 hidden。
-import { allLongWeekendEntries } from '../lib/calendar';
+import { allLongWeekendEntries, nationalHolidayDates } from '../lib/calendar';
+import SearchBox from './SearchBox.astro';
 import Card from './ui/Card.astro';
 ---
 
-<Card id="today-strip" hidden data-entries={JSON.stringify(allLongWeekendEntries())}>
+<Card id="today-strip" hidden data-entries={JSON.stringify(allLongWeekendEntries())} data-holidays={JSON.stringify(nationalHolidayDates())}>
   <p class="strip-row" data-row="date" hidden></p>
   <p class="strip-row" data-row="lunar" hidden><a href="/lunar/"></a></p>
   <p class="strip-row" data-row="holiday" hidden><a href="/calendar/"></a></p>
+  <!-- 我家清運點(2026-10-01):localStorage 的 point_id 在瀏覽器端查 /trash/home-point.json;
+       載入失敗只隱藏這一行,其餘照常。三種狀態:已設定 / 未設定(接 SearchBox)/ 設定失效。 -->
+  <div class="strip-home" data-row="home" hidden>
+    <div data-state="set" hidden>
+      <p class="home-line"></p>
+      <p class="home-link"><a href="#"></a></p>
+    </div>
+    <div data-state="unset" hidden>
+      <p class="home-line">還沒設定你家清運點?</p>
+      <SearchBox indexUrl="/trash/search-index.json" placeholder="輸入路名、里名或清運點名稱…" />
+    </div>
+    <div data-state="stale" hidden>
+      <p class="home-line">之前設定的清運點已不存在,請重新設定</p>
+      <SearchBox indexUrl="/trash/search-index.json" placeholder="輸入路名、里名或清運點名稱…" />
+    </div>
+  </div>
 </Card>
 
 <script>
   import { taipeiToday, taipeiWeekday } from '../lib/datetime';
-  import { dateLine, lunarLine, nextHolidayLine } from '../lib/today-card-client';
+  import { dateLine, lunarLine, nextHolidayLine, pickTodayLines } from '../lib/today-card-client';
+  import { clearHomePointId, getHomePointId } from '../lib/home-point';
+  import type { HomePointToday } from '../lib/today-card';
 
   const strip = document.getElementById('today-strip');
   if (strip) {
@@ -41,6 +60,54 @@ import Card from './ui/Card.astro';
       show('holiday', nextHolidayLine(raw ? JSON.parse(raw) : null, today));
     } catch {}
     if (shown > 0) strip.hidden = false;
+
+    // 我家清運點:獨立非同步區塊,任何錯誤只隱藏這一行,不影響上面的日期/農曆/連假。
+    const home = strip.querySelector<HTMLElement>('[data-row="home"]');
+    const state = (name: 'set' | 'unset' | 'stale') => {
+      home!.querySelectorAll<HTMLElement>('[data-state]').forEach((e) => (e.hidden = e.dataset.state !== name));
+      home!.hidden = false;
+      strip.hidden = false;
+    };
+    const loadHome = async () => {
+      if (!home) return;
+      try {
+        const id = getHomePointId();
+        if (!id) return state('unset');
+        const res = await fetch(`/trash/home-point.json?id=${encodeURIComponent(id)}`);
+        if (res.status === 404) {
+          clearHomePointId();
+          return state('stale');
+        }
+        if (!res.ok) return;
+        const data = (await res.json()) as HomePointToday;
+        const raw = strip.dataset.holidays;
+        const lines = pickTodayLines(
+          data.days as unknown as Record<string, unknown>,
+          data.holidayFirst as unknown as Record<string, unknown>,
+          raw ? JSON.parse(raw) : null,
+          today,
+          taipeiWeekday(today)
+        );
+        if (!lines || !data.url || !data.name) return;
+        const line = home.querySelector<HTMLElement>('[data-state="set"] .home-line')!;
+        line.textContent = lines[0];
+        if (data.queryUrl) {
+          const q = document.createElement('a');
+          q.href = data.queryUrl;
+          q.rel = 'noopener';
+          q.target = '_blank';
+          q.textContent = '前往查詢';
+          line.append(' ', q);
+        }
+        const link = home.querySelector<HTMLAnchorElement>('[data-state="set"] .home-link a')!;
+        link.href = data.url;
+        link.textContent = `${data.name}・查看完整時刻`;
+        state('set');
+      } catch {
+        // 載入失敗:該行維持 hidden
+      }
+    };
+    loadHome();
   }
 </script>
 
@@ -53,6 +120,26 @@ import Card from './ui/Card.astro';
   }
   :global(#today-strip[hidden]) {
     display: none;
+  }
+  .strip-home {
+    flex-basis: 100%;
+  }
+  .strip-home[hidden],
+  .strip-home [hidden] {
+    display: none;
+  }
+  .home-line,
+  .home-link {
+    margin: 0 0 0.35rem;
+    color: var(--color-ink);
+  }
+  .home-line {
+    font-weight: 600;
+  }
+  .home-link a,
+  .home-line :global(a) {
+    color: var(--color-brand-text);
+    font-weight: 600;
   }
   .strip-row {
     margin: 0;

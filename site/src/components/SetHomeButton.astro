@@ -1,0 +1,46 @@
+---
+// 「設為我家的清運點」按鈕(2026-10-01):點擊只把 point_id 存在使用者瀏覽器 localStorage,
+// 不建帳號、不跳權限視窗、不傳送任何資料。JS 失效或 localStorage 不可用時按鈕保持隱藏。
+import Button from './ui/Button.astro';
+
+interface Props {
+  pointId: string;
+}
+const { pointId } = Astro.props;
+---
+
+<div class="set-home" data-point-id={pointId} hidden>
+  <Button variant="secondary" id="set-home-btn">設為我家的清運點</Button>
+</div>
+
+<script>
+  import { clearHomePointId, getHomePointId, homePointStorageAvailable, setHomePointId } from '../lib/home-point';
+
+  const box = document.querySelector<HTMLElement>('.set-home');
+  const btn = document.getElementById('set-home-btn');
+  const id = box?.dataset.pointId;
+  if (box && btn && id) {
+    const render = () => {
+      btn.textContent = getHomePointId() === id ? '已設為我家・取消' : '設為我家的清運點';
+    };
+    btn.addEventListener('click', () => {
+      if (getHomePointId() === id) clearHomePointId();
+      else if (!setHomePointId(id)) return; // 寫不進去(無痕等):維持原狀,不假裝成功
+      render();
+    });
+    // localStorage 完全不可用時不顯示按鈕
+    if (homePointStorageAvailable()) {
+      render();
+      box.hidden = false;
+    }
+  }
+</script>
+
+<style>
+  .set-home {
+    margin: 0 0 var(--spacing-lg);
+  }
+  .set-home[hidden] {
+    display: none;
+  }
+</style>
