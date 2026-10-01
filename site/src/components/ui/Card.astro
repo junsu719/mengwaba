@@ -50,6 +50,10 @@ const Tag = href ? 'a' : 'div';
       box-shadow var(--motion-base) ease,
       transform var(--motion-base) ease;
   }
+  /* display 會蓋掉 UA 的 [hidden]{display:none};呼叫端(如今天卡片)靠 hidden 控制顯示 */
+  .ui-card[hidden] {
+    display: none;
+  }
   a.ui-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
