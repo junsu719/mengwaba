@@ -24,6 +24,7 @@ import { breadcrumbJsonLd, faqPageJsonLd, placeJsonLd } from '../../../../lib/se
 import {
   introSentence,
   buildFaq,
+  nearbyHeading,
   scheduleTimeText,
   weekdayUnknownNotice,
   officialQuerySystem,
@@ -95,7 +96,7 @@ const nearbyCandidates = point
   ? await loadNearbyCandidates(db as never, citySlug!, districtSlug!, point.village, point.point_id)
   : [];
 const nearby = point ? nearestPoints(point, nearbyCandidates, 5) : [];
-const faq = point && districtName ? buildFaq(point, districtName) : [];
+const faq = point && districtName ? buildFaq(point, districtName, nearby) : [];
 const hasRecycling = !!point?.recycling_schedule && point.recycling_schedule.length > 0;
 const hasFoodscraps = !!point?.foodscraps_schedule && point.foodscraps_schedule.length > 0;
 const scheduleWeekdayUnknown = point ? point.schedule.some(isWeekdayUnknown) : false;
@@ -298,7 +299,7 @@ const jsonLd =
 
         {point.address && <p>地址參考:{point.address}</p>}
 
-        <h2>鄰近清運點</h2>
+        <h2>{nearbyHeading(point, nearby)}</h2>
         <ul class="plain">
           {nearby.map((n) => {
             const nearbyPointSlug = parsePointId(n.point_id)?.pointSlug;

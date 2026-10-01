@@ -1,5 +1,5 @@
 import type { CollectionPoint, DistrictGroup, DistrictStats, ScheduleEntry } from './data';
-import { WEEKDAY_NAMES, todayScheduleEntry, todayWeekdayTaipei } from './data';
+import { WEEKDAY_NAMES, hasValidGeo, todayScheduleEntry, todayWeekdayTaipei } from './data';
 
 interface OfficialQuerySystem {
   name: string;
@@ -298,12 +298,24 @@ export interface FaqItem {
   answer: string;
 }
 
-export function buildFaq(point: CollectionPoint, districtName: string): FaqItem[] {
+/**
+ * 清運點頁第二個清單的標題(2026-10-01 Jun 拍板):有座標才宣稱「鄰近」(依距離排序);沒有座標
+ * (高雄、臺中全部資料)只是同里優先、不足再補同行政區,不宣稱距離——全部是同里就叫「同里的清運點」,
+ * 摻到同區其他里的點時叫「同行政區的清運點」,標題不得說得比實際排序依據更多。
+ */
+export function nearbyHeading(point: CollectionPoint, shown: CollectionPoint[] = []): string {
+  if (hasValidGeo(point)) return '鄰近清運點';
+  const allSameVillage = !!point.village && shown.every((n) => n.village === point.village);
+  return allSameVillage ? '同里的清運點' : '同行政區的清運點';
+}
+
+export function buildFaq(point: CollectionPoint, districtName: string, nearby: CollectionPoint[] = []): FaqItem[] {
   const seed = stableHash(point.point_id);
 
+  const heading = nearbyHeading(point, nearby);
   const missedAnswers = [
-    `若錯過${point.point_name}這班垃圾車,可攜帶垃圾至鄰近清運點(見本頁「鄰近清運點」區塊)在其收運時間內投放,或改於${districtName}清潔隊公告的其他收集地點處理,切勿任意棄置。`,
-    `錯過時間的話,建議查看本頁列出的鄰近清運點是否還在收運時段內;若都已過站,只能等下一個收運日,或洽詢${districtName}清潔隊詢問臨時收運方式。`,
+    `若錯過${point.point_name}這班垃圾車,可攜帶垃圾至其他清運點(見本頁「${heading}」區塊)在其收運時間內投放,或改於${districtName}清潔隊公告的其他收集地點處理,切勿任意棄置。`,
+    `錯過時間的話,建議查看本頁「${heading}」列出的清運點是否還在收運時段內;若都已過站,只能等下一個收運日,或洽詢${districtName}清潔隊詢問臨時收運方式。`,
   ];
 
   const recycleAnswers = [

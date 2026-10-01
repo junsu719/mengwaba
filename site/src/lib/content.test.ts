@@ -934,3 +934,21 @@ describe('districtTimeDistributionSentence', () => {
     expect(districtTimeDistributionSentence(stats({}))).toBeNull();
   });
 });
+
+import { nearbyHeading } from './content';
+describe('nearbyHeading', () => {
+  const base = { village: '安東里', lat: null, lng: null } as never;
+  const mk = (village: string | null) => ({ village }) as never;
+  it('有座標 → 鄰近清運點', () => {
+    expect(nearbyHeading({ village: 'x', lat: 25.0, lng: 121.5 } as never, [mk('y')])).toBe('鄰近清運點');
+  });
+  it('無座標、全部同里 → 同里的清運點', () => {
+    expect(nearbyHeading(base, [mk('安東里'), mk('安東里')])).toBe('同里的清運點');
+  });
+  it('無座標、摻到其他里 → 同行政區的清運點', () => {
+    expect(nearbyHeading(base, [mk('安東里'), mk('安和里')])).toBe('同行政區的清運點');
+  });
+  it('無座標、本身沒有村里 → 同行政區的清運點', () => {
+    expect(nearbyHeading({ village: null, lat: null, lng: null } as never, [mk(null)])).toBe('同行政區的清運點');
+  });
+});
