@@ -30,7 +30,7 @@ import {
 } from '../../../../lib/content';
 import WeekdayBadge from '../../../../components/WeekdayBadge.astro';
 import TodayCard from '../../../../components/TodayCard.astro';
-import SetHomeButton from '../../../../components/SetHomeButton.astro';
+import MyPointButton from '../../../../components/MyPointButton.astro';
 import NotFoundContent from '../../../../components/NotFoundContent.astro';
 
 // 2026-08-25 D1 額度優化(見 DECISIONS.md):本頁原本借用行政區頁的「整區」查詢(loadDistrictFromD1)
@@ -139,7 +139,9 @@ const jsonLd =
         <h1>{point.point_name}垃圾車時間</h1>
 
         <TodayCard point={point} />
-        <SetHomeButton pointId={point.point_id} />
+        <p class="my-point-row">
+          <MyPointButton pointId={point.point_id} />
+        </p>
 
         <p>{introSentence(point)}</p>
 
@@ -312,6 +314,7 @@ const jsonLd =
                   )
                 }
                 {entry ? `・${scheduleTimeText(entry, n.collection_type)}` : ''}
+                <MyPointButton pointId={n.point_id} compact />
               </li>
             );
           })}

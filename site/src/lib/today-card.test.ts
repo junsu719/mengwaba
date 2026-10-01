@@ -177,3 +177,33 @@ describe('dateLine(首頁今天列)', () => {
     expect(dateLine('2026-10-01', null)).toBeNull();
   });
 });
+
+import { nextRun } from './today-card-client';
+import { todayCardTimes } from './today-card';
+describe('nextRun(首頁下一班)', () => {
+  const times = { '1': ['18:47'], '2': ['18:47', '21:01'], '4': ['21:01'] };
+  it('今天還沒過的最早一班', () => {
+    expect(nextRun(times, 2, '10:00')).toMatchObject({ offset: 0, time: '18:47', label: '今天 18:47' });
+    expect(nextRun(times, 2, '19:00')).toMatchObject({ offset: 0, time: '21:01' });
+  });
+  it('剛好到站時間算還沒過', () => expect(nextRun(times, 2, '21:01')).toMatchObject({ offset: 0, time: '21:01' }));
+  it('今天都過了 → 明天 / 之後的星期', () => {
+    expect(nextRun(times, 1, '20:00')).toMatchObject({ offset: 1, label: '明天 18:47' });
+    expect(nextRun(times, 4, '22:00')).toMatchObject({ offset: 4, label: '週一 18:47' });
+  });
+  it('星期未知/空資料 → null', () => {
+    expect(nextRun({}, 2, '10:00')).toBeNull();
+    expect(nextRun(null, 2, '10:00')).toBeNull();
+    expect(nextRun(times, null, '10:00')).toBeNull();
+    expect(nextRun(times, 2, 'bad')).toBeNull();
+  });
+  it('排序鍵:較早的班次 key 較小', () => {
+    expect(nextRun(times, 2, '10:00')!.key).toBeLessThan(nextRun(times, 2, '19:00')!.key);
+  });
+});
+describe('todayCardTimes', () => {
+  it('只收有星期的 entry,星期未知的點為空', () => {
+    const p = { schedule: [{ weekday: [1, 2], arrive: '18:47', depart: null }, { weekday: [], arrive: '17:00', depart: null }] } as never;
+    expect(todayCardTimes(p)).toEqual({ 1: ['18:47'], 2: ['18:47'] });
+  });
+});

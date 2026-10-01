@@ -3,7 +3,7 @@ import { env } from 'cloudflare:workers';
 import { CITIES, parsePointId } from '../../lib/data';
 import { loadPointById, type D1Like } from '../../lib/data-d1';
 import { officialQuerySystem } from '../../lib/content';
-import { hasUnknownWeekday, todayCardDays, todayCardHolidayFirst, type HomePointToday } from '../../lib/today-card';
+import { hasUnknownWeekday, todayCardDays, todayCardTimes, todayCardHolidayFirst, type HomePointToday } from '../../lib/today-card';
 
 export const prerender = false;
 
@@ -34,6 +34,7 @@ export const GET: APIRoute = async ({ url }) => {
       url: `/trash/${city.slug}/${parsed.districtSlug}/${parsed.pointSlug}/`,
       days: todayCardDays(point),
       holidayFirst: todayCardHolidayFirst(point),
+      times: todayCardTimes(point),
       queryUrl: hasUnknownWeekday(point) ? (officialQuerySystem(point)?.url ?? null) : null,
     };
     return json(body, 200, 'public, max-age=300');

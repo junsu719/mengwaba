@@ -68,5 +68,17 @@ export interface HomePointToday {
   url: string;
   days: Record<number, string[]>;
   holidayFirst: Record<number, string>;
+  /** weekday(1-7) → 當天垃圾車到站時間(HH:MM,升冪);星期未知的點為空物件。資源回收/廚餘不算「下一班」。 */
+  times: Record<number, string[]>;
   queryUrl: string | null;
+}
+
+/** 垃圾車(非資源回收/廚餘)每個星期的到站時間,給首頁「下一班」排序用。星期未知的 entry 不列入。 */
+export function todayCardTimes(point: CollectionPoint): Record<number, string[]> {
+  const out: Record<number, string[]> = {};
+  for (let w = 1; w <= 7; w++) {
+    const ts = point.schedule.filter((s) => s.weekday.includes(w) && /^\d{2}:\d{2}$/.test(s.arrive)).map((s) => s.arrive);
+    if (ts.length) out[w] = [...new Set(ts)].sort();
+  }
+  return out;
 }

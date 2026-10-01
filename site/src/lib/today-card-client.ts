@@ -63,3 +63,34 @@ export function dateLine(todayStr: string, weekday: number | null): string | nul
   if (!m || !name) return null;
   return `今天:${m[1]}/${m[2]}/${m[3]} 週${name}`;
 }
+
+export interface NextRun {
+  /** 0=今天、1=明天…最多 7(下週同一天)。 */
+  offset: number;
+  time: string;
+  label: string;
+  /** 排序用:越小越早。 */
+  key: number;
+}
+
+/**
+ * 下一班:今天還沒過的最早到站時間;今天都過了(或今天不收)就往後找最近一個有收的星期。
+ * times 為 weekday(1-7) → HH:MM[](見 todayCardTimes);weekday/times 不合法或完全找不到回傳 null
+ * (星期未知的點、純資源回收點),呼叫端不顯示「下一班」。nowHHMM 由呼叫端以台北時間傳入。
+ */
+export function nextRun(times: unknown, weekday: number | null, nowHHMM: string): NextRun | null {
+  if (!times || typeof times !== 'object' || !weekday || !/^\d{2}:\d{2}$/.test(nowHHMM)) return null;
+  const t = times as Record<string, unknown>;
+  for (let offset = 0; offset <= 7; offset++) {
+    const w = ((weekday - 1 + offset) % 7) + 1;
+    const list = t[String(w)];
+    if (!Array.isArray(list)) continue;
+    const valid = list.filter((x): x is string => typeof x === 'string' && /^\d{2}:\d{2}$/.test(x)).sort();
+    const time = offset === 0 ? valid.find((x) => x >= nowHHMM) : valid[0];
+    if (!time) continue;
+    const label = offset === 0 ? '今天' : offset === 1 ? '明天' : `週${WEEKDAY_NAMES[w - 1]}`;
+    const [h, m] = time.split(':').map(Number);
+    return { offset, time, label: `${label} ${time}`, key: offset * 1440 + h * 60 + m };
+  }
+  return null;
+}

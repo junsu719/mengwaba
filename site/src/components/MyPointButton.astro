@@ -1,0 +1,74 @@
+---
+// 「加入我的清運點」按鈕(2026-10-01):點擊只把 point_id 加進使用者瀏覽器 localStorage 的清單,
+// 不建帳號、不跳權限視窗、不傳送任何資料。清運點頁本體與「鄰近清運點」每一筆共用這個元件。
+// JS 失效或 localStorage 不可用時按鈕保持隱藏。
+interface Props {
+  pointId: string;
+  compact?: boolean;
+}
+const { pointId, compact = false } = Astro.props;
+---
+
+<button type="button" class:list={['my-point-btn', { compact }]} data-point-id={pointId} hidden>加入我的清運點</button>
+
+<script>
+  import { addMyPoint, getMyPointIds, myPointsStorageAvailable, MY_POINTS_MAX, removeMyPoint } from '../lib/home-point';
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.my-point-btn');
+  if (buttons.length && myPointsStorageAvailable()) {
+    const render = () => {
+      const mine = getMyPointIds();
+      buttons.forEach((btn) => {
+        const added = mine.includes(btn.dataset.pointId ?? '');
+        btn.textContent = added ? '已加入・取消' : '加入我的清運點';
+        btn.classList.toggle('added', added);
+        btn.hidden = false;
+      });
+    };
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.pointId;
+        if (!id) return;
+        if (getMyPointIds().includes(id)) removeMyPoint(id);
+        else if (!addMyPoint(id)) {
+          btn.textContent = getMyPointIds().length >= MY_POINTS_MAX ? `最多 ${MY_POINTS_MAX} 個,請先取消其他` : '無法儲存';
+          return;
+        }
+        render();
+      });
+    });
+    render();
+  }
+</script>
+
+<style>
+  .my-point-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: var(--color-soft-gray);
+    color: var(--color-ink);
+    font-family: var(--font-zh);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .my-point-btn[hidden] {
+    display: none;
+  }
+  .my-point-btn.added {
+    background: transparent;
+    border-color: var(--color-border);
+    color: var(--color-muted);
+  }
+  .my-point-btn.compact {
+    min-height: 36px;
+    padding: 0 var(--spacing-md);
+    font-size: 0.875rem;
+    margin-left: var(--spacing-sm);
+  }
+</style>

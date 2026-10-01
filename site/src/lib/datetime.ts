@@ -25,3 +25,13 @@ export function taipeiWeekday(dateStr: string): number | null {
   const day = new Date(t).getUTCDay();
   return day === 0 ? 7 : day;
 }
+
+/** 台北當地現在時刻 HH:MM(24 小時制),給「下一班」比較用;與 taipeiToday() 同樣只能在瀏覽器端呼叫。 */
+export function taipeiNowHHMM(): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Taipei',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(new Date());
+}
