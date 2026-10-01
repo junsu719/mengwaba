@@ -1,0 +1,68 @@
+---
+// 首頁「今天」資訊列(2026-10-01):日期星期、農曆、下一個連假。沿用清運點頁今天卡片的
+// 共用函式(today-card-client / datetime),不碰垃圾車資料。「今天」一律前端以 Asia/Taipei 現算;
+// 任一段算不出就省略該段,全部算不出整條維持 hidden。
+import { allLongWeekendEntries } from '../lib/calendar';
+import Card from './ui/Card.astro';
+---
+
+<Card id="today-strip" hidden data-entries={JSON.stringify(allLongWeekendEntries())}>
+  <p class="strip-row" data-row="date" hidden></p>
+  <p class="strip-row" data-row="lunar" hidden><a href="/lunar/"></a></p>
+  <p class="strip-row" data-row="holiday" hidden><a href="/calendar/"></a></p>
+</Card>
+
+<script>
+  import { taipeiToday, taipeiWeekday } from '../lib/datetime';
+  import { dateLine, lunarLine, nextHolidayLine } from '../lib/today-card-client';
+
+  const strip = document.getElementById('today-strip');
+  if (strip) {
+    const today = taipeiToday();
+    let shown = 0;
+    const show = (name: string, text: string | null) => {
+      try {
+        const el = strip.querySelector<HTMLElement>(`[data-row="${name}"]`);
+        if (!el || !text) return;
+        const target = el.querySelector('a') ?? el;
+        target.textContent = text;
+        el.hidden = false;
+        shown++;
+      } catch {}
+    };
+    try {
+      show('date', dateLine(today, taipeiWeekday(today)));
+    } catch {}
+    try {
+      show('lunar', lunarLine(today));
+    } catch {}
+    try {
+      const raw = strip.dataset.entries;
+      show('holiday', nextHolidayLine(raw ? JSON.parse(raw) : null, today));
+    } catch {}
+    if (shown > 0) strip.hidden = false;
+  }
+</script>
+
+<style>
+  :global(#today-strip) {
+    margin: 0 0 var(--spacing-lg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem var(--spacing-lg);
+  }
+  :global(#today-strip[hidden]) {
+    display: none;
+  }
+  .strip-row {
+    margin: 0;
+    color: var(--color-ink);
+  }
+  .strip-row:first-child {
+    font-weight: 600;
+  }
+  .strip-row :global(a) {
+    color: var(--color-brand-text);
+    font-weight: 600;
+  }
+</style>

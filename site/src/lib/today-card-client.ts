@@ -53,3 +53,13 @@ export function pickTodayLines(
   if (typeof alt === 'string' && alt && Array.isArray(holidays) && holidays.includes(todayStr)) out[0] = alt;
   return out;
 }
+
+const WEEKDAY_NAMES = ['一', '二', '三', '四', '五', '六', '日'];
+
+/** 首頁「今天」列第一段:「今天:2026/10/01 週四」。格式不合或星期算不出回傳 null。 */
+export function dateLine(todayStr: string, weekday: number | null): string | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(todayStr);
+  const name = weekday ? WEEKDAY_NAMES[weekday - 1] : undefined;
+  if (!m || !name) return null;
+  return `今天:${m[1]}/${m[2]}/${m[3]} 週${name}`;
+}

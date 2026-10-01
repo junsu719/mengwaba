@@ -165,3 +165,15 @@ describe('國定假日當天(第一行不得說正常收運)', () => {
     expect(pick(recyclingOnly, '2026-10-10', 6)[0]).toBe(todayCardLines(recyclingOnly, 6)[0]);
   });
 });
+
+import { dateLine } from './today-card-client';
+describe('dateLine(首頁今天列)', () => {
+  it('格式化日期與星期', () => {
+    expect(dateLine('2026-10-01', 4)).toBe('今天:2026/10/01 週四');
+    expect(dateLine('2026-10-04', 7)).toBe('今天:2026/10/04 週日');
+  });
+  it('算不出回傳 null', () => {
+    expect(dateLine('bad', 4)).toBeNull();
+    expect(dateLine('2026-10-01', null)).toBeNull();
+  });
+});

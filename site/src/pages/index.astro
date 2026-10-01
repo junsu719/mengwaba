@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Card from '../components/ui/Card.astro';
+import TodayStrip from '../components/TodayStrip.astro';
 import { breadcrumbJsonLd } from '../lib/seo';
 
 const jsonLd = [breadcrumbJsonLd([{ name: '首頁', url: Astro.url.href }])];
@@ -49,6 +50,8 @@ const tools = [
     <p class="tagline">台灣人的生活小工具箱</p>
     <p class="hero-copy">生活有點麻煩,來悶蛙吧。</p>
   </section>
+
+  <TodayStrip />
 
   <h2>目前提供的工具</h2>
   <ul class="tool-grid">
