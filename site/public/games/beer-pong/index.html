@@ -54,6 +54,10 @@ button{font-family:inherit;cursor:pointer;touch-action:none}
 .dk .bar i{display:block;height:100%;width:10%;background:linear-gradient(90deg,#f5c542,#f08a20,#d12a2a);transition:width .4s}
 .dk.hit{animation:dz .5s 3}
 @keyframes dz{50%{transform:rotate(-4deg) scale(1.06)}}
+#snd{pointer-events:auto;display:flex;align-items:center;gap:6px;padding:7px 10px;font:900 12px var(--sans);color:var(--ink);touch-action:manipulation;cursor:pointer}
+#snd svg{width:18px;height:18px}
+#snd .x{display:none}
+#snd.off .x{display:inline}#snd.off .w{display:none}
 #qual,#popup{position:fixed;left:0;right:0;text-align:center;z-index:3;font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.8);opacity:0;pointer-events:none}
 #qual{top:52%;font-size:19px}
 #popup{top:40%;font-size:30px}
@@ -117,6 +121,7 @@ h1{margin:0;font-weight:900;font-size:34px;line-height:1.1}
     <div id="info"></div>
   </div>
   <div id="right">
+    <button class="cs" id="snd" aria-label="聲音開關" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path class="w" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M17 9l5 6M22 9l-5 6"/></svg><span id="sndTxt">聲音開</span></button>
     <div class="cs dk" id="dk0"><div class="l"><span>你的醉意</span><span id="dp0">8%</span></div><div class="bar"><i id="db0"></i></div></div>
     <div class="cs dk" id="dk1"><div class="l"><span>電腦醉意</span><span id="dp1">8%</span></div><div class="bar"><i id="db1"></i></div></div>
   </div>
@@ -270,11 +275,26 @@ function splash(x,y,z){for(const d of drops){d.life=rand(.3,.6);d.m.visible=true
 /* ===== audio ===== */
 let actx=null,nbuf=null;
 function audioInit(){if(actx){if(actx.state==='suspended')actx.resume();return;}try{actx=new (window.AudioContext||window.webkitAudioContext)();nbuf=actx.createBuffer(1,actx.sampleRate,actx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}catch(e){actx=null;}}
-function noise(type,f,dur,vol,sw){if(!actx)return;const t=actx.currentTime,s=actx.createBufferSource(),fl=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(sw)fl.frequency.exponentialRampToValueAtTime(sw,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(fl);fl.connect(g);g.connect(actx.destination);s.start(t);s.stop(t+dur+.02);}
-function tone(f,dur,vol,type='sine',drop){if(!actx)return;const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(drop)o.frequency.exponentialRampToValueAtTime(drop,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.02);}
+function noise(type,f,dur,vol,sw){if(!actx||muted)return;const t=actx.currentTime,s=actx.createBufferSource(),fl=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(sw)fl.frequency.exponentialRampToValueAtTime(sw,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(fl);fl.connect(g);g.connect(actx.destination);s.start(t);s.stop(t+dur+.02);}
+function tone(f,dur,vol,type='sine',drop){if(!actx||muted)return;const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(drop)o.frequency.exponentialRampToValueAtTime(drop,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.02);}
 const SFX={pong:(v)=>{tone(1350,.05,Math.min(.4,v*.12),'triangle',1100);},rim:(v)=>{tone(700,.07,Math.min(.35,v*.14),'triangle',500);noise('bandpass',1500,.04,.15);},
   plop:()=>{tone(320,.18,.45,'sine',120);noise('lowpass',900,.18,.35);},toss:()=>noise('bandpass',800,.15,.12,1800),
   cheer:(b)=>noise('bandpass',1300,b?1.6:.9,b?.3:.18,800),gulp:()=>{tone(180,.12,.3,'sine',90);setTimeout(()=>tone(160,.12,.3,'sine',80),160);}};
+
+/* ===== background music (looping) + sound toggle ===== */
+let muted=false;try{muted=localStorage.getItem('beerpong-muted')==='1';}catch(e){}
+let music=null;
+function musicInit(){
+  if(music)return;
+  try{music=new Audio('/games/beer-pong/music.mp3');music.loop=true;music.volume=.4;music.preload='auto';}catch(e){music=null;}
+}
+function musicPlay(){musicInit();if(music&&!muted&&!document.hidden){const p=music.play();if(p&&p.catch)p.catch(()=>{});}}
+function setMuted(m,init){muted=m;try{localStorage.setItem('beerpong-muted',m?'1':'0');}catch(e){}
+  const b=$('snd');b.classList.toggle('off',m);b.setAttribute('aria-pressed',String(!m));$('sndTxt').textContent=m?'聲音關':'聲音開';
+  if(init)return;if(m){if(music)music.pause();}else{audioInit();musicPlay();}}
+$('snd').addEventListener('click',()=>setMuted(!muted));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(music)music.pause();}else if(state!=='menu')musicPlay();});
+setMuted(muted,true);
 
 /* ===== state ===== */
 let state='menu',mode='ai',diff='normal';
@@ -284,7 +304,7 @@ function drunkNow(p){p=p||0;const e=S.ep;let v=(S.drunk||[0,0])[p];if(p===0&&e){
 function sway(){const dk=drunkNow(0),t=swayT;return (.003+dk*.03)*Math.sin(t*1.3)+(.002+dk*.02)*Math.sin(t*3.1+1)+dk*.012*Math.sin(t*7.7);}
 
 function startGame(m,d){
-  audioInit();mode=m;diff=d||'normal';closeModal('menu');closeModal('over');
+  audioInit();musicPlay();mode=m;diff=d||'normal';closeModal('menu');closeModal('over');
   Object.assign(S,{drunk:[.08,.08],ep:null,reracked:[false,false],cur:0,thrown:[0,0],made:[0,0],backs:0,turnMade:[],ballIdx:0,soloBalls:0});
   rack(1,6);if(mode==='ai')rack(0,6);else{for(const c of sides[0])scene.remove(c.g);sides[0]=[];}
   $('r1').style.display=mode==='solo'?'none':'grid';$('dk1').style.display=mode==='solo'?'none':'block';

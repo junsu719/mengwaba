@@ -61,6 +61,10 @@ button{font-family:inherit;cursor:pointer;touch-action:none}
 .ret{position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;z-index:1;pointer-events:none}
 .ret svg{position:absolute;inset:0}
 #ghost{opacity:0}
+#snd{pointer-events:auto;display:flex;align-items:center;gap:6px;padding:7px 10px;font:900 12px var(--sans);color:var(--ink);touch-action:manipulation;cursor:pointer}
+#snd svg{width:18px;height:18px}
+#snd .x{display:none}
+#snd.off .x{display:inline}#snd.off .w{display:none}
 #qual,#popup{position:fixed;left:0;right:0;text-align:center;z-index:3;font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.8);opacity:0;pointer-events:none}
 #qual{top:calc(50% + 34px);font-size:19px}
 #popup{top:calc(50% - 86px);font-family:var(--num);font-size:48px}
@@ -126,7 +130,7 @@ h1{margin:0;font-weight:900;font-size:34px;line-height:1.1}
     <div class="turn"><div class="d" id="d0"></div><div class="d" id="d1"></div><div class="d" id="d2"></div><div class="tot" id="ttot">0</div></div>
     <div id="hint"></div>
   </div>
-  <div id="right"><div class="cs" id="drunk"><div class="l"><span>醉意</span><span id="dpct">10%</span></div><div class="bar"><i id="dbar"></i></div></div></div>
+  <div id="right"><button class="cs" id="snd" aria-label="聲音開關" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path class="w" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M17 9l5 6M22 9l-5 6"/></svg><span id="sndTxt">聲音開</span></button><div class="cs" id="drunk"><div class="l"><span>醉意</span><span id="dpct">10%</span></div><div class="bar"><i id="dbar"></i></div></div></div>
 </div>
 <div class="ret" id="ghost"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="12" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/><circle cx="17" cy="17" r="2" fill="#ff4fa3"/></svg></div>
 <div class="ret" id="ret"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="12" fill="none" stroke="rgba(0,0,0,.8)" stroke-width="2"/><circle cx="17" cy="17" r="12" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".8"/><circle cx="17" cy="17" r="2" fill="#3dff7a"/></svg></div>
@@ -355,13 +359,29 @@ function updateHand(dt,show){
 /* ===== audio ===== */
 let actx=null,nbuf=null;
 function audioInit(){if(actx){if(actx.state==='suspended')actx.resume();return;}try{actx=new (window.AudioContext||window.webkitAudioContext)();nbuf=actx.createBuffer(1,actx.sampleRate*1.5,actx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}catch(e){actx=null;}}
-function noise(type,f,dur,vol,sw){if(!actx)return;const t=actx.currentTime,s=actx.createBufferSource(),fl=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(sw)fl.frequency.exponentialRampToValueAtTime(sw,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(fl);fl.connect(g);g.connect(actx.destination);s.start(t);s.stop(t+dur+.02);}
-function tone(f,dur,vol,type='sine',drop){if(!actx)return;const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(drop)o.frequency.exponentialRampToValueAtTime(drop,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.02);}
+function noise(type,f,dur,vol,sw){if(!actx||muted)return;const t=actx.currentTime,s=actx.createBufferSource(),fl=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(sw)fl.frequency.exponentialRampToValueAtTime(sw,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(fl);fl.connect(g);g.connect(actx.destination);s.start(t);s.stop(t+dur+.02);}
+function tone(f,dur,vol,type='sine',drop){if(!actx||muted)return;const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(drop)o.frequency.exponentialRampToValueAtTime(drop,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.02);}
 const SFX={whoosh:()=>noise('bandpass',900,.18,.18,2400),thunk:()=>{noise('lowpass',1800,.07,.9);tone(320,.06,.35,'triangle',180);},
   miss:()=>{noise('lowpass',500,.12,.6);tone(140,.1,.3);},bust:()=>{tone(220,.25,.25,'sawtooth',110);},
   cheer:(big)=>{noise('bandpass',1300,big?1.8:1,big?.35:.2,800);},gulp:()=>{tone(180,.12,.3,'sine',90);setTimeout(()=>tone(160,.12,.3,'sine',80),160);}};
-let crowdSrc=null;
-function crowdStart(){if(!actx||crowdSrc)return;const s=actx.createBufferSource(),f=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;s.loop=true;f.type='bandpass';f.frequency.value=500;f.Q.value=.6;g.gain.value=.035;s.connect(f);f.connect(g);g.connect(actx.destination);s.start();crowdSrc=s;}
+let crowdSrc=null,crowdGain=null;
+function crowdStart(){if(!actx||crowdSrc)return;const s=actx.createBufferSource(),f=actx.createBiquadFilter(),g=actx.createGain();s.buffer=nbuf;s.loop=true;f.type='bandpass';f.frequency.value=500;f.Q.value=.6;g.gain.value=muted?0:.035;s.connect(f);f.connect(g);g.connect(actx.destination);s.start();crowdSrc=s;crowdGain=g;}
+
+/* ===== background music (looping) + sound toggle ===== */
+let muted=false;try{muted=localStorage.getItem('darts-muted')==='1';}catch(e){}
+let music=null;
+function musicInit(){
+  if(music)return;
+  try{music=new Audio('/games/darts/music.mp3');music.loop=true;music.volume=.4;music.preload='auto';}catch(e){music=null;}
+}
+function musicPlay(){musicInit();if(music&&!muted&&!document.hidden){const p=music.play();if(p&&p.catch)p.catch(()=>{});}}
+function setMuted(m,init){muted=m;try{localStorage.setItem('darts-muted',m?'1':'0');}catch(e){}
+  const b=$('snd');b.classList.toggle('off',m);b.setAttribute('aria-pressed',String(!m));$('sndTxt').textContent=m?'聲音關':'聲音開';
+  if(crowdGain)crowdGain.gain.value=m?0:.035;
+  if(init)return;if(m){if(music)music.pause();}else{audioInit();musicPlay();}}
+$('snd').addEventListener('click',()=>setMuted(!muted));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(music)music.pause();}else if(state!=='menu')musicPlay();});
+setMuted(muted,true);
 
 /* ===== game state ===== */
 let state='menu',mode='ai',diff='normal',START=501;
@@ -375,7 +395,7 @@ function viewDir(){const s=aimSway(),yaw=aimYaw+s.y,p=pitch0+aimPitch+s.x;return
 function aimMM(){const d=viewDir(),t=(DIST-.04)/-d.z;return {x:(EYE.x+d.x*t)*1000,y:(EYE.y+d.y*t-BOARD_Y)*1000};}
 
 function startGame(m,start,d){
-  audioInit();crowdStart();mode=m;START=+start;diff=d||'normal';closeModal('menu');closeModal('over');
+  audioInit();musicPlay();crowdStart();mode=m;START=+start;diff=d||'normal';closeModal('menu');closeModal('over');
   Object.assign(G,{rem:[START,START],legs:[0,0],leg:1,starter:0,cur:0,turn:[],turnStart:START,drunk:.08,ep:null,epTimer:null,hist:[[],[]],
     darts:0,points:0,high:0,n180:0,soloDarts:0});
   clearDarts();drawChalk();beginTurn(0,`第 1 盤・${START}`);
