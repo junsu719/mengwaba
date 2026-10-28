@@ -29,6 +29,7 @@ export const GET: APIRoute = ({ site }) => {
       ...data.long_weekends.map((w) => `${base}/calendar/${year}/${longWeekendSlug(w)}/`),
     ];
     if (computeLeavePlans(data).length > 0) urls.push(`${base}/calendar/${year}/leave-plan/`);
+    urls.push(`${base}/calendar/${year}/foreign/`);
     return urls;
   });
   const deityUrls = getAllDeities().map((d) => `${base}/lunar/deity/${d.slug}/`);

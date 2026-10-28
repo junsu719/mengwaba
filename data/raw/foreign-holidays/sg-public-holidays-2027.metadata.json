@@ -1,0 +1,57 @@
+{
+  "code": 0,
+  "data": {
+    "datasetId": "d_0ba69fc6d56717ff0bf8083c6af3bb84",
+    "createdAt": "2026-07-03T08:29:25+08:00",
+    "name": "Public Holidays for 2027",
+    "collectionIds": [
+      "691"
+    ],
+    "description": "Public Holiday 2027 List: Explore MOM’s official 2027 public holidays in Singapore including Chinese New Year, Hari Raya Puasa, Deepavali, National Day, and more. Download the CSV on data.gov.sg.",
+    "format": "CSV",
+    "lastUpdatedAt": "2026-07-03T08:36:08+08:00",
+    "managedBy": "Ministry of Manpower",
+    "coverageStart": "2027-01-01T08:00:00+08:00",
+    "coverageEnd": "2027-12-25T08:00:00+08:00",
+    "contactEmails": [
+      "support@data.gov.sg"
+    ],
+    "datasetSize": 437,
+    "columnMetadata": {
+      "order": [
+        "c_bwj4gsnhjjst5qdf2qzm0r6kt",
+        "c_papszerjrbfdqgdotpc1z0hv",
+        "c_4udu9zrgqaulz2sklt5tdakso"
+      ],
+      "map": {
+        "c_bwj4gsnhjjst5qdf2qzm0r6kt": "date",
+        "c_papszerjrbfdqgdotpc1z0hv": "day",
+        "c_4udu9zrgqaulz2sklt5tdakso": "holiday"
+      },
+      "metaMapping": {
+        "c_bwj4gsnhjjst5qdf2qzm0r6kt": {
+          "name": "date",
+          "columnTitle": "Date",
+          "dataType": "Date (YYYY-MM-DD)",
+          "index": "0",
+          "isCategorical": false
+        },
+        "c_papszerjrbfdqgdotpc1z0hv": {
+          "name": "day",
+          "columnTitle": "Day",
+          "dataType": "Text",
+          "index": "1",
+          "isCategorical": false
+        },
+        "c_4udu9zrgqaulz2sklt5tdakso": {
+          "name": "holiday",
+          "columnTitle": "Holiday",
+          "dataType": "Text",
+          "index": "2",
+          "isCategorical": false
+        }
+      }
+    }
+  },
+  "errorMsg": ""
+}

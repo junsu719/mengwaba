@@ -60,6 +60,18 @@ const nextLongWeekendEntries = allLongWeekendEntries();
     )
   }
 
+  <h2>日本、新加坡國定假日對照</h2>
+  <p>每個台灣連假同一天,日本、新加坡是不是當地國定假日,以及外國放假、台灣要上班的日子:</p>
+  <ul class="plain-links">
+    {
+      years.map((y) => (
+        <li>
+          <a href={`/calendar/${y.year}/foreign/`}>{y.year} 年日本、新加坡國定假日對照</a>
+        </li>
+      ))
+    }
+  </ul>
+
   <h2>年度總覽</h2>
   <ul class="tool-grid">
     {

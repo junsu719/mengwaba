@@ -26,6 +26,9 @@ data/raw/*
 # 神明生日基準資料例外:人工核實(多來源交叉比對)的靜態資料,非可重新抓取的來源,
 # 版控留存正本。
 !data/raw/deities/
+# 外國節日比對原始檔例外:2026-10-28 日本內閣府 syukujitsu.csv(Shift_JIS)、新加坡 data.gov.sg MOM CSV、
+# e-Gov 條文原文擷取;版控留存正本供稽核(data.gov.sg 下載連結有時效且有限流)。
+!data/raw/foreign-holidays/
 .DS_Store
 .claude/settings.local.json
 *:Zone.Identifier

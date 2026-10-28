@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Card from '../../../../components/ui/Card.astro';
+import { breadcrumbJsonLd } from '../../../../lib/seo';
+import { CALENDAR_YEARS, loadCalendarYear, longWeekendSlug, type CalendarYearData } from '../../../../lib/calendar';
+import {
+  COUNTRY_LABEL,
+  compareYear,
+  formatMD,
+  holidayDisplayName,
+  jpClosureSentence,
+  loadForeignData,
+  longWeekendSentence,
+  pageDescription,
+  summarySentence,
+  workdayHolidaySentence,
+  type MismatchRow,
+} from '../../../../lib/foreign-holidays';
+
+export function getStaticPaths() {
+  return CALENDAR_YEARS.map((year) => ({
+    params: { year: String(year) },
+    props: { data: loadCalendarYear(year) },
+  }));
+}
+
+const { data } = Astro.props as { data: CalendarYearData };
+const foreign = loadForeignData();
+const cmp = compareYear(data, foreign);
+const sgMeta = foreign.sgDatasets[String(data.year)];
+const sgUpdated = sgMeta?.lastUpdatedAt.slice(0, 10);
+
+const jsonLd = [
+  breadcrumbJsonLd([
+    { name: '首頁', url: Astro.site ? new URL('/', Astro.site).href : '/' },
+    { name: '國定假日與連假查詢', url: new URL('/calendar/', Astro.site ?? Astro.url).href },
+    { name: `${data.year} 年`, url: new URL(`/calendar/${data.year}/`, Astro.site ?? Astro.url).href },
+    { name: '日本、新加坡國定假日對照', url: Astro.url.href },
+  ]),
+];
+
+const mismatchLists: { code: 'jp' | 'sg'; rows: MismatchRow[] }[] = [
+  { code: 'jp', rows: cmp.jpWorkdayHolidays },
+  { code: 'sg', rows: cmp.sgWorkdayHolidays },
+];
+---
+
+<BaseLayout
+  title={`${data.year} 年台灣連假 × 日本、新加坡國定假日對照｜悶蛙吧`}
+  description={pageDescription(cmp)}
+  jsonLd={jsonLd}
+>
+  <nav>
+    <a href="/">首頁</a> / <a href="/calendar/">國定假日與連假查詢</a> / <a href={`/calendar/${data.year}/`}>{data.year} 年</a> / 日本、新加坡對照
+  </nav>
+  <h1>{data.year} 年台灣連假 × 日本、新加坡國定假日對照</h1>
+  <p>{summarySentence(cmp)}</p>
+  <p class="muted">
+    本頁只比對「當地國定假日」這項公開資料:台灣依行政院人事行政總處辦公日曆表,日本依內閣府公布的國民の祝日・休日,新加坡依人力部(MOM)公布的公眾假期,不含任何其他推測。
+  </p>
+
+  <h2>台灣連假逐日對照</h2>
+  {
+    cmp.longWeekends.map((x) => (
+      <Card variant="standard">
+        <h3>
+          <a href={`/calendar/${data.year}/${longWeekendSlug(x.lw)}/`}>{x.title}</a>
+        </h3>
+        <p>{longWeekendSentence(x)}</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>台灣</th>
+                <th>日本</th>
+                <th>新加坡</th>
+              </tr>
+            </thead>
+            <tbody>
+              {x.rows.map((r) => (
+                <tr>
+                  <td>{formatMD(r.d)}</td>
+                  <td>{r.twLabel}</td>
+                  <td>
+                    {r.jp.length > 0
+                      ? r.jp.map((h) => holidayDisplayName('jp', h.name)).join('、')
+                      : r.jpClosure
+                        ? '政府機關休息日(見註)'
+                        : '—'}
+                  </td>
+                  <td>{r.sg.length > 0 ? r.sg.map((h) => holidayDisplayName('sg', h.name)).join('、') : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {
+          x.jpClosureDays > 0 && (
+            <p class="muted">註:政府機關休息日,不代表一般商店休息。(依《{foreign.jpClosure.lawName}》{foreign.jpClosure.article})</p>
+          )
+        }
+      </Card>
+    ))
+  }
+  <p class="muted">「—」表示當天依該國資料不是當地國定假日。</p>
+
+  <h2>外國放假、台灣要上班的日子</h2>
+  {
+    mismatchLists.map(({ code, rows }) => (
+      <section>
+        <h3>{COUNTRY_LABEL[code]}</h3>
+        <p>{workdayHolidaySentence(code, cmp)}</p>
+        {rows.length > 0 && (
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>{COUNTRY_LABEL[code]}當地國定假日</th>
+                  <th>台灣</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr>
+                    <td>{formatMD(r.d)}</td>
+                    <td>{holidayDisplayName(code, r.name)}</td>
+                    <td>{r.twMakeupDay ? '補班日' : '上班日'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    ))
+  }
+
+  <h2>日本政府機關年末年始休息日(12/29–1/3)</h2>
+  <p>{jpClosureSentence(cmp)}</p>
+  {
+    cmp.jpClosureWorkdays.length > 0 && (
+      <p>台灣上班日中屬於此區間的有:{cmp.jpClosureWorkdays.map((d) => formatMD(d)).join('、')}。</p>
+    )
+  }
+  <p>
+    依據:日本《{foreign.jpClosure.lawName}》({foreign.jpClosure.lawNumber}){foreign.jpClosure.article},原文「十二月二十九日から翌年の一月三日までの日（前号に掲げる日を除く。）」,見 <a href={foreign.jpClosure.sourceUrl} rel="noopener">e-Gov 法令検索</a>。
+  </p>
+  <p><strong>政府機關休息日,不代表一般商店休息。</strong></p>
+
+  <h2>站內連結</h2>
+  <ul class="plain">
+    <li><a href={`/calendar/${data.year}/`}>{data.year} 年國定假日與連假總覽</a></li>
+    <li><a href="/calendar/">國定假日與連假查詢首頁</a></li>
+  </ul>
+  <h3>其他年度</h3>
+  <ul class="chip-list">
+    {
+      CALENDAR_YEARS.filter((y) => y !== data.year).map((y) => (
+        <li><a href={`/calendar/${y}/foreign/`}>{y} 年對照</a></li>
+      ))
+    }
+  </ul>
+
+  <style>
+    :global(.ui-card) {
+      margin: var(--spacing-md) 0;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th,
+    td {
+      text-align: left;
+      padding: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+    ul.plain {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.plain li {
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .chip-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .chip-list li a {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+    .muted {
+      color: var(--color-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <p slot="footer">
+    台灣資料來源:行政院人事行政總處「政府行政機關辦公日曆表」,依「政府資料開放授權條款第1版」提供。
+  </p>
+  <p slot="footer">
+    日本資料出典:<a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" rel="noopener">內閣府『國民の祝日について』</a>(syukujitsu.csv)。本頁由悶蛙吧整理比對,非內閣府發布。依公共データ利用規約(第1.0版)。
+  </p>
+  <p slot="footer">
+    新加坡資料來源:Ministry of Manpower (MOM),經 data.gov.sg 發布的「{sgMeta?.name}」(資料集更新日 {sgUpdated})。
+    Contains information from {sgMeta?.name} accessed from data.gov.sg, made available under the terms of the
+    <a href="https://data.gov.sg/open-data-licence" rel="noopener">Singapore Open Data Licence</a>。本頁由悶蛙吧整理比對,非新加坡政府或 MOM 發布,亦不代表其背書。
+  </p>
+  <p slot="footer">本站為民間非官方服務,實際放假規定如有變動,請以各國官方公告為準。</p>
+</BaseLayout>

@@ -1,0 +1,12 @@
+{
+  "rule": "行政機関の休日(12月29日から翌年1月3日)",
+  "startMD": "12-29",
+  "endMD": "01-03",
+  "lawName": "行政機関の休日に関する法律",
+  "lawNumber": "昭和六十三年法律第九十一号",
+  "article": "第一条第一項第三号",
+  "originalText": "十二月二十九日から翌年の一月三日までの日（前号に掲げる日を除く。）",
+  "sourceUrl": "https://laws.e-gov.go.jp/law/363AC0000000091",
+  "retrievedAt": "2026-10-28",
+  "rawFile": "data/raw/foreign-holidays/jp-gyoseikikan-kyujitsu-law.txt"
+}

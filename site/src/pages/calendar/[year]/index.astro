@@ -102,6 +102,12 @@ const jsonLd = [
     )
   }
 
+  <h2>日本、新加坡國定假日對照</h2>
+  <p>
+    這 {data.long_weekends.length} 個連假同一天,日本、新加坡是不是當地國定假日,以及外國放假、台灣要上班的日子:
+    <a href={`/calendar/${data.year}/foreign/`}>{data.year} 年日本、新加坡國定假日對照</a>
+  </p>
+
   <h2>行事曆下載</h2>
   <p>內容為當年度國定假日與補假日(不含純週末空白列):</p>
   <IcsDownload year={data.year} />
